@@ -1,8 +1,8 @@
 import LoginForm from '../../components/forms/LoginForm'
 import StudentLayout from '../../layouts/StudentLayout';
-import studentLogin from '../../assets/studentLogin.jpeg'
+import mentorLogin from '../../assets/Mentorship.jpg'
 
-const StudentLogin = () => {
+const MentorLogin = () => {
     const handleLogin = (credentials: { email: string; password: string }) => {
     console.log('Student login credentials:', credentials);
     // Call your API here (e.g. axios.post('/student/login', credentials))
@@ -10,11 +10,11 @@ const StudentLogin = () => {
 
   return (
   <StudentLayout>
-  <LoginForm role="student" onSubmit={handleLogin} imageUrl={studentLogin}/>
+  <LoginForm role="mentor" onSubmit={handleLogin} imageUrl={mentorLogin}/>
   </StudentLayout>
   
    )
     
 };
 
-export default StudentLogin;
+export default MentorLogin;
