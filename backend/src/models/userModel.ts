@@ -1,5 +1,10 @@
 import mongoose, {Schema, Document, ObjectId } from "mongoose";
 
+export interface IUserDTO{
+    name:string,
+    email:string,
+    password:string
+}
 export interface IUser extends Document{
     _id:ObjectId,
     username:string,
@@ -48,11 +53,13 @@ const userSchema:Schema<IUser> = new Schema({
     },
     isVerified:{
         type:Boolean,
-        required:false
+        required:false,
+        default:false
     },
     isBlocked:{
         type:Boolean,
-        required:false
+        required:true,
+        default:false
     }
 })
 
