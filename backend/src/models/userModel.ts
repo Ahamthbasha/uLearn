@@ -1,7 +1,7 @@
 import mongoose, {Schema, Document, ObjectId } from "mongoose";
 
 export interface IUserDTO{
-    name:string,
+    username:string,
     email:string,
     password:string
 }
@@ -61,7 +61,7 @@ const userSchema:Schema<IUser> = new Schema({
         required:true,
         default:false
     }
-})
+},{timestamps:true})
 
 const UserModel = mongoose.model<IUser>('User',userSchema)
 export default UserModel

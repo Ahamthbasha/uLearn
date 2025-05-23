@@ -1,15 +1,12 @@
-import express from 'express'
-import { StudentController } from '../controllers/studentControllers/studentController'
-import { StudentRepository } from '../repositories/studentRepository'
-import UserModel from '../models/userModel'
-import { StudentServices } from '../services/studentService'
+import { Router } from "express";
+import { studentController } from "../config/dependencyInjector";
 
-const router = express.Router()
+const router = Router();
 
-const studentRepository = new StudentRepository(UserModel)
-const studentService = new StudentServices(studentRepository)
-const studentController = new StudentController(studentService)
+router.post("/signUp", studentController.studentSignUp.bind(studentController));
 
-router.post("/signup",(req,res)=>studentController.studentSignUp(req,res))
+router.post("/resendOtp",studentController.resendOtp.bind(studentController))
 
-export default router
+router.post("/createUser",studentController.createUser.bind(studentController))
+
+export default router;
