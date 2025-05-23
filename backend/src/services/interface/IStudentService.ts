@@ -1,7 +1,6 @@
-import { IUser } from "src/models/userModel";
+import { IUser } from "../../models/userModel";
 
-export default interface IStudentService{
-    findByEmail(email:string):Promise<IUser | null>
+export default interface IStudentService {
+    findByEmail(email: string):Promise<IUser | null>;
     createUser(userData:IUser):Promise<IUser | null>
-    signup(userData : IUser):Promise<IUser | null>
 }

@@ -1,7 +1,7 @@
+import { Request, Response } from "express";
 
-
-import { Request,Response } from "express";
-
-export default interface IStudentControllers{
-    studentSignUp(req:Request,res:Response) : Promise<void>
+export default interface IStudentController {
+    studentSignUp(req: Request, res: Response): Promise<void>;
+    resendOtp(req:Request,res:Response):Promise<void>;
+    createUser(req:Request,res:Response):Promise<void>
 }
