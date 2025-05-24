@@ -2,12 +2,14 @@ import express from 'express'
 import dotenv from 'dotenv'
 import connectDB from './config/db'
 import studentRoutes from './routes/studentRoutes'
+import instructorRoutes from './routes/instructorRoutes'
 dotenv.config()
 
 const app = express()
 app.use(express.json())
 
 app.use("/api/student",studentRoutes)
+app.use("/api/instructor",instructorRoutes)
 
 const port:number = Number(process.env.PORT)
 
