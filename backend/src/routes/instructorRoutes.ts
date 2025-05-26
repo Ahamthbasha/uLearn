@@ -3,7 +3,7 @@ import { instructorController } from "../config/dependencyInjector";
 
 let router = Router()
 
-router.post("/register",instructorController.signUp.bind(instructorController))
+router.post("/signUp",instructorController.signUp.bind(instructorController))
 
 router.post("/resendOtp",instructorController.resendOtp.bind(instructorController))
 
