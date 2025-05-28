@@ -16,11 +16,16 @@
     "dotenv": "^16.5.0",
     "formik": "^2.4.6",
     "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.511.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.1",
+    "react-toastify": "^11.0.5",
+    "redux-persist": "^6.0.0",
+    "toast": "^0.5.4",
+    "toastify": "^2.0.1",
     "yup": "^1.6.1"
   },
   "devDependencies": {

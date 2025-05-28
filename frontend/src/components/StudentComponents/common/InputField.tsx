@@ -5,7 +5,7 @@ import { Field,ErrorMessage } from "formik";
 interface InputfieldProps{
     type:string,
     placeholder:string,
-    value?:string,
+    // value?:string,
     name:string,
     label:string
 }
@@ -13,7 +13,7 @@ interface InputfieldProps{
 const InputField:React.FC<InputfieldProps> = ({
     type,
     placeholder,
-    value,
+    // value,
     name,
     label
 }) =>{
@@ -27,8 +27,8 @@ const InputField:React.FC<InputfieldProps> = ({
               className={`w-full px-3 sm:px-5 py-2 sm:py-3 rounded-lg ${type == "number" ? "no-arrows" : ""} font-medium border-2 border-transparent text-black text-xs sm:text-sm focus:outline-none focus:border-2 focus:outline bg-gray-100`}
               type={type}
               placeholder={placeholder}
-              value={value}
               id={name}
+              name={name}
             />
           </div>
           <ErrorMessage className="text-xs sm:text-sm font-semibold text-red-500 mt-1 ml-2 sm:ml-3" name={name} component="span" />

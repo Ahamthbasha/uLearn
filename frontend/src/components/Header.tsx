@@ -12,7 +12,7 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-6 font-bold">
-          <a href="/homePage" className="hover:text-gray-300">Home</a>
+          <a href="/" className="hover:text-gray-300">Home</a>
           <a href="#" className="hover:text-gray-300">Courses</a>
           <a href="#" className="hover:text-gray-300">Mentors</a>
           <a href="#" className="hover:text-gray-300">About Us</a>
@@ -38,7 +38,7 @@ const Header = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden px-4 pb-4 space-y-2 font-bold">
-          <a href="/homePage" className="block hover:text-gray-300">Home</a>
+          <a href="" className="block hover:text-gray-300">Home</a>
           <a href="#" className="block hover:text-gray-300">Courses</a>
           <a href="#" className="block hover:text-gray-300">Mentors</a>
           <a href="#" className="block hover:text-gray-300">About Us</a>
