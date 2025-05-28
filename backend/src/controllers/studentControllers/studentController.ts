@@ -7,13 +7,13 @@ import { JwtService } from "../../utils/jwt";
 import bcrypt from "bcrypt";
 import { StudentErrorMessages, StudentSuccessMessages } from "../../utils/constants";
 import { Roles, StatusCode } from "../../utils/enums";
-
+import { SendEmail } from "../../utils/sendOtpEmail";
 export class StudentController implements IStudentController {
   private studentService: IStudentServices;
   private otpService: IOtpServices;
-
   private otpGenerator: OtpGenerate;
   private JWT: JwtService;
+  private emailSender:SendEmail
 
   constructor(studentService: IStudentServices, otpService: IOtpServices) {
     this.studentService = studentService;
@@ -22,6 +22,8 @@ export class StudentController implements IStudentController {
     this.otpGenerator = new OtpGenerate();
 
     this.JWT = new JwtService();
+
+    this.emailSender = new SendEmail();
   }
 
    async studentSignUp(req: Request, res: Response): Promise<any> {
@@ -44,6 +46,8 @@ export class StudentController implements IStudentController {
         const otp = await this.otpGenerator.createOtpDigit();
 
         await this.otpService.createOtp(email, otp)
+
+        await this.emailSender.sentEmailVerification("Student",email,otp)
 
         const token = await this.JWT.createToken({
           email,
@@ -73,7 +77,8 @@ export class StudentController implements IStudentController {
       let { email } = req.body;
 
       const otp = await this.otpGenerator.createOtpDigit();
-      await this.otpService.createOtp(email, otp),
+      await this.otpService.createOtp(email, otp)
+      await this.emailSender.sentEmailVerification("Student",email,otp)
 
       res.status(StatusCode.OK).json({
         success: true,

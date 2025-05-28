@@ -5,7 +5,7 @@ import { IStudentRepository } from "./interfaces/IStudentRepository";
 
 export class StudentRepository extends GenericRepository<IUser> implements IStudentRepository {
     constructor() {
-        super(UserModel);
+        super(UserModel); // parent class is generic repository.We call parent class constructor and give model to work with
     }
 
     async findByEmail(email: string): Promise<IUser | null> {

@@ -1,18 +1,16 @@
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { Outlet } from 'react-router-dom';
 
-interface StudentLayoutProps {
-  children: React.ReactNode;
+const StudentLayout = () => {
+
+  return(
+    <>
+    <Header/>
+    <Outlet/>
+    <Footer/>
+    </>
+  )
 }
 
-const StudentLayout = ({ children }: StudentLayoutProps) => {
-  return (
-    <>
-      <Header />
-      <main>{children}</main>
-      <Footer />
-    </>
-  );
-};
-
-export default StudentLayout;
+export default StudentLayout

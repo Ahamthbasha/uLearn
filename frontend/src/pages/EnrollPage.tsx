@@ -1,12 +1,9 @@
-
 import { useNavigate } from 'react-router-dom';
-import StudentLayout from '../layouts/StudentLayout';
 
 const EnrollPage = () => {
   const navigate = useNavigate()
   return (
     <>
-      <StudentLayout>
 
       <main>
         <h1 className="bg-blue-500 text-white font-bold text-center py-10 text-xl sm:text-2xl">
@@ -19,7 +16,7 @@ const EnrollPage = () => {
           {/* Student Card */}
           <div className="flex flex-col items-center space-y-4 text-center max-w-xs">
             <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 bg-blue-400 rounded-full"></div>
-            <button onClick={()=>navigate("/studentLogin")} className="bg-blue-600 text-white rounded px-4 py-2 font-bold hover:bg-blue-700">
+            <button onClick={()=>navigate("/user/signUp")} className="bg-blue-600 text-white rounded px-4 py-2 font-bold hover:bg-blue-700">
               Enroll as Student
             </button>
             <p className="text-sm text-gray-400">
@@ -30,7 +27,7 @@ const EnrollPage = () => {
           {/* Mentor Card */}
           <div className="flex flex-col items-center space-y-4 text-center max-w-xs">
             <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 bg-blue-400 rounded-full"></div>
-            <button onClick={()=>navigate("/mentorLogin")} className="bg-blue-600 text-white rounded px-4 py-2 font-bold hover:bg-blue-700">
+            <button onClick={()=>navigate("/mentor/signUp")} className="bg-blue-600 text-white rounded px-4 py-2 font-bold hover:bg-blue-700">
               Enroll as Mentor
             </button>
             <p className="text-sm text-gray-400">
@@ -39,8 +36,6 @@ const EnrollPage = () => {
           </div>
         </div>
       </main>
-
-      </StudentLayout>
     </>
   );
 };

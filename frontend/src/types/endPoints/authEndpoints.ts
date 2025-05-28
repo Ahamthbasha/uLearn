@@ -1,24 +1,24 @@
 const authenticationRoutes = {
 
     //studentRoutes
-    studentSignUp : "/api/auth/student/signUp",
-    studentResendOtp:"/api/auth/student/resendOtp",
-    studentCreateUser:"/api/auth/student/createUser",
-    studentLogin:"/api/auth/student/login",
-    studentLogout:"/api/auth/student/logout",
+    studentSignUp : "/api/student/signUp",
+    studentResendOtp:"/api/student/resendOtp",
+    studentVerifyOtp:"/api/student/createUser",
+    studentLogin:"/api/student/login",
+    studentLogout:"/api/student/logout",
 
     //instructorRoutes
 
-    instructorSignUp:"/api/auth/instructor/signUp",
-    instructorResendOtp:"/api/auth/instructor/resendOtp",
-    instructorCreateUser:"/api/auth/instructor/createUser",
-    instructorLogin:"/api/auth/instructor/login",
-    instructorLogout:"/api/auth/instructor/logout",
+    instructorSignUp:"/api/instructor/signUp",
+    instructorResendOtp:"/api/instructor/resendOtp",
+    instructorVerifyOtp:"/api/instructor/createUser",
+    instructorLogin:"/api/instructor/login",
+    instructorLogout:"/api/instructor/logout",
 
     //adminRoutes
 
-    adminLogin:"/api/auth/admin/login",
-    adminLogout:"/api/auth/admin/logout"
+    adminLogin:"/api/admin/login",
+    adminLogout:"/api/admin/logout"
 
 }
 
