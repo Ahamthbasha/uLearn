@@ -11,11 +11,15 @@ import {
 } from "redux-persist";
 import storage from 'redux-persist/lib/storage';
 import userReducer from './slices/userSlice';
+import instructorReducer from './slices/instructorSlice'
 
-const userPersistConfig = { key: "user", storage };
+const userPersistConfig = { key: "user", storage }
+const instructorPersistConfig = {key:"instructor",storage}
+
 
 const rootReducers = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
+  instructor: persistReducer(instructorPersistConfig,instructorReducer)
 });
 
 const store = configureStore({

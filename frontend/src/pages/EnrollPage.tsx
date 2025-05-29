@@ -24,14 +24,13 @@ const EnrollPage = () => {
             </p>
           </div>
 
-          {/* Mentor Card */}
           <div className="flex flex-col items-center space-y-4 text-center max-w-xs">
             <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 bg-blue-400 rounded-full"></div>
-            <button onClick={()=>navigate("/mentor/signUp")} className="bg-blue-600 text-white rounded px-4 py-2 font-bold hover:bg-blue-700">
-              Enroll as Mentor
+            <button onClick={()=>navigate("/instructor/signUp")} className="bg-blue-600 text-white rounded px-4 py-2 font-bold hover:bg-blue-700">
+              Enroll as Instructor
             </button>
             <p className="text-sm text-gray-400">
-              Enroll as a mentor to guide learners, publish courses, and offer slots for sessions.
+              Enroll as a instructor to guide learners, publish courses, and offer slots for sessions.
             </p>
           </div>
         </div>
