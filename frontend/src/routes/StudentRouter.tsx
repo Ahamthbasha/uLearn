@@ -1,5 +1,6 @@
 import {Routes,Route} from 'react-router-dom'
 import StudentLayout from '../layouts/StudentLayout'
+import UserSessionRoute from '../Protecter/UserSessionRoute'
 import LandingPage from '../pages/LandingPage'
 import SignUp from '../pages/student/Auth/SignUp'
 import EnrollPage from '../pages/EnrollPage'
@@ -14,7 +15,7 @@ const StudentRouter = () => {
         <Route path="/enrollPage" element={<EnrollPage/>}/>
         <Route path="/user/signUp" element={<SignUp/>}/>
         <Route path="/user/verifyOtp" element={<OTPVerification/>}/>
-        <Route path='/user/login' element={<LoginPage/>}/>
+        <Route path='/user/login' element={<UserSessionRoute><LoginPage/></UserSessionRoute>}/>
         </Route>
     </Routes>
   )

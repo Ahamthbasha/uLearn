@@ -1,4 +1,4 @@
-import { Request,Response } from "express";
+import { Request,Response} from "express";
 import bcrypt from "bcrypt";
 import { OtpGenerate } from "../../utils/otpGenerator";
 import { JwtService } from "../../utils/jwt";
@@ -10,18 +10,20 @@ import IOtpServices from "../../services/interface/IOtpService";
 import { InstructorErrorMessages,InstructorSuccessMessages } from "../../utils/constants";
 
 import { Roles,StatusCode } from "../../utils/enums";
-
+import { SendEmail } from "../../utils/sendOtpEmail";
 export class InstructorController implements IInstructorController{
   private instructorService : IInstructorService
   private otpService : IOtpServices
   private otpGenerator : OtpGenerate
   private jwt :JwtService
+  private emailSender : SendEmail
 
   constructor(instructorService : IInstructorService,otpService : IOtpServices) {
     this.instructorService = instructorService
     this.otpService = otpService
     this.otpGenerator = new OtpGenerate()
     this.jwt = new JwtService()
+    this.emailSender = new SendEmail()
   }
 
 
@@ -47,7 +49,7 @@ export class InstructorController implements IInstructorController{
       } else {
         const otp = await this.otpGenerator.createOtpDigit();
         await this.otpService.createOtp(email, otp);
-
+        await this.emailSender.sentEmailVerification("Instructor",email,otp)
         const JWT = new JwtService();
         const token = await JWT.createToken({
           email,
@@ -74,6 +76,7 @@ export class InstructorController implements IInstructorController{
 
       const otp = await this.otpGenerator.createOtpDigit();
       await this.otpService.createOtp(email, otp)
+      await this.emailSender.sentEmailVerification("Instructor",email,otp)
       res.status(StatusCode.OK).json({
         success: true,
         message: InstructorSuccessMessages.OTP_SENT,

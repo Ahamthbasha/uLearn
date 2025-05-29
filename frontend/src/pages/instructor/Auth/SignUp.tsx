@@ -4,10 +4,10 @@ import { toast } from "react-toastify";
 
 import InputField from "../../../components/StudentComponents/common/InputField";
 import PasswordField from "../../../components/StudentComponents/common/PasswordField";
-import { signup } from "../../../api/auth/UserAuthentication";
+import { signup } from "../../../api/auth/InstructorAuthentication";
 import type { signUp } from "../../../types/signUpType";
 import { useNavigate } from "react-router-dom";
-import studentLogin from '../../../assets/studentLogin.jpeg'
+import MentorSignUp from '../../../assets/Mentorship.jpg'
 
 const signupSchema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
@@ -29,7 +29,7 @@ const SignUp = () => {
         localStorage.setItem("verificationToken", response.token);
         localStorage.setItem("email", values.email);
         toast.success(response.message);
-        navigate("/user/verifyOtp")
+        navigate("/instructor/verifyOtp")
       } else {
         toast.error(response.message);
       }
@@ -46,8 +46,8 @@ const SignUp = () => {
           {/* Left Side Image */}
           <div className="md:w-1/2 flex items-center justify-center p-8 bg-gray-100">
             <img
-              src={studentLogin}
-              alt="student"
+              src={MentorSignUp}
+              alt="Mentor"
               className="rounded-full w-56 h-56 object-cover"
             />
           </div>
@@ -55,7 +55,7 @@ const SignUp = () => {
           {/* Right Side Form */}
           <div className="md:w-1/2 p-8">
             <h2 className="text-2xl font-bold text-blue-600 mb-6 text-center">
-              Student SignUp
+              Mentor SignUp
             </h2>
 
             <Formik<signUp>

@@ -18,11 +18,8 @@ export class StudentController implements IStudentController {
   constructor(studentService: IStudentServices, otpService: IOtpServices) {
     this.studentService = studentService;
     this.otpService = otpService;
-
     this.otpGenerator = new OtpGenerate();
-
     this.JWT = new JwtService();
-
     this.emailSender = new SendEmail();
   }
 
