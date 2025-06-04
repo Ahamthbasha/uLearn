@@ -13,5 +13,15 @@ router.post("/login",instructorController.login.bind(instructorController))
 
 router.post("/logout",instructorController.logout.bind(instructorController))
 
+router.post('/verifyEmail',instructorController.verifyEmail.bind(instructorController))
+
+router.post('/verifyResetOtp',instructorController.verifyResetOtp.bind(instructorController))
+
+router.post('/forgotResendOtp',instructorController.forgotResendOtp.bind(instructorController))
+
+router.post('/resetPassword',instructorController.resetPassword.bind(instructorController))
+
+router.post('/googleLogin',instructorController.doGoogleLogin.bind(instructorController))
+
 const instructorRoutes = router
 export default instructorRoutes

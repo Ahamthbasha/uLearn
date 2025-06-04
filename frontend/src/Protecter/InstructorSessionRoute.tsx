@@ -5,7 +5,7 @@ interface ProtectedRouteProps{
 }
 
 const mentorSessionRoute : React.FC<ProtectedRouteProps> = ({children}) =>{
-    const instructor = JSON.parse(localStorage.getItem('mentor') || 'null')
+    const instructor = JSON.parse(localStorage.getItem('instructor') || 'null')
 
     if(instructor){
         return <Navigate to='/' replace/>

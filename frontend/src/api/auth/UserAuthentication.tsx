@@ -61,3 +61,57 @@ export const logout = async() : Promise<any> => {
         throw error
     }
 }
+
+export const verifyEmail = async(email:string):Promise<any> => {
+    try {
+        const response = await API.post(authenticationRoutes.studentVerifyEmail,{email})
+        console.log('student or user verifyEmail',response.data)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const verifyResetOtp = async (email:string,otp:string)=>{
+    try {
+        const response = await API.post(authenticationRoutes.studentVerifyResetOtp,{email,otp},{withCredentials:true})
+        console.log('student or user verifyResetOtp',response.data)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const forgotResendOtp = async(email:string):Promise<any>=>{
+    try {
+        const response = await API.post(authenticationRoutes.studentForgotResendOtp,{email})
+        console.log('forgor resend otp in student or user',response.data)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const resetPassword = async(password:string) :Promise<any>=>{
+    try {
+        const response = await API.post(authenticationRoutes.studentResetPassword,{password},{withCredentials:true})
+
+        console.log("student reset password",response.data)
+
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const googleLogin = async(loginData:object)=>{
+    try {
+        const response = await API.post(authenticationRoutes.studentGoogleLogin,{loginData},{withCredentials:true})
+
+        console.log("student google log in",response.data)
+
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
