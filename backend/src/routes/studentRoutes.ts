@@ -13,4 +13,14 @@ router.post("/login",studentController.login.bind(studentController))
 
 router.post("/logout",studentController.logout.bind(studentController))
 
+router.post('/verifyEmail',studentController.verifyEmail.bind(studentController))
+
+router.post('/verifyResetOtp',studentController.verifyResetOtp.bind(studentController))
+
+router.post('/forgotResendOtp',studentController.forgotResendOtp.bind(studentController))
+
+router.post('/resetPassword',studentController.resetPassword.bind(studentController))
+
+router.post('/googleLogin',studentController.doGoogleLogin.bind(studentController))
+
 export default router;

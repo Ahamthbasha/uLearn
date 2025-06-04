@@ -16,4 +16,12 @@ export class StudentServices implements IStudentService {
     async createUser(userData: IUser): Promise<IUser | null> {
         return await this.studentRepository.create(userData)
     }
+
+    async resetPassword(email: string, password: string): Promise<IUser | null> {
+        return await this.studentRepository.resetPasswrod(email,password)
+    }
+
+    async googleLogin(name: string, email: string, password: string): Promise<IUser | null> {
+        return await this.studentRepository.googleLogin(name,email,password)
+    }
 }

@@ -198,4 +198,148 @@ export class InstructorController implements IInstructorController{
     }
   }
 
+  async verifyEmail(req: Request, res: Response): Promise<void> {
+      try {
+        let {email} = req.body
+
+        let existingUser = await this.instructorService.findByEmail(email)
+
+        if(existingUser){
+          const otp = await this.otpGenerator.createOtpDigit()
+          await this.otpService.createOtp(email,otp)
+          await this.emailSender.sentEmailVerification("instructor",email,otp)
+          res.send({
+            success:true,
+            message:InstructorSuccessMessages.REDIERCTING_OTP_PAGE,
+            data:existingUser
+          })
+        }
+        else{
+          res.send({
+            success:false,
+            message:InstructorErrorMessages.USER_NOT_FOUND
+          })
+        }
+      } catch (error) {
+        throw error
+      }
+  }
+
+  async verifyResetOtp(req: Request, res: Response): Promise<void> {
+      try {
+        const {email,otp} = req.body
+        const resultOtp = await this.otpService.findOtp(email)
+        console.log(resultOtp?.otp,'<>',otp)
+
+        if(resultOtp?.otp == otp){
+          let token = await this.jwt.createToken({email})
+
+          res.status(StatusCode.OK)
+          .cookie("forgotToken",token)
+          .json({
+            success:true,
+            message:InstructorSuccessMessages.REDIERCTING_PASSWORD_RESET_PAGE
+          })
+        }else{
+          res.json({
+            success:false,
+            message:InstructorErrorMessages.INCORRECT_OTP
+          })
+        }
+      } catch (error) {
+        throw error
+      }
+  }
+
+  async forgotResendOtp(req: Request, res: Response): Promise<void> {
+    try {
+      let {email} = req.body
+
+      const otp = await this.otpGenerator.createOtpDigit()
+      await this.otpService.createOtp(email,otp)
+      await this.emailSender.sentEmailVerification('instructor',email,otp)
+
+      res.status(StatusCode.OK).json({
+        success:true,
+        message:InstructorSuccessMessages.OTP_SENT
+      })
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async resetPassword(req: Request, res: Response): Promise<void> {
+      try {
+        const {password} = req.body
+
+        const hashedPassword = await bcrypt.hash(password,10)
+
+        const token = req.cookies.forgotToken
+
+        let data = await this.jwt.verifyToken(token)
+
+        if(!data){
+          throw new Error(InstructorErrorMessages.TOKEN_INVALID)
+        }
+
+        const passwordReset = await this.instructorService.resetPassword(data.email,hashedPassword)
+
+        if(passwordReset){
+          res.clearCookie('forgotToken')
+          res.status(StatusCode.OK).json({
+            success:true,
+            message:InstructorSuccessMessages.PASSWORD_RESET
+          })
+        }
+      } catch (error) {
+        throw error
+      }
+  }
+
+  async doGoogleLogin(req: Request, res: Response): Promise<void> {
+      try {
+        const {name,email,password} = req.body
+        const existingInstructor = await this.instructorService.findByEmail(email)
+
+        if(!existingInstructor){
+          const instructor = await this.instructorService.googleLogin(name,email,password)
+
+          if(instructor){
+            const role = instructor.role
+            const id = instructor._id
+            const accessToken = await this.jwt.accessToken({email,id,role})
+            const refreshToken = await this.jwt.refreshToken({email,id,role})
+
+            res.status(StatusCode.OK)
+            .cookie('accessToken',accessToken,{httpOnly:true})
+            .cookie('refreshToken',refreshToken,{httpOnly:true})
+            .json({
+              success:true,
+              message:InstructorSuccessMessages.GOOGLE_LOGIN_SUCCESS,
+              user:instructor
+            })
+          }
+        }else{
+          if(!existingInstructor.isBlocked){
+            const role = existingInstructor.role
+            const id = existingInstructor._id
+            const accessToken = await this.jwt.accessToken({email,id,role})
+            const refreshToken = await this.jwt.refreshToken({email,id,role})
+
+            res.status(StatusCode.OK)
+            .cookie('accessToken',accessToken,{httpOnly:true})
+            .cookie('refreshToken',refreshToken,{httpOnly:true})
+            .json({
+              sucess:true,
+              message:InstructorSuccessMessages.GOOGLE_LOGIN_SUCCESS,
+              user:existingInstructor
+            })
+          }
+        }
+      } catch (error) {
+        throw error
+      }
+  }
+
+
 }

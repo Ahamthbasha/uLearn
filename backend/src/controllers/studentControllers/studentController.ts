@@ -178,5 +178,165 @@ export class StudentController implements IStudentController {
         throw error
     }
   }
+
+  async verifyEmail(req: Request, res: Response): Promise<void> {
+      try {
+        let {email} = req.body
+
+        const existingUser = await this.studentService.findByEmail(email)
+
+
+        if(existingUser){
+          const otp = await this.otpGenerator.createOtpDigit()
+
+          await this.otpService.createOtp(email,otp)
+          console.log('verifyEmail otp ')
+          await this.emailSender.sentEmailVerification("Student",email,otp)
+          console.log('verifyEmail otp is sended')
+
+          res.send({
+            success:true,
+            message:StudentSuccessMessages
+            .REDIERCTING_OTP_PAGE,
+            data:existingUser
+          })
+        }
+        else{
+          res.send({
+            success:false,
+            message:StudentErrorMessages.USER_NOT_FOUND
+          })
+        }
+      } catch (error) {
+        throw error
+      }
+  }
+
+  async verifyResetOtp(req: Request, res: Response): Promise<void> {
+      try {
+        const {email,otp} = req.body
+
+        const resultOtp = await this.otpService.findOtp(email)
+
+        console.log(resultOtp?.otp ,"==" ,otp)
+
+        if(resultOtp?.otp === otp){
+          let token = await this.JWT.createToken({email})
+
+          res.status(StatusCode.OK).cookie('forgotToken',token).json({
+            success:true,
+            message:StudentSuccessMessages.REDIERCTING_PASSWORD_RESET_PAGE
+          })
+        }else{
+          res.json({
+            success:false,
+            message:StudentErrorMessages.INCORRECT_OTP
+          })
+        }
+      } catch (error) {
+        throw error
+      }
+  }
+
+
+  async forgotResendOtp(req: Request, res: Response): Promise<void> {
+      try {
+         let {email} = req.body
+         
+         let otp = await this.otpGenerator.createOtpDigit()
+         await this.otpService.createOtp(email,otp)
+         
+         console.log("forgotResendOtp controller in student")
+         
+         await this.emailSender.sentEmailVerification("student",email,otp)
+
+         console.log("forgotResendOtp controller in student otp sended")
+
+         res.status(StatusCode.OK).json({
+          success:true,
+          message:StudentSuccessMessages.OTP_SENT
+         })
+      } catch (error) {
+        throw error
+      }
+  }
+
+  async resetPassword(req: Request, res: Response): Promise<void> {
+  try {
+      const { password } = req.body;
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const token = req.cookies.forgotToken;
+      let data = await this.JWT.verifyToken(token);
+      if (!data) {
+        throw new Error(StudentErrorMessages.TOKEN_INVALID);
+      }
+
+      const passwordReset = await this.studentService.resetPassword(
+        data.email,
+        hashedPassword
+      );
+      if (passwordReset) {
+        res.clearCookie("forgotToken");
+        res.status(StatusCode.OK).json({
+          success: true,
+          message: StudentSuccessMessages.PASSWORD_RESET,
+        });
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async doGoogleLogin(req: Request, res: Response): Promise<void> {
+      try {
+        const {name,email,password} = req.body
+        const existingUser = await this.studentService.findByEmail(email)
+
+        if(!existingUser){
+          const user = await this.studentService.googleLogin(name,email,password)
+
+          if(user){
+            const role = user.role
+            const accessToken = await this.JWT.accessToken({email,role})
+            const refreshToken = await this.JWT.refreshToken({email,role})
+
+            res.status(StatusCode.OK)
+            .cookie("accessToken",accessToken,{httpOnly:true})
+            .cookie("refreshToken",refreshToken,{httpOnly:true})
+            .json({
+              success:true,
+              message:StudentSuccessMessages.GOOGLE_LOGIN_SUCCESS
+            })
+          }
+        }
+        else{
+          if(!existingUser.isBlocked){
+            const role = existingUser.role
+            const id = existingUser._id
+            const accessToken = await this.JWT.accessToken({id,email,role})
+            const refreshToken = await this.JWT.refreshToken({id,email,role})
+
+            res.status(StatusCode.OK)
+            .cookie('accessToken',accessToken,{httpOnly:true})
+            .cookie("refreshToken",refreshToken,{httpOnly:true})
+            .json({
+              success:true,
+              message:StudentSuccessMessages.GOOGLE_LOGIN_SUCCESS,
+              user:existingUser
+            })
+          }
+          else{
+            res.status(StatusCode.OK)
+            .json({
+              success:false,
+              message:StudentErrorMessages.INTERNAL_SERVER_ERROR,
+              user:existingUser
+            })
+          }
+        }
+      } catch (error) {
+        throw error
+      }
+  }
 }
 

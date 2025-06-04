@@ -16,4 +16,12 @@ export default class InstructorService implements IInstructorService{
     async createUser(userData:IInstructor): Promise<IInstructor | null> {
         return this.instructorRepository.createUser(userData)
     }
+
+    async resetPassword(email: string, password: string): Promise<IInstructor | null> {
+        return this.instructorRepository.resetPassword(email,password)
+    }
+
+    async googleLogin(name: string, email: string, password: string): Promise<IInstructor | null> {
+        return this.instructorRepository.googleLogin(name,email,password)
+    }
 }
