@@ -106,7 +106,7 @@ export const resetPassword = async(password:string) :Promise<any>=>{
 
 export const googleLogin = async(loginData:object)=>{
     try {
-        const response = await API.post(authenticationRoutes.studentGoogleLogin,{loginData},{withCredentials:true})
+        const response = await API.post(authenticationRoutes.studentGoogleLogin,loginData,{withCredentials:true})
 
         console.log("student google log in",response.data)
 

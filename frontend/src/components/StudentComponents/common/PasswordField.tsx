@@ -1,54 +1,60 @@
 import React, { useState } from "react";
 import { Field, ErrorMessage } from "formik";
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from "lucide-react";
 
 interface PasswordFieldProps {
   name: string;
-  placeholder: string;
-  // value?: string;
+  label?: string;
+  placeholder?: string;
+  hideError?: boolean; // Optional to skip ErrorMessage here
 }
 
 const PasswordField: React.FC<PasswordFieldProps> = ({
   name,
-  placeholder,
-  // value,
+  label = "Password",
+  placeholder = "Enter your password",
+  hideError = false,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
-    setTimeout(() => {
-      setShowPassword(false);
-    }, 1000);
+    setTimeout(() => setShowPassword(false), 1000); // Optional auto-hide
   };
 
-  const eyeIcon = showPassword ? <Eye /> : <EyeOff />;
-
   return (
-    <>
-      <div>
-        <label htmlFor={name} className="block text-black text-xs sm:text-sm font-semibold">
-          {placeholder.toUpperCase()}
-        </label>
-      </div>
+    <div className="mb-4">
+      <label
+        htmlFor={name}
+        className="block text-sm font-semibold text-gray-700 mb-1"
+      >
+        {label}
+      </label>
 
-      <div className="flex items-center relative mt-1 sm:mt-2">
+      <div className="relative">
         <Field
-          className="w-full px-3 sm:px-5 py-2 sm:py-3 rounded-lg font-medium border-2 text-black placeholder-gray-600 border-transparent text-xs sm:text-sm focus:outline-none focus:border-2 focus:outline bg-gray-100"
-          placeholder={placeholder}
           id={name}
           name={name}
           type={showPassword ? "text" : "password"}
+          placeholder={placeholder}
+          className="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         />
         <div
-          className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-lg sm:text-xl text-gray-900 cursor-pointer"
-          onClick={togglePassword}>
-          {eyeIcon}
+          onClick={togglePassword}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 cursor-pointer"
+        >
+          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
         </div>
       </div>
 
-      <ErrorMessage className="text-red-500 text-xs sm:text-sm mt-1" name={name} component="span" />
-    </>
+      {!hideError && (
+        <ErrorMessage
+          name={name}
+          component="div"
+          className="text-red-500 text-xs mt-1"
+        />
+      )}
+    </div>
   );
 };
 
