@@ -1,17 +1,26 @@
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { useNavigate, Link } from 'react-router-dom';
+import { Formik, Form, Field } from 'formik';
 
 import PasswordField from '../../../components/StudentComponents/common/PasswordField';
 import { setUser } from '../../../redux/slices/userSlice';
 import { login } from '../../../api/auth/UserAuthentication';
 import type { Login } from '../../../types/LoginTypes';
 
+// ✅ Improved validation
 const loginSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required")
+  email: Yup.string()
+    .email("Enter a valid email address")
+    .required("Email is required"),
+
+  password: Yup.string()
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters")
+    .matches(/[A-Z]/, "Must contain at least one uppercase letter")
+    .matches(/[a-z]/, "Must contain at least one lowercase letter")
+    .matches(/\d/, "Must contain at least one number")
 });
 
 const LoginPage = () => {
@@ -27,7 +36,7 @@ const LoginPage = () => {
 
   const onSubmit = async (data: Login) => {
     try {
-      const response = await login({email:data.email, password:data.password,role:data.role});
+      const response = await login({ email: data.email, password: data.password, role: data.role });
       const user = response.user;
 
       if (user) {
@@ -43,37 +52,43 @@ const LoginPage = () => {
           profilePicture: user.profilePicture
         }));
 
-        console.log("Naviagating to landing page")
-        navigate('/')
-
+        navigate('/');
       } else {
         toast.error(response?.message || "Login failed");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Login error:", error);
       toast.error("Login failed. Please try again.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-100">
+      <div className="bg-white p-10 rounded-xl shadow-xl w-full max-w-md border border-gray-200">
+        <h2 className="text-3xl font-bold text-center text-blue-700 mb-8">Welcome Back</h2>
 
         <Formik initialValues={initialValues} validationSchema={loginSchema} onSubmit={onSubmit}>
           {() => (
-            <Form className="space-y-4">
+            <Form className="space-y-5">
               <div>
-                <Field name="email" type="email" placeholder="Email" className="w-full p-2 border rounded" />
-                <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                <Field name="email" type="email" placeholder="you@example.com" className="w-full mt-1 p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
               </div>
 
               <div>
-                <PasswordField name="password" placeholder="Password" />
-                <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
+                <PasswordField name="password" placeholder="Enter password" />
               </div>
 
-              <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+              <div className="flex justify-between items-center">
+                <Link to="/user/verifyEmail" className="text-sm text-blue-600 hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 transition duration-200 text-white font-semibold py-2 px-4 rounded-lg"
+              >
                 Login
               </button>
             </Form>
