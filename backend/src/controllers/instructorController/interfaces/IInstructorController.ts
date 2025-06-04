@@ -6,4 +6,9 @@ export default interface IInstructorController{
     createUser(req:Request,res:Response):Promise<void>
     login(req:Request,res:Response):Promise<void>
     logout(req:Request,res:Response):Promise<void>
+    verifyEmail(req:Request,res:Response):Promise<void>
+    verifyResetOtp(req:Request,res:Response):Promise<void>
+    forgotResendOtp(req:Request,res:Response):Promise<void>
+    doGoogleLogin(req:Request,res:Response):Promise<void>
+    resetPassword(req:Request,res:Response):Promise<void>
 }
