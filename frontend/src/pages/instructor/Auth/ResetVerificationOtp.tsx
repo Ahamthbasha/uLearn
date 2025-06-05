@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { verifyEmail,verifyResetOtp } from '../../../api/auth/UserAuthentication';
+import { instructorVerifyResetOtp, instructorForgotResendOtp } from '../../../api/auth/InstructorAuthentication';
 
 const ResetVerificationOTP = () => {
   const [otp, setOtp] = useState<string[]>(Array(4).fill(''));
@@ -25,7 +25,7 @@ const ResetVerificationOTP = () => {
     setResendActive(false);
     setCounter(30);
     const email = localStorage.getItem("ForgotPassEmail") || "";
-    const response = await verifyEmail(email);
+    const response = await instructorForgotResendOtp(email);
     if (response.success) {
       toast.success(response.message);
     } else {
@@ -60,10 +60,10 @@ const ResetVerificationOTP = () => {
     }
 
     const email = localStorage.getItem("ForgotPassEmail") || "";
-    const response = await verifyResetOtp(email, OTP);
+    const response = await instructorVerifyResetOtp(email, OTP);
     if (response.success) {
       toast.success(response.message);
-      navigate('/user/resetPassword');
+      navigate('/instructor/resetPassword');
     } else {
       toast.error(response.message);
     }

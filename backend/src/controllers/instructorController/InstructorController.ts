@@ -316,7 +316,7 @@ export class InstructorController implements IInstructorController{
             .json({
               success:true,
               message:InstructorSuccessMessages.GOOGLE_LOGIN_SUCCESS,
-              user:instructor
+              instructor:instructor
             })
           }
         }else{
@@ -332,7 +332,7 @@ export class InstructorController implements IInstructorController{
             .json({
               sucess:true,
               message:InstructorSuccessMessages.GOOGLE_LOGIN_SUCCESS,
-              user:existingInstructor
+              instructor:existingInstructor
             })
           }
         }
