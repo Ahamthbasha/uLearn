@@ -5,6 +5,9 @@ import InstructorHeader from '../components/InstructorComponents/InstructorHeade
 import OTPVerification from '../pages/instructor/Auth/OTPVerification'
 import LoginPage from '../pages/instructor/Auth/Login'
 import VerificationForm from '../pages/instructor/VerificationForm'
+import ForgotPassword from '../pages/instructor/Auth/ForgotPassword'
+import ResetVerificationOTP from '../pages/instructor/Auth/ResetVerificationOtp'
+import ResetPassword from '../pages/instructor/Auth/ResetPassword'
 
 const InstructorRouter = () => {
   return (
@@ -14,6 +17,9 @@ const InstructorRouter = () => {
        <Route path="verifyOtp" element={<OTPVerification/>}/>
         <Route path='login' element={<LoginPage/>}/>
         <Route path='verification' element={<VerificationForm/>}/>
+        <Route path='verifyEmail' element={<ForgotPassword/>}/>
+        <Route path='forgotPasswordOtp' element={<ResetVerificationOTP/>}/>
+        <Route path='resetPassword' element={<ResetPassword/>}/>
       </Route>
     </Routes>
   )

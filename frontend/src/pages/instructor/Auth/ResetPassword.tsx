@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 
 import PasswordField from "../../../components/StudentComponents/common/PasswordField";
-import { instructorResetPassword} from '../../../api/auth/InstructorAuthentication';
+import { instructorResetPassword } from '../../../api/auth/InstructorAuthentication';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -79,7 +79,7 @@ const ResetPassword = () => {
 
         <div className="mt-6 text-center">
           <a
-            href="/instructor/login"
+            href="/user/login"
             className="text-indigo-600 hover:underline text-sm"
           >
             Back to Login
