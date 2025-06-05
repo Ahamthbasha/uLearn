@@ -1,89 +1,144 @@
+import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
-  BookOpen,
   Users,
   GraduationCap,
+  BookOpen,
+  TreePine,
+  Image,
+  CreditCard,
+  Crown,
+  BadgePercent,
   ShieldCheck,
   ShoppingCart,
-  BadgePercent,
-  LogOut
+  LogOut,
+  Menu
 } from 'lucide-react';
+import { toast } from 'react-toastify';
 import { adminLogout } from '../api/auth/AdminAuthentication';
 
-import {toast} from 'react-toastify'
-
-const AdminLayout = () =>{
-
-    const navigate =useNavigate()
-
-    const handleLogout = async () => {
-  try {
-    const response = await adminLogout();
-    if (response.success) {
-      localStorage.removeItem("admin");
-      toast.success("Logged out successfully");
-      navigate("/admin/login");
-    } else {
-      toast.error(response.message || "Logout failed");
-    }
-  } catch (error) {
-    console.error("Logout error:", error);
-    toast.error("Logout failed. Please try again.");
-  }
-};
+const AdminLayout = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
-  const isActive = (path : string) => location.pathname.includes(path);
-
+  const navigate = useNavigate();
+  
+  const isActive = (path: string) => location.pathname.includes(path);
+  
   const navItems = [
     { name: 'Dashboard', icon: <LayoutDashboard />, path: 'dashboard' },
-    { name: 'Courses', icon: <BookOpen />, path: 'courses' },
     { name: 'Users', icon: <Users />, path: 'users' },
     { name: 'Instructors', icon: <GraduationCap />, path: 'instructors' },
+    { name: 'Courses', icon: <BookOpen />, path: 'courses' },
+    { name: 'Category', icon: <TreePine />, path: 'category' },
+    { name: 'Banner', icon: <Image />, path: 'banner' },
     { name: 'Verification', icon: <ShieldCheck />, path: 'verification' },
-    { name: 'Orders', icon: <ShoppingCart />, path: 'orders' },
-    { name: 'Membership', icon: <Users />, path: 'membership' },
-    { name: 'Coupons', icon: <BadgePercent />, path: 'coupons' }
+    { name: 'Order Management', icon: <ShoppingCart />, path: 'order-management' },
+    { name: 'Wallet Transaction', icon: <CreditCard />, path: 'wallet-transaction' },
+    { name: 'Membership', icon: <Crown />, path: 'membership' },
+    { name: 'Coupon', icon: <BadgePercent />, path: 'coupon' }
   ];
+  
+  const handleLogout = async () => {
+    try {
+      const response = await adminLogout();
+      if (response.success) {
+        localStorage.removeItem("admin");
+        toast.success("Logged out successfully");
+        navigate("/admin/login");
+      } else {
+        toast.error(response.message || "Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Logout failed. Please try again.");
+    }
+  };
 
   return (
-    <div className="flex min-h-screen bg-[#0F172A] text-white">
+    <div className="relative min-h-screen flex bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Hamburger Icon */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="absolute top-4 left-4 z-50 text-blue-700 lg:hidden bg-white p-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+      >
+        <Menu size={24} />
+      </button>
+
       {/* Sidebar */}
-      <aside className="w-64 bg-[#1E293B] p-6 flex flex-col justify-between shadow-xl">
-        <div>
-          <h1 className="text-2xl font-bold mb-10 text-center text-indigo-400">ulearn Admin</h1>
-          <nav className="space-y-4">
+      <aside
+        className={`fixed top-0 left-0 z-40 h-full w-72 bg-gradient-to-b from-blue-900 via-blue-800 to-indigo-900 shadow-2xl transform ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } transition-transform duration-300 lg:translate-x-0 lg:relative lg:flex lg:w-72 lg:flex-col`}
+      >
+        {/* Logo Section */}
+        <div className="p-6 border-b border-blue-700/30">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-2xl font-bold text-white">U</span>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white">
+                ULearn
+              </h1>
+              <p className="text-blue-200 text-sm font-medium">E-Learning Platform</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="flex-1 p-4">
+          <nav className="space-y-2">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={`/admin/${item.path}`}
-                className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors duration-300 hover:bg-indigo-600 ${
-                  isActive(item.path) ? 'bg-indigo-600' : 'bg-[#1E293B]'
+                onClick={() => setSidebarOpen(false)}
+                className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:shadow-lg hover:scale-105 ${
+                  isActive(item.path) 
+                    ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm border border-white/20' 
+                    : 'text-blue-100 hover:text-white'
                 }`}
               >
-                {item.icon}
-                <span>{item.name}</span>
+                <span className={`transition-colors duration-200 ${
+                  isActive(item.path) ? 'text-orange-300' : 'text-blue-300 group-hover:text-orange-300'
+                }`}>
+                  {item.icon}
+                </span>
+                <span className="font-medium">{item.name}</span>
               </Link>
             ))}
           </nav>
         </div>
-        <div className="mt-10">
+
+        {/* Logout Button */}
+        <div className="p-4 border-t border-blue-700/30">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition-colors duration-300"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
           >
-            <LogOut />
-            <span>Logout</span>
+            <LogOut size={20} />
+            <span className="font-medium">Logout</span>
           </button>
         </div>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 bg-[#0F172A] p-10 overflow-auto">
-        <Outlet />
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Main Content */}
+      <main className="flex-1 lg:ml-72">
+        <div className="p-6">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
-}
+};
 
-export default AdminLayout
+export default AdminLayout;

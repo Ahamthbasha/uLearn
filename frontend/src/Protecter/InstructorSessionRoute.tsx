@@ -4,7 +4,7 @@ interface ProtectedRouteProps{
     children : React.ReactNode
 }
 
-const mentorSessionRoute : React.FC<ProtectedRouteProps> = ({children}) =>{
+const InstructorSessionRoute : React.FC<ProtectedRouteProps> = ({children}) =>{
     const instructor = JSON.parse(localStorage.getItem('instructor') || 'null')
 
     if(instructor){
@@ -14,4 +14,4 @@ const mentorSessionRoute : React.FC<ProtectedRouteProps> = ({children}) =>{
     return children
 }
 
-export default mentorSessionRoute
+export default InstructorSessionRoute
