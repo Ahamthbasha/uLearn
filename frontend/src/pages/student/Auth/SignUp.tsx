@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import InputField from "../../../components/StudentComponents/common/InputField";
-import PasswordField from "../../../components/StudentComponents/common/PasswordField";
+import InputField from "../../../components/common/InputField";
+import PasswordField from "../../../components/common/PasswordField";
 import { signup, googleLogin } from "../../../api/auth/UserAuthentication";
 import { setUser } from "../../../redux/slices/userSlice";
 import studentLogin from "../../../assets/studentLogin.jpeg";

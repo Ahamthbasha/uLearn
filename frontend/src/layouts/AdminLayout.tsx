@@ -56,20 +56,20 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Hamburger Icon */}
+    <div className="min-h-screen flex bg-gray-50">
+      {/* Mobile Menu Button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="absolute top-4 left-4 z-50 text-blue-700 lg:hidden bg-white p-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+        className="fixed top-4 left-4 z-50 lg:hidden bg-white p-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
       >
-        <Menu size={24} />
+        <Menu size={20} className="text-blue-700" />
       </button>
 
       {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 z-40 h-full w-72 bg-gradient-to-b from-blue-900 via-blue-800 to-indigo-900 shadow-2xl transform ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } transition-transform duration-300 lg:translate-x-0 lg:relative lg:flex lg:w-72 lg:flex-col`}
+        } transition-transform duration-300 lg:translate-x-0 lg:static`}
       >
         {/* Logo Section */}
         <div className="p-6 border-b border-blue-700/30">
@@ -87,14 +87,14 @@ const AdminLayout = () => {
         </div>
 
         {/* Navigation */}
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 overflow-y-auto">
           <nav className="space-y-2">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={`/admin/${item.path}`}
                 onClick={() => setSidebarOpen(false)}
-                className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:shadow-lg hover:scale-105 ${
+                className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:shadow-lg ${
                   isActive(item.path) 
                     ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm border border-white/20' 
                     : 'text-blue-100 hover:text-white'
@@ -115,7 +115,7 @@ const AdminLayout = () => {
         <div className="p-4 border-t border-blue-700/30">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             <LogOut size={20} />
             <span className="font-medium">Logout</span>
@@ -126,16 +126,14 @@ const AdminLayout = () => {
       {/* Overlay for mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-72">
-        <div className="p-6">
-          <Outlet />
-        </div>
+      <main className="flex-1 min-h-screen">
+        <Outlet />
       </main>
     </div>
   );

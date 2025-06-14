@@ -1,10 +1,11 @@
-
-
-import UserModel , {IUser} from "../models/userModel";
-import InstructorModel ,{IInstructor} from "../models/instructorModel";
-import { IAdminBaseRepository } from "./interfaces/IAdminBaseRepository";
+import UserModel , {IUser} from "../../models/userModel";
+import InstructorModel ,{IInstructor} from "../../models/instructorModel";
+import { IAdminBaseRepository } from "../interfaces/IAdminBaseRepository";
 
 export class AdminBaseRespository implements IAdminBaseRepository{
+
+//fetch all users and instructors
+
     async getAllUsers(): Promise<IUser[] | null> {
     try {
         const users = await UserModel.find() 
@@ -29,6 +30,8 @@ export class AdminBaseRespository implements IAdminBaseRepository{
         }
     }
 
+ //get specified data based on email   
+
     async getUserData(email: string): Promise<IUser | null> {
         try {
             const userData = await UserModel.findOne({email:email})
@@ -43,6 +46,36 @@ export class AdminBaseRespository implements IAdminBaseRepository{
         try {
             const instructorData = await InstructorModel.findOne({email:email})
             return instructorData
+        } catch (error) {
+            throw error
+        }
+    }
+
+//block or unblock 
+
+    async updateProfile(email: string, data: any): Promise<any> {
+        try {
+            const response = await UserModel.findOneAndUpdate(
+                {email},
+                {$set:data},
+                {new:true}
+            )
+
+            return response
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async updateInstructorProfile(email: string, data: any): Promise<any> {
+        try {
+            const response = await InstructorModel.findOneAndUpdate(
+                {email},
+                {$set:data},
+                {new:true}
+            )
+
+            return response
         } catch (error) {
             throw error
         }

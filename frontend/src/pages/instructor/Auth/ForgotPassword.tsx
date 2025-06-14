@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { useNavigate, Link } from "react-router-dom";
 
-import InputField from "../../../components/StudentComponents/common/InputField";
+import InputField from "../../../components/common/InputField";
 import { instructorVerifyEmail } from "../../../api/auth/InstructorAuthentication";
 
 const ForgotPassword = () => {

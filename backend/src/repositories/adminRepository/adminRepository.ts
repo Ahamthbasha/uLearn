@@ -1,9 +1,9 @@
-import { IAdminRepository } from "./interfaces/IAdminRepository";
-import { IAdminBaseRepository } from "./interfaces/IAdminBaseRepository";
-import AdminModel, { IAdmin } from "../models/adminModel";
-import { GenericRepository } from "./genericRepository";
-import { IUser } from "src/models/userModel";
-import { IInstructor } from "src/models/instructorModel";
+import { IAdminRepository } from "../interfaces/IAdminRepository";
+import { IAdminBaseRepository } from "../interfaces/IAdminBaseRepository";
+import AdminModel, { IAdmin } from "../../models/adminModel";
+import { GenericRepository } from "../genericRepository";
+import { IUser } from "../../models/userModel";
+import { IInstructor } from "../../models/instructorModel";
 
 export class AdminRespository extends GenericRepository<IAdmin> implements IAdminRepository{
     private adminBaseRepository : IAdminBaseRepository
@@ -52,6 +52,26 @@ export class AdminRespository extends GenericRepository<IAdmin> implements IAdmi
         try {
             const response = await this.adminBaseRepository.getInstructorData(email)
 
+            return response
+        } catch (error) {
+            throw error
+        }
+    }
+
+//block or unblock
+
+    async updateProfile(email: string, data: any): Promise<any> {
+        try {
+            const response = await this.adminBaseRepository.updateProfile(email,data)
+            return response
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async updateInstructorProfile(email: string, data: any): Promise<any> {
+        try {
+            const response = await this.adminBaseRepository.updateInstructorProfile(email,data)
             return response
         } catch (error) {
             throw error

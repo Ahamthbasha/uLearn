@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import PasswordField from '../../../components/StudentComponents/common/PasswordField';
+import PasswordField from '../../../components/common/PasswordField';
 import { adminLogin } from '../../../api/auth/AdminAuthentication';
 
 const loginSchema = Yup.object().shape({

@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { instructorController } from "../config/dependencyInjector";
+import { instructorController,instructorVerificationController } from "../config/dependencyInjector";
+import upload from "../utils/multer";
+
 
 let router = Router()
 
@@ -23,5 +25,9 @@ router.post('/resetPassword',instructorController.resetPassword.bind(instructorC
 
 router.post('/googleLogin',instructorController.doGoogleLogin.bind(instructorController))
 
+//verification part
+router.post('/verificationRequest',upload.fields([{name:"degreeCertificate",maxCount:1},{name:"resume",maxCount:1}]),instructorVerificationController.submitRequest.bind(instructorVerificationController))
+
 const instructorRoutes = router
+
 export default instructorRoutes

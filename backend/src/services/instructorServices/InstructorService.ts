@@ -1,6 +1,6 @@
-import { IInstructor } from "../models/instructorModel";
-import IInstructorRepository from "../repositories/interfaces/IInstructorRepository";
-import IInstructorService from "./interface/IInstructorService";
+import { IInstructor } from "../../models/instructorModel";
+import IInstructorRepository from "../../repositories/interfaces/IInstructorRepository";
+import IInstructorService from "../interface/IInstructorService";
 
 export default class InstructorService implements IInstructorService{
     private instructorRepository : IInstructorRepository

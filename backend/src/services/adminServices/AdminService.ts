@@ -1,8 +1,8 @@
-import { IAdminService } from "./interface/IAdminService";
-import { IAdmin } from "../models/adminModel";
-import { IAdminRepository } from "../repositories/interfaces/IAdminRepository";
-import { IInstructor } from "../models/instructorModel";
-import { IUser } from "../models/userModel";
+import { IAdminService } from "../interface/IAdminService";
+import { IAdmin } from "../../models/adminModel";
+import { IAdminRepository } from "../../repositories/interfaces/IAdminRepository";
+import { IInstructor } from "../../models/instructorModel";
+import { IUser } from "../../models/userModel";
 export class AdminService implements IAdminService{
     private adminRepository : IAdminRepository
 
@@ -26,11 +26,21 @@ export class AdminService implements IAdminService{
         return await this.adminRepository.getAllInstructors()
     }
 
+//specified data based on email
     async getUserData(email: string): Promise<IUser | null> {
         return this.adminRepository.getUserData(email)
     }
 
     async getInstructorData(email: string): Promise<IInstructor | null> {
         return await this.adminRepository.getInstructorData(email)
+    }
+
+//block or unblock
+    async updateProfile(email: string, data: any): Promise<any> {
+        return await this.adminRepository.updateProfile(email,data)
+    }
+
+    async updateInstructorProfile(email: string, data: any): Promise<any> {
+        return await this.adminRepository.updateInstructorProfile(email,data)
     }
 }

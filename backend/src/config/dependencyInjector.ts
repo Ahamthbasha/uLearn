@@ -1,7 +1,7 @@
 import { IStudentRepository } from "../repositories/interfaces/IStudentRepository";
-import { StudentRepository } from "../repositories/studentRepository";
+import { StudentRepository } from "../repositories/studentRepository/studentRepository";
 import IStudentService from "../services/interface/IStudentService";
-import { StudentServices } from "../services/StudentService";
+import { StudentServices } from "../services/studentServices/StudentService";
 import IStudentController from "../controllers/studentControllers/interfaces/IStudentController";
 import { StudentController } from "../controllers/studentControllers/studentController";
 
@@ -14,19 +14,22 @@ import IInstructorController from "../controllers/instructorController/interface
 import { InstructorController } from "../controllers/instructorController/InstructorController";
 
 import IInstructorRepository from "../repositories/interfaces/IInstructorRepository";
-import InstructorRepository from "../repositories/instructorRepository";
+import InstructorRepository from "../repositories/instructorRepository/instructorRepository";
 
 import IInstructorService from "../services/interface/IInstructorService";
-import InstructorService from "../services/InstructorService";
+import InstructorService from "../services/instructorServices/InstructorService";
 
 import { IAdminRepository } from "../repositories/interfaces/IAdminRepository";
-import { AdminRespository } from "../repositories/adminRepository";
+import { AdminRespository } from "../repositories/adminRepository/adminRepository";
 import { IAdminService } from "../services/interface/IAdminService";
-import { AdminService } from "../services/AdminService";
-import { IAdminController } from "../controllers/adminControllers/inteface/IAdminController";
+import { AdminService } from "../services/adminServices/AdminService";
+import { IAdminController } from "../controllers/adminControllers/interface/IAdminController";
 import { AdminController } from "../controllers/adminControllers/adminController";
 import { IAdminBaseRepository } from "../repositories/interfaces/IAdminBaseRepository";
-import { AdminBaseRespository } from "../repositories/adminBaseRepository";
+import { AdminBaseRespository } from "../repositories/adminRepository/adminBaseRepository";
+
+
+
 
 const otpRepository :IOtpRepository = new OtpRepository()
 const otpService : IOtpServices = new OtpService(otpRepository)
@@ -51,4 +54,32 @@ const adminRespository : IAdminRepository = new AdminRespository(adminBaseReposi
 const adminService : IAdminService = new AdminService(adminRespository)
 const adminController:IAdminController = new AdminController(adminService)
 
-export {studentController,instructorController,adminController}
+//////////////////////admin verification //////////////////////////////////////////
+import { IAdminVerificationRepository } from "../repositories/interfaces/IAdminVerificationRepository";
+import { AdminVerificationRepository } from "../repositories/adminRepository/adminVerificationRepository";
+import { IAdminVerificationService } from "../services/interface/IAdminVerificationService";
+import { AdminVerificationService } from "../services/adminServices/AdminVerificationService";
+import IAdminVerificationController from '../controllers/adminControllers/interface/IAdminVerificationController'
+import { AdminVerificationController } from "../controllers/adminControllers/adminVerificationController";
+
+const adminVerificationRepository: IAdminVerificationRepository = new AdminVerificationRepository();
+const adminVerificationService: IAdminVerificationService = new AdminVerificationService(adminVerificationRepository);
+const adminVerificationController: IAdminVerificationController = new AdminVerificationController(adminVerificationService);
+
+/////////////////////////Instructor verification/////////////////////////////////////
+
+import { IInstructorVerificationRepository } from "../repositories/interfaces/IInstructorVerifcationRepository";
+import { InstructorVerificationRepository } from "../repositories/instructorRepository/instructorVerificationRepository";
+import { IInstructorVerificationService } from "../services/interface/IInstructorVerificationService";
+import { InstructorVerificationService } from "../services/instructorServices/InstructorVerificationService";
+import IInstructorVerificationController from "../controllers/instructorController/interfaces/IInstructorVerificationController";
+import { InstructorVerificationController } from "../controllers/instructorController/instructorVerificationControllet";
+
+
+const instructorVerificationRepository: IInstructorVerificationRepository = new InstructorVerificationRepository();
+const instructorVerificationService: IInstructorVerificationService = new InstructorVerificationService(instructorVerificationRepository);
+const instructorVerificationController: IInstructorVerificationController = new InstructorVerificationController(instructorVerificationService);
+
+
+
+export {studentController,instructorController,adminController,adminVerificationController,instructorVerificationController}

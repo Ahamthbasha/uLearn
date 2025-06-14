@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useNavigate, Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 
-import PasswordField from '../../../components/StudentComponents/common/PasswordField';
+import PasswordField from '../../../components/common/PasswordField';
 import { setInstructor } from '../../../redux/slices/instructorSlice';
 import { login } from '../../../api/auth/InstructorAuthentication';
 import type { Login } from '../../../types/LoginTypes';
