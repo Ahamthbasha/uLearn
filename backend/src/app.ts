@@ -16,6 +16,8 @@ const corsOptions = {
     methods:"GET,POST,PUT,PATCH,DELETE,HEAD"
 }
 
+
+
 app.use(cookieParser())
 app.use(cors(corsOptions))
 app.use(express.json())

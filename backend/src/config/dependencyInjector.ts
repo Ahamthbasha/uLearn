@@ -25,6 +25,8 @@ import { IAdminService } from "../services/interface/IAdminService";
 import { AdminService } from "../services/AdminService";
 import { IAdminController } from "../controllers/adminControllers/inteface/IAdminController";
 import { AdminController } from "../controllers/adminControllers/adminController";
+import { IAdminBaseRepository } from "../repositories/interfaces/IAdminBaseRepository";
+import { AdminBaseRespository } from "../repositories/adminBaseRepository";
 
 const otpRepository :IOtpRepository = new OtpRepository()
 const otpService : IOtpServices = new OtpService(otpRepository)
@@ -44,7 +46,8 @@ const instructorController : IInstructorController = new InstructorController(in
 
 ///////////////ADMIN REPOSITORY///////////
 
-const adminRespository : IAdminRepository = new AdminRespository
+const adminBaseRepository : IAdminBaseRepository = new AdminBaseRespository()
+const adminRespository : IAdminRepository = new AdminRespository(adminBaseRepository)
 const adminService : IAdminService = new AdminService(adminRespository)
 const adminController:IAdminController = new AdminController(adminService)
 

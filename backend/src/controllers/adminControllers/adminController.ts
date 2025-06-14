@@ -4,7 +4,7 @@ import { IAdminService } from "../../services/interface/IAdminService";
 import { JwtService } from "../../utils/jwt";
 import { config } from "dotenv";
 import { Roles, StatusCode } from "../../utils/enums";
-import { AdminErrorMessages, AdminSuccessMessages } from "../../utils/constants";
+import { AdminErrorMessages, AdminSuccessMessages, ResponseError } from "../../utils/constants";
 
 config()
 
@@ -26,7 +26,7 @@ export class AdminController implements IAdminController{
            if(email !== adminEmail || password != adminPassword){
             res.send({
                 success:false,
-                messgae:email !== adminEmail ? AdminErrorMessages.EMAIL_INCORRECT : AdminErrorMessages.PASSWORD_INCORRECT
+                message:email !== adminEmail ? AdminErrorMessages.EMAIL_INCORRECT : AdminErrorMessages.PASSWORD_INCORRECT
             })
             return
            }
@@ -50,6 +50,7 @@ export class AdminController implements IAdminController{
            .send({
             success:true,
             message:AdminSuccessMessages.LOGIN_SUCCESS,
+            token:accessToken,
             data:{
                 email,
                 role:Roles.ADMIN,
@@ -76,6 +77,87 @@ export class AdminController implements IAdminController{
             })
         } catch (error) {
             throw error 
+        }
+    }
+
+    async getAllUsers(_req: Request, res: Response): Promise<any> {
+        try {
+           const users = await this.adminService.getAllUsers()
+
+           console.log("get all users in admin controller",users)
+
+           if(users && users.length > 0){
+           return res.status(StatusCode.OK)
+            .json({
+                success:true,
+                message:ResponseError.FETCH_USER,
+                users
+            })
+           }else{
+            return res.status(StatusCode.NOT_FOUND).json({
+                success:false,
+                message:ResponseError.USER_NOT_FOUND
+            })
+           }
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async getAllInstructors(_req: Request, res: Response): Promise<any> {
+        try {
+            const instructors = await this.adminService.getAllInstructors()
+            
+            console.log("all instructors in admin controller",instructors)
+
+            if(instructors && instructors.length > 0){
+                return res.status(StatusCode.OK)
+                .json({
+                    success:true,
+                    message:ResponseError.FETCH_INSTRUCTOR,
+                    instructors
+                })
+            }else{
+                return res.status(StatusCode.NOT_FOUND)
+                .json({
+                    success:false,
+                    message:ResponseError.FETCH_NOT_INSTRUCTOR
+                })
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async blockUser(req: Request, res: Response): Promise<any> {
+        try {
+            const {email} = req.params
+
+            const userData = await this.adminService.getUserData(email)
+
+            if(!userData){
+                return res.status(StatusCode.NOT_FOUND)
+                .json({
+                    success:false,
+                    message:ResponseError.USER_NOT_FOUND
+                })
+            }
+
+            const isBlocked = !userData ?.isBlocked
+
+            
+
+
+        } catch (error) {
+            
+        }
+    }
+
+    async blockInstructor(_req: Request, res: Response): Promise<void> {
+        try {
+            
+        } catch (error) {
+            
         }
     }
 }

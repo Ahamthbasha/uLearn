@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 
 import PasswordField from "../../../components/StudentComponents/common/PasswordField";
-import { instructorResetPassword} from '../../../api/auth/InstructorAuthentication';
+import { resetPassword } from "../../../api/auth/UserAuthentication";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -29,11 +29,11 @@ const ResetPassword = () => {
 
   const onSubmit = async (data: { newPassword: string; confirmPassword: string }) => {
     try {
-      const response = await instructorResetPassword(data.newPassword);
+      const response = await resetPassword(data.newPassword);
       if (response.success) {
         toast.success(response.message);
         localStorage.removeItem("ForgotPassEmail");
-        navigate(`/instructor/login`);
+        navigate(`/user/login`);
       } else {
         toast.error(response.message || "Failed to reset password");
       }

@@ -101,3 +101,43 @@ export const EnvErrorMsg = {
     ADMIN_NOT_FOUND: "Environment variables for admin credentials not found",
 };
   
+export const ResponseError = {
+    ACCESS_FORBIDDEN: "Access Forbidden: No access token provided.",
+    INTERNAL_SERVER_ERROR: "Internal server error.",
+    INVALID_RESOURCE: "Resource not found or invalid",
+    DUPLICATE_RESOURCE: "Duplicate resource entered:",
+    INVALID_JWT: "JSON Web Token is invalid, try again.",
+    EXPIRED_JWT: "JSON Web Token has expired.",
+    NO_ACCESS_TOKEN: "No access token provided.",
+    INVALID_REFRESH_TOKEN: "Invalid refresh token. Please log in.",
+    REFRESH_TOKEN_EXPIRED: "Session expired. Please log in again.",
+    NEW_ACCESS_TOKEN_GENERATED: "New access token generated.",
+    NOT_FOUND : "Resource Not Found",
+
+    USER_NOT_FOUND : "No user details not found",
+    PROFILE_UPDATE : "Profile Updated Successfully",
+    PROFILE_NOT_UPDATE : "Profile Not updated",
+
+    PASSWORD_UPDATED : "Password Updated Successfully",
+    PASSWORD_NOT_UPDATED : "Password Not Updated",
+    PASSWORD_WRONG : "Current Password is Wrong" ,
+
+    ACCOUNT_BLOCKED : "Your account has been blocked !" ,
+    ACCOUNT_UNBLOCKED : "Your account has been Unblocked !" ,
+
+    FETCH_USER : "Users retrieved successfully" ,
+    FETCH_INSTRUCTOR : "Instructors retrieved successfully" ,
+    FETCH_ADMIN : "Admin retrieved successfully" ,
+    FETCH_NOT_INSTRUCTOR : "No instructors retrieved successfully" ,
+    APPROVE_INSTRUCTOR : "Instructor Records Approved " ,
+    REJECT_INSTRUCTOR : "Instructor Records Rejected " ,
+
+    BANNER_CREATED : "Banner added successfully!",
+    BANNER_UPDATED : "Banner updated successfully",
+    FETCH_BANNER : "banners retrieved successfully",
+
+
+    REPORT_ADDED : 'Report Instructor Successfully',
+    FETCH_REPORTS : "Report Fetched..."
+
+};

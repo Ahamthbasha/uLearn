@@ -1,11 +1,7 @@
 import { IUser } from "../../models/userModel";
-import { IAdmin, IAdminDTO } from "../../models/adminModel";
 import { IInstructor } from "../../models/instructorModel";
 
-export interface IAdminService{
-    getAdminData(email:string):Promise<IAdmin | null>
-    createAdmin(adminData:IAdminDTO):Promise<IAdmin | null>
-
+export interface IAdminBaseRepository{
     getAllUsers():Promise<IUser[] | null>
     getAllInstructors():Promise<IInstructor[] | null>
 
