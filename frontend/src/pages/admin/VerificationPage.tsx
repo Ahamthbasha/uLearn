@@ -61,7 +61,7 @@ const VerificationPage = () => {
       loading={loading}
       columns={columns}
       actions={actions}
-      itemsPerPage={5}
+      itemsPerPage={1}
       searchPlaceholder="Search by name or email..."
       searchableFields={["username", "email"]}
     />

@@ -166,6 +166,8 @@ export const ResponseError = {
     USER_NOT_FOUND : "No user details not found",
     PROFILE_UPDATE : "Profile Updated Successfully",
     PROFILE_NOT_UPDATE : "Profile Not updated",
+    USERFETCHING_ERROR : "No users or instructors found",
+    FETCH_ERROR :"An error occcured while fetching",
 
     PASSWORD_UPDATED : "Password Updated Successfully",
     PASSWORD_NOT_UPDATED : "Password Not Updated",

@@ -4,11 +4,19 @@ import * as Yup from "yup";
 import InputField from "../../components/common/InputField";
 import { sendVerification } from "../../api/action/InstructorActionApi";
 import { toast } from "react-toastify";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const InstructorVerificationForm: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Extract email from query params (used during re-verification)
+  const queryParams = new URLSearchParams(location.search);
+  const emailFromQuery = queryParams.get("email") || "";
+
   const initialValues = {
     name: "",
-    email: "",
+    email: emailFromQuery,
     degreeCertificate: null,
     resume: null,
   };
@@ -36,6 +44,7 @@ const InstructorVerificationForm: React.FC = () => {
 
       if (response) {
         toast.success("Verification request submitted successfully");
+        navigate(`/instructor/verificationStatus/${values.email}`);
       }
     } catch (error) {
       toast.error("Error submitting verification request");
@@ -46,14 +55,14 @@ const InstructorVerificationForm: React.FC = () => {
   return (
     <div className="max-w-lg mx-auto p-4 sm:p-8 mt-8 bg-white rounded shadow">
       <h2 className="text-xl sm:text-2xl font-bold mb-4 text-center">
-        Instructor Verification
+        {emailFromQuery ? "Re-Verify Instructor Profile" : "Instructor Verification"}
       </h2>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue }) => (
+        {({ setFieldValue, isSubmitting }) => (
           <Form>
             <InputField
               type="text"
@@ -68,6 +77,7 @@ const InstructorVerificationForm: React.FC = () => {
                 name="email"
                 label="Email"
                 placeholder="Enter your email"
+                disabled={!!emailFromQuery} // Disable if it's re-verification
               />
             </div>
 
@@ -112,12 +122,42 @@ const InstructorVerificationForm: React.FC = () => {
             </div>
 
             <div className="mt-6 text-center">
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded"
-              >
-                Submit Verification
-              </button>
+              {isSubmitting ? (
+                <button
+                  type="button"
+                  disabled
+                  className="flex items-center justify-center gap-2 bg-gray-500 text-white font-semibold py-2 px-6 rounded opacity-70 cursor-not-allowed"
+                >
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    ></path>
+                  </svg>
+                  Submitting...
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded"
+                >
+                  Submit Verification
+                </button>
+              )}
             </div>
           </Form>
         )}

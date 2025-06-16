@@ -21,7 +21,7 @@ export class StudentServices implements IStudentService {
         return await this.studentRepository.resetPasswrod(email,password)
     }
 
-    async googleLogin(name: string, email: string, password: string): Promise<IUser | null> {
-        return await this.studentRepository.googleLogin(name,email,password)
+    async googleLogin(name: string, email: string): Promise<IUser | null> {
+        return await this.studentRepository.googleLogin(name,email)
     }
 }

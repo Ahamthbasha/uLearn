@@ -65,7 +65,7 @@ const SignUp = () => {
         email: decoded.email,
         password: decoded.sub,
         profilePicture: decoded.picture,
-        mobileNumber: decoded.phoneNumber,
+        role:"student"
       });
 
       const user = response?.user;

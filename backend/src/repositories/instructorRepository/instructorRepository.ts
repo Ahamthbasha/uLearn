@@ -2,7 +2,7 @@ import InstructorModel, { IInstructor, IInstructorDTO } from "../../models/instr
 import { GenericRepository } from "../genericRepository";
 import IInstructorRepository from "../interfaces/IInstructorRepository";
 import { InstructorErrorMessages } from "../../utils/constants";
-
+import bcrypt from 'bcryptjs'
 export default class InstructorRepository extends GenericRepository<IInstructor> implements IInstructorRepository{
     constructor(){
         super(InstructorModel)
@@ -32,14 +32,18 @@ export default class InstructorRepository extends GenericRepository<IInstructor>
         }
     }
 
-    async googleLogin(name: string, email: string, password: string): Promise<IInstructor | null> {
+    async googleLogin(name: string, email: string): Promise<IInstructor | null> {
         try {
             const instructor = await this.findByEmail(email)
 
             const username = name
 
             if(!instructor){
-                const newInstructor = await this.createUser({username,email,password})
+                const tempPassword = Date.now().toString() + Math.floor(Math.random() * 10000).toString()
+
+                const hashedPassword = await bcrypt.hash(tempPassword,10)
+
+                const newInstructor = await this.createUser({username,email,password:hashedPassword})
 
                 return newInstructor
             }
@@ -48,5 +52,9 @@ export default class InstructorRepository extends GenericRepository<IInstructor>
         } catch (error) {
             throw error
         }
+    }
+
+    async updateByEmail(email: string, data: Partial<IInstructor>): Promise<IInstructor | null> {
+        return await this.updateOne({email},data)
     }
 }

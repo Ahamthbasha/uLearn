@@ -28,6 +28,8 @@ router.post('/googleLogin',instructorController.doGoogleLogin.bind(instructorCon
 //verification part
 router.post('/verificationRequest',upload.fields([{name:"degreeCertificate",maxCount:1},{name:"resume",maxCount:1}]),instructorVerificationController.submitRequest.bind(instructorVerificationController))
 
+router.get('/getVerificationByEmail/:email',instructorVerificationController.getRequestByEmail.bind(instructorVerificationController))
+
 const instructorRoutes = router
 
 export default instructorRoutes

@@ -6,7 +6,8 @@ export interface IVerificationModel extends Document {
   resumeUrl: string;
   degreeCertificateUrl: string;
   status: string;
-  reviewedAt: Date;
+  reviewedAt: Date | null;
+  rejectionReason?:string
 }
 
 const verificationRequestSchema = new mongoose.Schema(
@@ -21,6 +22,7 @@ const verificationRequestSchema = new mongoose.Schema(
       default: "pending",
     },
     reviewedAt: { type: Date },
+    rejectionReason:{type:String}
   },
   { timestamps: true }
 );

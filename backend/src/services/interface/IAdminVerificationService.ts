@@ -5,5 +5,5 @@ export interface IAdminVerificationService {
 
   getRequestDataByEmail(email: string): Promise<IVerificationModel | null>;
   
-  approveRequest(email: string, status: string): Promise<IVerificationModel | null>;
+  approveRequest(email: string, status: string,reason?:string): Promise<IVerificationModel | null>;
 }

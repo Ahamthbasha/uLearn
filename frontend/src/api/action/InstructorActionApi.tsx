@@ -10,9 +10,23 @@ export const sendVerification = async (formData:FormData)=>{
             },
             withCredentials:true
         })
-
+        console.log('sendVerification request',response.data)
         return response.data
     } catch (error) {
         console.log(error)
+    }
+}
+
+export const getVerificationRequestByemail = async (email:string) =>{
+    try {
+        const response = await API.get(`${InstructorRouterEndPoints.instructorGetVerificationStatus}/${email}`,{
+            withCredentials:true
+        })
+
+        console.log('instructorVerification detail',response.data)
+
+        return response.data
+    } catch (error) {
+        throw error
     }
 }

@@ -25,15 +25,23 @@ export class AdminVerificationRepository extends GenericRepository<IVerification
         }
     }
 
-    async approveRequest(email: string, status: string): Promise<IVerificationModel | null> {
-        try {
-            const instructor = await this.findOne({ email });
-            if (!instructor) throw new Error(InstructorErrorMessages.INSTRUCTOR_NOT_FOUND);
+    async approveRequest(email: string, status: string, reason?: string): Promise<IVerificationModel | null> {
+  try {
+    const instructor = await this.findOne({ email });
+    if (!instructor) throw new Error(InstructorErrorMessages.INSTRUCTOR_NOT_FOUND);
 
-            const instructorId = instructor._id as unknown as string;
-            return await this.update(instructorId, { status });
-        } catch (error) {
-            throw error;
-        }
-    }
+    const instructorId = instructor._id as unknown as string;
+
+    const updateData: Partial<IVerificationModel> = {
+      status,
+      reviewedAt: new Date(),
+      rejectionReason: status === "rejected" ? reason : undefined,
+    };
+
+    return await this.update(instructorId, updateData);
+  } catch (error) {
+    throw error;
+  }
+}
+
 }

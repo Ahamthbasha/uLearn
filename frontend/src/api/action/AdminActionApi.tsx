@@ -92,16 +92,47 @@ export const getVerificationRequestByemail = async(email:string) => {
     }
 }
 
-export const updateVerificationStatus = async (email:string,status:"approved"|"rejected") => {
-    try {
-        const response = await API.post(AdminRoutersEndPoints.adminApproveVerification,{email,status},{
-            headers:{"Content-Type":"application/json"},
-            withCredentials:true
-        })
+// export const updateVerificationStatus = async (email:string,status:"approved"|"rejected",reason?:string) => {
+//     try {
+//         const response = await API.post(AdminRoutersEndPoints.adminApproveVerification,{email,status},{
+//             headers:{"Content-Type":"application/json"},
+//             withCredentials:true
+//         })
 
-        console.log('approved request',response.data)
-        return response.data
-    } catch (error) {
-        throw error
+//         console.log('approved request',response.data)
+//         return response.data
+//     } catch (error) {
+//         throw error
+//     }
+// }
+
+export const updateVerificationStatus = async (
+  email: string,
+  status: "approved" | "rejected",
+  reason?: string  // ✅ Add this optional field
+) => {
+  try {
+    const body: { email: string; status: string; reason?: string } = {
+      email,
+      status,
+    };
+
+    if (status === "rejected" && reason) {
+      body.reason = reason; // ✅ Attach reason only for rejected status
     }
-}
+
+    const response = await API.post(
+      AdminRoutersEndPoints.adminApproveVerification,
+      body,
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }
+    );
+
+    console.log("approved/rejected request", response.data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

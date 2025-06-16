@@ -17,7 +17,7 @@ router.get("/getAllInstructors",authenticateToken,isAdmin,adminController.getAll
 router.get('/blockUser/:email',authenticateToken,isAdmin,adminController.blockUser.bind(adminController))
 router.get('/blockInstructor/:email',authenticateToken,isAdmin,adminController.blockInstructor.bind(adminController))
 
-//verification of instructor routes
+//verification  routes
 router.get('/request/:email',isAdmin,adminVerificationController.getRequestData.bind(adminVerificationController))
 
 router.get("/requests",isAdmin,adminVerificationController.getAllRequests.bind(adminVerificationController))

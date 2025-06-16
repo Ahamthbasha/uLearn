@@ -1,9 +1,7 @@
 import { IVerificationModel } from "../../models/verificationModel";
 import { GenericRepository } from "../genericRepository";
 import VerificationModel from "../../models/verificationModel";
-import { updateRequestType } from "../../types/types";
 import { IInstructorVerificationRepository } from "../interfaces/IInstructorVerifcationRepository";
-import { InstructorErrorMessages } from "../../utils/constants";
 
 export class InstructorVerificationRepository extends GenericRepository<IVerificationModel> implements IInstructorVerificationRepository {
     constructor() {
@@ -18,15 +16,15 @@ export class InstructorVerificationRepository extends GenericRepository<IVerific
         }
     }
 
-    async updateRequest(email: string, data: updateRequestType): Promise<IVerificationModel | null> {
-        try {
-            const instructor = await this.findOne({ email });
-            if (!instructor) throw new Error(InstructorErrorMessages.INSTRUCTOR_NOT_FOUND);
+    async getRequestByEmail(email: string): Promise<IVerificationModel | null> {
+    try {
+      return await this.findOne({ email });
+    } catch (error) {
+    throw error;
+  }
+}
 
-            const instructorId = instructor._id as unknown as string;
-            return await this.update(instructorId, data);
-        } catch (error) {
-            throw error;
-        }
-    }
+async updateRequestByEmail(email: string, update: Partial<IVerificationModel>): Promise<IVerificationModel | null> {
+    return await VerificationModel.findOneAndUpdate({email},{$set:update},{new:true})
+}
 }

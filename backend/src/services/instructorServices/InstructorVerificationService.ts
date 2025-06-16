@@ -1,6 +1,5 @@
 import { IInstructorVerificationService } from "../interface/IInstructorVerificationService";
 import { IVerificationModel } from "../../models/verificationModel";
-import { updateRequestType } from "../../types/types";
 import { IInstructorVerificationRepository } from "../../repositories/interfaces/IInstructorVerifcationRepository";
 import { VerificationErrorMessages } from "../../utils/constants";
 
@@ -25,7 +24,17 @@ export class InstructorVerificationService implements IInstructorVerificationSer
     return result;
   }
 
-  async updateRequest(email: string, data: updateRequestType): Promise<IVerificationModel | null> {
-    return await this.verificationRepository.updateRequest(email, data);
-  }
+async getRequestByEmail(email: string): Promise<IVerificationModel | null> {
+  return await this.verificationRepository.getRequestByEmail(email);
+}
+
+async reverifyRequest(username: string, email: string, degreeCertificateUrl: string, resumeUrl: string): Promise<IVerificationModel> {
+    const updated = await this.verificationRepository.updateRequestByEmail(email,{username,degreeCertificateUrl,resumeUrl,status:'pending',rejectionReason:undefined,reviewedAt:null})
+
+    if(!updated){
+      throw new Error("Failed to update verification request")
+    }
+
+    return updated
+}
 }

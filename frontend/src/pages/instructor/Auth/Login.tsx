@@ -9,6 +9,8 @@ import { setInstructor } from '../../../redux/slices/instructorSlice';
 import { login } from '../../../api/auth/InstructorAuthentication';
 import type { Login } from '../../../types/LoginTypes';
 
+import { getVerificationRequestByemail } from '../../../api/action/InstructorActionApi';
+
 // ✅ Improved validation
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -34,38 +36,79 @@ const LoginPage = () => {
     isBlocked: false
   };
 
+  // const onSubmit = async (data: Login) => {
+  //   try {
+  //     const response = await login({ email: data.email, password: data.password, role: data.role });
+  //     const user = response.user;
+
+  //     if (user) {
+  //       localStorage.setItem('instructor', JSON.stringify(user));
+  //       toast.success(response?.message);
+
+  //       dispatch(setInstructor({
+  //         userId: user._id,
+  //         name: user.username,
+  //         email: user.email,
+  //         role: user.role,
+  //         isBlocked: user.isBlocked,
+  //         profilePicture: user.profilePicture
+  //       }));
+
+  //       if(user.isVerified){
+  //         navigate('/instructor/dashboard')
+  //       }else{
+  //         navigate("/instructor/verification");
+  //       }
+        
+  //     } else {
+  //       toast.error(response?.message || "Login failed");
+  //     }
+  //   } catch (error) {
+  //     console.error("Login error:", error);
+  //     toast.error("Login failed. Please try again.");
+  //   }
+  // };
+
   const onSubmit = async (data: Login) => {
-    try {
-      const response = await login({ email: data.email, password: data.password, role: data.role });
-      const user = response.user;
+  try {
+    const response = await login({ email: data.email, password: data.password, role: data.role });
+    const user = response.user;
+    console.log("user data",user)
+    if (user) {
+      localStorage.setItem('instructor', JSON.stringify(user));
+      toast.success(response?.message);
 
-      if (user) {
-        localStorage.setItem('instructor', JSON.stringify(user));
-        toast.success(response?.message);
+      dispatch(setInstructor({
+        userId: user._id,
+        name: user.username,
+        email: user.email,
+        role: user.role,
+        isBlocked: user.isBlocked,
+        profilePicture: user.profilePicture
+      }));
 
-        dispatch(setInstructor({
-          userId: user._id,
-          name: user.username,
-          email: user.email,
-          role: user.role,
-          isBlocked: user.isBlocked,
-          profilePicture: user.profilePicture
-        }));
+      if (user.isVerified) {
+        navigate('/instructor/dashboard');
+      } else {
+        // Check if the instructor already submitted a verification request
+        const verifyStatus = await getVerificationRequestByemail(user.email);
 
-        if(user.isVerified){
-          navigate('/instructor/dashboard')
-        }else{
+        console.log("verificationStatus Data",verifyStatus)
+
+        if (verifyStatus) {
+          navigate(`/instructor/verificationStatus/${user.email}`);
+        } else {
           navigate("/instructor/verification");
         }
-        
-      } else {
-        toast.error(response?.message || "Login failed");
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Login failed. Please try again.");
+    } else {
+      toast.error(response?.message || "Login failed");
     }
-  };
+  } catch (error) {
+    console.error("Login error:", error);
+    toast.error("Login failed. Please try again.");
+  }
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-100">

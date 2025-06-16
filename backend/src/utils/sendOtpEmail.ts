@@ -65,4 +65,108 @@ export class SendEmail implements IEmail {
       throw new Error("Failed to send verification email");
     }
   }
+
+  async sendRejectionEmail(name: string, email: string, reason: string): Promise<SentMessageInfo> {
+  const userEmail = process.env.USER_EMAIL;
+  const userPassword = process.env.USER_PASSWORD;
+
+  if (!userEmail || !userPassword) {
+    throw new Error("Email credentials are not set in the environment");
+  }
+
+  const transporter = nodeMailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: userEmail,
+      pass: userPassword,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  const mailOptions = {
+    from: userEmail,
+    to: email,
+    subject: "📢 uLearn - Verification Request Rejected",
+    text: `Hello ${name},\n\nWe regret to inform you that your instructor verification request has been rejected.\n\nReason: ${reason}\n\nYou can re-apply after resolving the issue.\n\nThank you,\nThe uLearn Team`,
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px; background-color: #fef2f2; text-align: center;">
+        <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; display: inline-block; width: 80%; max-width: 600px; box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);">
+          <h2 style="color: #e53935;">Verification Rejected</h2>
+          <p>Dear ${name},</p>
+          <p>We regret to inform you that your instructor verification request has been <strong style="color: #e53935;">rejected</strong>.</p>
+          <p><strong>Reason:</strong></p>
+          <blockquote style="background-color: #ffe6e6; border-left: 4px solid #e53935; padding: 10px; margin: 20px 0; font-style: italic;">
+            ${reason}
+          </blockquote>
+          <p>You are welcome to re-apply after addressing the issue.</p>
+          <br>
+          <p>Thank you,</p>
+          <p><strong>The uLearn Team</strong></p>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Rejection email sent successfully");
+    return info;
+  } catch (error) {
+    console.error("Error sending rejection email:", error);
+    throw new Error("Failed to send rejection email");
+  }
+}
+
+
+async sendVerificationSuccessEmail(name: string, email: string): Promise<SentMessageInfo> {
+  const userEmail = process.env.USER_EMAIL;
+  const userPassword = process.env.USER_PASSWORD;
+
+  if (!userEmail || !userPassword) {
+    throw new Error("Email credentials are not set in the environment");
+  }
+
+  const transporter = nodeMailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: userEmail,
+      pass: userPassword,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  const mailOptions = {
+    from: userEmail,
+    to: email,
+    subject: "🎉 uLearn - Instructor Verification Approved!",
+    text: `Hello ${name},\n\nCongratulations! Your instructor verification has been successfully approved.\n\nYou now have access to your instructor dashboard.\n\nWelcome aboard!\n\nThanks,\nThe uLearn Team`,
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px; background-color: #e8f5e9; text-align: center;">
+        <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; display: inline-block; width: 80%; max-width: 600px; box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);">
+          <h2 style="color: #4CAF50;">🎉 Congratulations ${name}!</h2>
+          <p>Your instructor verification request has been <strong style="color: #4CAF50;">approved</strong>.</p>
+          <p>You now have full access to the instructor dashboard and can begin uploading your courses, managing students, and sharing your knowledge.</p>
+          <p>We're excited to see the value you'll bring to the uLearn community.</p>
+          <br>
+          <p>Welcome aboard!</p>
+          <p><strong>The uLearn Team</strong></p>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Verification success email sent successfully");
+    return info;
+  } catch (error) {
+    console.error("Error sending verification success email:", error);
+    throw new Error("Failed to send verification success email");
+  }
+}
+
 }

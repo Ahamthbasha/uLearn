@@ -298,11 +298,11 @@ export class InstructorController implements IInstructorController{
 
   async doGoogleLogin(req: Request, res: Response): Promise<void> {
       try {
-        const {name,email,password} = req.body
+        const {name,email} = req.body
         const existingInstructor = await this.instructorService.findByEmail(email)
 
         if(!existingInstructor){
-          const instructor = await this.instructorService.googleLogin(name,email,password)
+          const instructor = await this.instructorService.googleLogin(name,email)
 
           if(instructor){
             const role = instructor.role
@@ -340,6 +340,4 @@ export class InstructorController implements IInstructorController{
         throw error
       }
   }
-
-
 }

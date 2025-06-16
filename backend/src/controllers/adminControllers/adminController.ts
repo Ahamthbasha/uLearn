@@ -94,13 +94,18 @@ export class AdminController implements IAdminController{
                 users
             })
            }else{
-            return res.status(StatusCode.NOT_FOUND).json({
-                success:false,
-                message:ResponseError.USER_NOT_FOUND
+            return res.status(StatusCode.OK).json({
+                success:true,
+                message:ResponseError.USER_NOT_FOUND,
+                users:[]
             })
            }
         } catch (error) {
-            throw error
+            console.error("Error fetching users:",error)
+            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+                success:false,
+                message:ResponseError.FETCH_ERROR
+            })
         }
     }
 
@@ -118,14 +123,19 @@ export class AdminController implements IAdminController{
                     instructors
                 })
             }else{
-                return res.status(StatusCode.NOT_FOUND)
+                return res.status(StatusCode.OK)
                 .json({
-                    success:false,
-                    message:ResponseError.FETCH_NOT_INSTRUCTOR
+                    success:true,
+                    message:ResponseError.USERFETCHING_ERROR,
+                    instructors:[]
                 })
             }
         } catch (error) {
-            throw error
+            console.log("Error fetching instructors",error)
+            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+                success:false,
+                message:ResponseError.FETCH_ERROR
+            })
         }
     }
 

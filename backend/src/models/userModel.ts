@@ -3,7 +3,8 @@ import mongoose, {Schema, Document, ObjectId } from "mongoose";
 export interface IUserDTO{
     username:string,
     email:string,
-    password:string
+    password:string,
+    role?:string
 }
 export interface IUser extends Document{
     _id:ObjectId,

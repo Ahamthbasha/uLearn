@@ -289,11 +289,11 @@ export class StudentController implements IStudentController {
 
   async doGoogleLogin(req: Request, res: Response): Promise<void> {
       try {
-        const {name,email,password} = req.body
+        const {name,email} = req.body
         const existingUser = await this.studentService.findByEmail(email)
 
         if(!existingUser){
-          const user = await this.studentService.googleLogin(name,email,password)
+          const user = await this.studentService.googleLogin(name,email)
 
           if(user){
             const role = user.role
@@ -305,7 +305,8 @@ export class StudentController implements IStudentController {
             .cookie("refreshToken",refreshToken,{httpOnly:true})
             .json({
               success:true,
-              message:StudentSuccessMessages.GOOGLE_LOGIN_SUCCESS
+              message:StudentSuccessMessages.GOOGLE_LOGIN_SUCCESS,
+              user
             })
           }
         }

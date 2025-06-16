@@ -3,12 +3,13 @@ import { IAdminVerificationService } from '../../services/interface/IAdminVerifi
 import { StatusCode } from '../../utils/enums';
 import { ResponseError } from '../../utils/constants';
 import { getPresignedUrl } from '../../utils/getPresignedUrl';
-
+import { SendEmail } from '../../utils/sendOtpEmail';
 export class AdminVerificationController {
   private verificationService: IAdminVerificationService;
-
+  private emailService : SendEmail;
   constructor(verificationService: IAdminVerificationService) {
     this.verificationService = verificationService;
+    this.emailService = new SendEmail()
   }
 
   async getAllRequests(_req: Request, res: Response): Promise<void> {
@@ -53,29 +54,47 @@ async getRequestData(req: Request, res: Response): Promise<void> {
   }
 }
 
+async approveRequest(req: Request, res: Response): Promise<void> {
+  try {
+    const { email, status, reason } = req.body;
 
-  async approveRequest(req: Request, res: Response): Promise<void> {
-    try {
-      const { email, status } = req.body;
-      const approvedRequest = await this.verificationService.approveRequest(email, status);
+    const approvedRequest = await this.verificationService.approveRequest(email, status, reason);
 
-      if (approvedRequest?.status === 'approved') {
-        res.status(StatusCode.OK).json({
-          success: true,
-          message: ResponseError.APPROVE_INSTRUCTOR,
-          data: approvedRequest
-        });
-      } else if (approvedRequest?.status === 'rejected') {
-        res.status(StatusCode.OK).json({
-          success: true,
-          message: ResponseError.REJECT_INSTRUCTOR,
-          data: approvedRequest
-        });
-      } else {
-        res.status(StatusCode.BAD_REQUEST).json({ success: false, message: 'Invalid request status' });
-      }
-    } catch (error:any) {
-      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+    if (!approvedRequest) {
+      res.status(StatusCode.NOT_FOUND).json({ success: false, message: "Verification request not found" });
+      return;
     }
+
+    const name = approvedRequest.username;
+
+    if (status === "approved") {
+      // ✅ Send success email
+      await this.emailService.sendVerificationSuccessEmail(name, email);
+
+      res.status(StatusCode.OK).json({
+        success: true,
+        message: ResponseError.APPROVE_INSTRUCTOR,
+        data: approvedRequest,
+      });
+    } else if (status === "rejected") {
+      // ✅ Send rejection email
+      if (!reason) {
+        res.status(StatusCode.BAD_REQUEST).json({ success: false, message: "Rejection reason is required." });
+        return;
+      }
+
+      await this.emailService.sendRejectionEmail(name, email, reason);
+
+      res.status(StatusCode.OK).json({
+        success: true,
+        message: ResponseError.REJECT_INSTRUCTOR,
+        data: approvedRequest,
+      });
+    } else {
+      res.status(StatusCode.BAD_REQUEST).json({ success: false, message: "Invalid request status" });
+    }
+  } catch (error: any) {
+    res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
   }
+}
 }

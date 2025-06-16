@@ -21,7 +21,11 @@ export default class InstructorService implements IInstructorService{
         return this.instructorRepository.resetPassword(email,password)
     }
 
-    async googleLogin(name: string, email: string, password: string): Promise<IInstructor | null> {
-        return this.instructorRepository.googleLogin(name,email,password)
+    async googleLogin(name: string, email: string): Promise<IInstructor | null> {
+        return this.instructorRepository.googleLogin(name,email)
+    }
+
+    async setInstructorVerified(email:string):Promise<IInstructor | null>{
+        return this.instructorRepository.updateByEmail(email,{isVerified:true})
     }
 }

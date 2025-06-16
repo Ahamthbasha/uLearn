@@ -63,7 +63,7 @@ import IAdminVerificationController from '../controllers/adminControllers/interf
 import { AdminVerificationController } from "../controllers/adminControllers/adminVerificationController";
 
 const adminVerificationRepository: IAdminVerificationRepository = new AdminVerificationRepository();
-const adminVerificationService: IAdminVerificationService = new AdminVerificationService(adminVerificationRepository);
+const adminVerificationService: IAdminVerificationService = new AdminVerificationService(adminVerificationRepository,instructorService);
 const adminVerificationController: IAdminVerificationController = new AdminVerificationController(adminVerificationService);
 
 /////////////////////////Instructor verification/////////////////////////////////////
@@ -73,7 +73,7 @@ import { InstructorVerificationRepository } from "../repositories/instructorRepo
 import { IInstructorVerificationService } from "../services/interface/IInstructorVerificationService";
 import { InstructorVerificationService } from "../services/instructorServices/InstructorVerificationService";
 import IInstructorVerificationController from "../controllers/instructorController/interfaces/IInstructorVerificationController";
-import { InstructorVerificationController } from "../controllers/instructorController/instructorVerificationControllet";
+import { InstructorVerificationController } from "../controllers/instructorController/instructorVerificationController";
 
 
 const instructorVerificationRepository: IInstructorVerificationRepository = new InstructorVerificationRepository();
