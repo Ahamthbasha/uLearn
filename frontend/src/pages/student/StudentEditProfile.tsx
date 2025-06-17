@@ -7,6 +7,8 @@ import Card from "../../components/common/Card";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/slices/userSlice";
 
 const ProfileSchema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
@@ -19,7 +21,7 @@ const StudentProfileEditPage = () => {
   const [initialValues, setInitialValues] = useState<any>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch()
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -59,6 +61,7 @@ const StudentProfileEditPage = () => {
     try {
       const response = await updateProfile(formData);
       if (response.success) {
+        dispatch(setUser(response.data))
         toast.success("Profile updated successfully");
         setTimeout(() => {
           navigate("/user/profile");

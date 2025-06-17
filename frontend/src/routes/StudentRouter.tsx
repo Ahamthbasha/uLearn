@@ -12,6 +12,8 @@ import ResetPassword from '../pages/student/Auth/ResetPassword'
 import StudentSidebarLayout from '../components/StudentComponents/StudentSidebarLayout'
 import StudentProfilePage from '../pages/student/StudentProfilePage'
 import StudentProfileEditPage from '../pages/student/StudentEditProfile'
+import StudentDashboard from '../pages/student/StudentDashboard'
+import PrivateRoute from '../Protecter/UserPrivateRoute'
 
 
 const StudentRouter = () => {
@@ -20,18 +22,23 @@ const StudentRouter = () => {
         <Route element={<StudentLayout />}>
         <Route path="/" element={<LandingPage/>}/>
         <Route path="/enrollPage" element={<EnrollPage/>}/>
-        <Route path="/user/signUp" element={<SignUp/>}/>
+        <Route path="/user/signUp" element={<UserSessionRoute><SignUp/></UserSessionRoute>}/>
         <Route path='/user/login' element={<UserSessionRoute><LoginPage/></UserSessionRoute>}/>
-        <Route path="/user/verifyOtp" element={<OTPVerification/>}/>
+        <Route path="/user/verifyOtp" element={<UserSessionRoute><OTPVerification/></UserSessionRoute>}/>
 
+{/* reset password in case of forgot password */}
         <Route path='/user/verifyEmail' element={<ForgotPassword/>} />
         <Route path='/user/forgotPasswordOtp' element={<ResetVerificationOTP/>}/>
         <Route path='/user/resetPassword' element={<ResetPassword/>}/>
         </Route>
 
-        <Route element={<UserSessionRoute><StudentSidebarLayout/></UserSessionRoute>}>
+{/* profile management */}
+        <Route element={<PrivateRoute/>}>
+        <Route element={<StudentSidebarLayout/>}>
+        <Route path='/user/dashboard' element={<StudentDashboard/>}/>
         <Route path='/user/profile' element={<StudentProfilePage/>}/>
         <Route path='/user/editProfile' element={<StudentProfileEditPage/>}/>
+        </Route>
         </Route>
     </Routes>
   )

@@ -1,44 +1,132 @@
-// src/components/layouts/StudentSidebarLayout.tsx
-import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { clearUserDetails } from "../../redux/slices/userSlice";
+import { logout } from "../../api/auth/UserAuthentication";
 
 const navItems = [
-  { name: "Dashboard", path: "/user/dashboard" },
-  { name: "Courses", path: "/user/courses" },
-  { name: "Meetings", path: "/user/meetings" },
-  { name: "Wishlist", path: "/user/wishlist" },
-  { name: "Cart", path: "/user/cart" },
-  { name: "Settings", path: "/user/profile" },
+  { name: "Dashboard", path: "/user/dashboard", icon: "📊" },
+  { name: "Courses", path: "/user/courses", icon: "📚" },
+  { name: "Meetings", path: "/user/meetings", icon: "🎥" },
+  { name: "Wishlist", path: "/user/wishlist", icon: "❤️" },
+  { name: "Cart", path: "/user/cart", icon: "🛒" },
+  { name: "Settings", path: "/user/profile", icon: "⚙️" },
 ];
 
-const StudentSidebarLayout: React.FC = () => {
+const StudentSidebarLayout = () => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const username = (user?.name || "Guest").toUpperCase();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      dispatch(clearUserDetails());
+      toast.success("Logged out successfully");
+      navigate("/user/login");
+    } catch (error) {
+      console.error("Logout failed", error);
+      toast.error("Logout failed. Please try again.");
+    }
+  };
+
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md p-4">
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold">My Account</h2>
+      <aside className="w-72 bg-white shadow-xl flex flex-col relative overflow-hidden">
+        {/* Decorative background gradient */}
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-blue-600 to-purple-600 opacity-5"></div>
+
+        {/* Logo Header */}
+        <div className="relative flex items-center justify-center h-20 border-b border-gray-100 cursor-pointer" onClick={()=>navigate('/')}>
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold text-lg">U</span>
+            </div>
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent tracking-wide">
+              ULearn
+            </span>
+          </div>
         </div>
-        <nav className="flex flex-col gap-3">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.name}
-              to={item.path}
-              className={({ isActive }) =>
-                isActive
-                  ? "text-blue-600 font-medium"
-                  : "text-gray-700 hover:text-blue-500"
-              }
-            >
-              {item.name}
-            </NavLink>
-          ))}
-        </nav>
+
+        {/* User Profile Section */}
+        <div className="p-6 border-b border-gray-100">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+              <span className="text-white font-semibold text-lg">👤</span>
+            </div>
+            <div>
+              <p className="font-semibold text-gray-800">{username}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="p-6 flex-1">
+          <h2 className="text-xs text-gray-400 uppercase mb-6 tracking-widest font-semibold">
+            Navigation
+          </h2>
+          <nav className="flex flex-col space-y-2">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.name}
+                to={item.path}
+                className={({ isActive }) =>
+                  `group flex items-center space-x-4 px-4 py-3 rounded-xl transition-all duration-200 ease-in-out ${
+                    isActive
+                      ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg transform scale-105"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-blue-600 hover:transform hover:scale-105"
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <span className="text-xl group-hover:animate-pulse">
+                      {item.icon}
+                    </span>
+                    <span className="font-medium">{item.name}</span>
+                    <div
+                      className={`ml-auto w-2 h-2 rounded-full transition-all duration-200 ${
+                        isActive
+                          ? "bg-white"
+                          : "bg-transparent group-hover:bg-blue-400"
+                      }`}
+                    />
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+
+        {/* Bottom Section */}
+        <div className="p-6 border-t border-gray-100 space-y-4">
+          {/* Motivational Quote */}
+          <div className="bg-gradient-to-r from-blue-50 to-purple-100 rounded-xl p-4">
+            <p className="italic text-gray-600 text-sm">
+              “The beautiful thing about learning is that no one can take it
+              away from you.”
+            </p>
+            <p className="text-right mt-2 text-xs text-gray-500">– B.B. King</p>
+          </div>
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="w-full text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 py-2 px-4 rounded-lg transition duration-200"
+          >
+            Logout
+          </button>
+        </div>
       </aside>
 
-      {/* Page content */}
-      <main className="flex-1 p-6">
-        <Outlet />
+      {/* Main content */}
+      <main className="flex-1 p-8 overflow-auto">
+        <div className="max-w-7xl mx-auto">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

@@ -1,15 +1,26 @@
-import { useEffect, useState } from "react";
-import { getProfile } from "../../api/action/StudentAction";
+import { useState,useEffect } from "react";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import InputField from "../../components/common/InputField"; // path as per your setup
+import { updatePassword } from "../../api/action/StudentAction"; // your axios API
+import { toast } from "react-toastify";
 import Card from "../../components/common/Card";
+import { setUser } from "../../redux/slices/userSlice";
+import { getProfile } from "../../api/action/StudentAction";
 
+
+import { useDispatch } from "react-redux";
 const StudentProfilePage = () => {
   const [profile, setProfile] = useState<any>(null);
+  const dispatch = useDispatch();
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await getProfile();
         if (response.success) {
+          dispatch(setUser(response.data));
           setProfile(response.data);
         }
       } catch (error) {
@@ -25,17 +36,23 @@ const StudentProfilePage = () => {
   }
 
   return (
-    <div className="p-6 flex justify-center">
+    <div className="p-6 flex flex-col items-center">
       <Card
         title="👤 Student Profile"
         className="max-w-xl w-full"
         footer={
-          <div className="flex justify-center">
+          <div className="flex flex-col gap-2 justify-center items-center">
             <button
               onClick={() => window.location.href = "/user/editProfile"}
               className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
             >
               Edit Profile
+            </button>
+            <button
+              onClick={() => setShowPasswordForm(!showPasswordForm)}
+              className="text-blue-600 text-sm underline"
+            >
+              {showPasswordForm ? "Cancel Password Change" : "Change Password"}
             </button>
           </div>
         }
@@ -62,6 +79,80 @@ const StudentProfilePage = () => {
           <p><strong>Status:</strong> {profile.currentStatus || "N/A"}</p>
         </div>
       </Card>
+
+      {showPasswordForm && (
+        <div className="w-full max-w-xl mt-6 bg-white p-6 rounded shadow">
+          <h2 className="text-lg font-semibold mb-4">🔒 Change Password</h2>
+          <Formik
+            initialValues={{
+              currentPassword: '',
+              newPassword: '',
+              confirmPassword: '',
+            }}
+            validationSchema={Yup.object({
+  currentPassword: Yup.string().required("Current password is required"),
+  newPassword: Yup.string()
+    .required("New password is required")
+    .min(6, "Password must be at least 6 characters")
+    .matches(/[A-Z]/, "Must contain at least one uppercase letter")
+    .matches(/[a-z]/, "Must contain at least one lowercase letter")
+    .matches(/[0-9]/, "Must contain at least one number")
+    .matches(/[!@#$%^&*(),.?":{}|<>]/, "Must contain at least one special character"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("newPassword")], "Passwords must match")
+    .required("Confirm your new password"),
+})}
+
+            onSubmit={async (values, { resetForm }) => {
+              try {
+                const res = await updatePassword({
+                  currentPassword: values.currentPassword,
+                  newPassword: values.newPassword,
+                });
+
+                if (res.success) {
+                  toast.success("Password updated successfully");
+                  resetForm();
+                  setShowPasswordForm(false);
+                } else {
+                  toast.error(res.message || "Password update failed");
+                }
+              } catch (error) {
+                toast.error("Something went wrong");
+              }
+            }}
+          >
+            <Form className="space-y-4">
+              <InputField
+                name="currentPassword"
+                type="password"
+                label="Current Password"
+                placeholder="Enter current password"
+              />
+              <InputField
+                name="newPassword"
+                type="password"
+                label="New Password"
+                placeholder="Enter new password"
+              />
+              <InputField
+                name="confirmPassword"
+                type="password"
+                label="Confirm New Password"
+                placeholder="Confirm new password"
+              />
+              <div className="text-right">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                >
+                  Update Password
+                </button>
+              </div>
+            </Form>
+          </Formik>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,148 +1,10 @@
-// import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { toast } from "react-toastify";
-// import { logout } from "../api/auth/UserAuthentication";
-// import { useDispatch, useSelector } from "react-redux";
-// import type { RootState } from "../redux/store";
-// import { clearUserDetails } from "../redux/slices/userSlice";
-
-// const Header = () => {
-//   const [isOpen, setIsOpen] = useState(false);
-//   const navigate = useNavigate();
-//   const dispatch = useDispatch();
-
-//   const user = useSelector((state: RootState) => state.user);
-
-//   const handleLogout = async () => {
-//     try {
-//       await logout(); // call your backend logout API
-//       dispatch(clearUserDetails());
-//       toast.success("Logged out successfully");
-//       navigate("/user/login");
-//     } catch (error) {
-//       console.error("Logout failed", error);
-//       toast.error("Logout failed. Please try again.");
-//     }
-//   };
-
-//   return (
-//     <header className="bg-blue-600 text-white shadow-md">
-//       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-//         {/* Logo */}
-//         <div className="text-2xl font-bold cursor-pointer" onClick={() => navigate("/")}>
-//           Ulearn
-//         </div>
-
-//         {/* Desktop Navigation */}
-//         <nav className="hidden md:flex space-x-6 font-semibold">
-//           <a href="/" className="hover:text-gray-300">Home</a>
-//           <a href="#" className="hover:text-gray-300">Courses</a>
-//           <a href="#" className="hover:text-gray-300">Instructors</a>
-//           <a href="#" className="hover:text-gray-300">About Us</a>
-//         </nav>
-
-//         {/* Desktop Right Side */}
-//         <div className="hidden md:flex items-center space-x-4">
-//           {!user.email ? (
-//             <>
-//               <button
-//                 onClick={() => navigate("/user/login")}
-//                 className="bg-white text-blue-600 px-4 py-1 rounded hover:bg-gray-100"
-//               >
-//                 Login
-//               </button>
-//               <button
-//                 onClick={() => navigate("/enrollPage")}
-//                 className="bg-white text-blue-600 px-4 py-1 rounded hover:bg-gray-100"
-//               >
-//                 Sign Up
-//               </button>
-//             </>
-//           ) : (
-//             <>
-//               <img
-//                 src={user.profilePicture || "/default-avatar.png"}
-//                 alt="Profile"
-//                 className="w-8 h-8 rounded-full"
-//               />
-//               <span>{user.name}</span>
-//               <button
-//                 onClick={handleLogout}
-//                 className="bg-white text-blue-600 px-4 py-1 rounded hover:bg-gray-100"
-//               >
-//                 Logout
-//               </button>
-//             </>
-//           )}
-//         </div>
-
-//         {/* Mobile menu button */}
-//         <div className="md:hidden">
-//           <button onClick={() => setIsOpen(!isOpen)} className="focus:outline-none">
-//             <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2}
-//               viewBox="0 0 24 24">
-//               <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-//             </svg>
-//           </button>
-//         </div>
-//       </div>
-
-//       {/* Mobile Menu */}
-//       {isOpen && (
-//         <div className="md:hidden px-4 pb-4 space-y-2 font-semibold">
-//           <a href="/" className="block hover:text-gray-300">Home</a>
-//           <a href="#" className="block hover:text-gray-300">Courses</a>
-//           <a href="#" className="block hover:text-gray-300">Instructors</a>
-//           <a href="#" className="block hover:text-gray-300">About Us</a>
-//           {!user.email ? (
-//             <>
-//               <button
-//                 className="w-full bg-white text-blue-600 px-4 py-1 rounded hover:bg-gray-100"
-//                 onClick={() => navigate("/user/login")}
-//               >
-//                 Login
-//               </button>
-//               <button
-//                 className="w-full bg-white text-blue-600 px-4 py-1 rounded hover:bg-gray-100"
-//                 onClick={() => navigate("/enrollPage")}
-//               >
-//                 Sign Up
-//               </button>
-//             </>
-//           ) : (
-//             <>
-//               <div className="flex items-center space-x-2 mt-2">
-//                 <img
-//                   src={user.profilePicture || "/default-avatar.png"}
-//                   alt="Profile"
-//                   className="w-8 h-8 rounded-full"
-//                 />
-//                 <span>{user.name}</span>
-//               </div>
-//               <button
-//                 className="w-full bg-white text-blue-600 px-4 py-1 rounded hover:bg-gray-100 mt-2"
-//                 onClick={handleLogout}
-//               >
-//                 Logout
-//               </button>
-//             </>
-//           )}
-//         </div>
-//       )}
-//     </header>
-//   );
-// };
-
-// export default Header;
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { logout } from "../api/auth/UserAuthentication";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import { clearUserDetails } from "../redux/slices/userSlice";
-import { getPresignedUrl } from "../api/s3Actions"; // <-- import presignedUrl action
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -150,26 +12,10 @@ const Header = () => {
   const dispatch = useDispatch();
 
   const user = useSelector((state: RootState) => state.user);
-  const [profileUrl, setProfileUrl] = useState<string | null>(null);
-
-  // Fetch profile image using S3 presigned URL
-  useEffect(() => {
-    const fetchProfileImage = async () => {
-      if (user.profilePicture) {
-        try {
-          const url = await getPresignedUrl(user.profilePicture);
-          setProfileUrl(url);
-        } catch (error) {
-          console.error("Failed to fetch profile image URL", error);
-        }
-      }
-    };
-    fetchProfileImage();
-  }, [user.profilePicture]);
 
   const handleLogout = async () => {
     try {
-      await logout(); // Backend logout API
+      await logout(); // call your backend logout API
       dispatch(clearUserDetails());
       toast.success("Logged out successfully");
       navigate("/user/login");
@@ -183,10 +29,7 @@ const Header = () => {
     <header className="bg-blue-600 text-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
         {/* Logo */}
-        <div
-          className="text-2xl font-bold cursor-pointer"
-          onClick={() => navigate("/")}
-        >
+        <div className="text-2xl font-bold cursor-pointer" onClick={() => navigate("/")}>
           Ulearn
         </div>
 
@@ -218,17 +61,12 @@ const Header = () => {
           ) : (
             <>
               <img
-                src={profileUrl || "/default-avatar.png"}
+                src={user.profilePicture || "/default-avatar.png"}
                 alt="Profile"
-                className="w-8 h-8 rounded-full object-cover"
+                className="w-8 h-8 rounded-full"
+                onClick={()=>navigate('/user/dashboard')}
               />
               <span>{user.name}</span>
-              <button
-                onClick={() => navigate("/student/dashboard")}
-                className="bg-white text-blue-600 px-4 py-1 rounded hover:bg-gray-100"
-              >
-                Settings
-              </button>
               <button
                 onClick={handleLogout}
                 className="bg-white text-blue-600 px-4 py-1 rounded hover:bg-gray-100"
@@ -239,16 +77,11 @@ const Header = () => {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile menu button */}
         <div className="md:hidden">
           <button onClick={() => setIsOpen(!isOpen)} className="focus:outline-none">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2}
+              viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
@@ -266,42 +99,30 @@ const Header = () => {
             <>
               <button
                 className="w-full bg-white text-blue-600 px-4 py-1 rounded hover:bg-gray-100"
-                onClick={() => {
-                  setIsOpen(false);
-                  navigate("/user/login");
-                }}
+                onClick={() => navigate("/user/login")}
               >
                 Login
               </button>
               <button
                 className="w-full bg-white text-blue-600 px-4 py-1 rounded hover:bg-gray-100"
-                onClick={() => {
-                  setIsOpen(false);
-                  navigate("/enrollPage");
-                }}
+                onClick={() => navigate("/enrollPage")}
               >
                 Sign Up
               </button>
             </>
           ) : (
             <>
-              <div className="flex items-center space-x-2 mt-2">
+              <div className="flex items-center space-x-2 mt-2 cursor-pointer" onClick={()=>{
+                setIsOpen(false);
+                navigate('/user/dashboard')
+              }}>
                 <img
-                  src={profileUrl || "/default-avatar.png"}
+                  src={user.profilePicture || "/default-avatar.png"}
                   alt="Profile"
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-8 h-8 rounded-full"
                 />
                 <span>{user.name}</span>
               </div>
-              <button
-                className="w-full bg-white text-blue-600 px-4 py-1 rounded hover:bg-gray-100 mt-2"
-                onClick={() => {
-                  setIsOpen(false);
-                  navigate("/student/dashboard");
-                }}
-              >
-                Settings
-              </button>
               <button
                 className="w-full bg-white text-blue-600 px-4 py-1 rounded hover:bg-gray-100 mt-2"
                 onClick={handleLogout}
