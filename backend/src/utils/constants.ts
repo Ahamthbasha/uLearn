@@ -95,6 +95,11 @@ export const StudentErrorMessages = {
   PASSWORD_RESET_FAILED: "Password reset failed.",
   GOOGLE_LOGIN_FAILED: "Google login failed.",
   INTERNAL_SERVER_ERROR: "Internal server error.",
+  STUDENT_NOT_FOUND : "there is no user we find based on this email",
+  PROFILE_UPDATE_FAILED: "profile updation failed",
+  INTERNAL_ERROR : "Error related to server",
+  PASSWORD_UPDATE_FAILED:"your password updation is failed",
+  CURRENT_PASSWORD_INCORRECT:"your current password you entered is wrong"
 };
 
 export const StudentSuccessMessages = {
@@ -109,6 +114,10 @@ export const StudentSuccessMessages = {
   GOOGLE_LOGIN_SUCCESS: "Google login successful!",
   REDIERCTING_OTP_PAGE:"Rediercting To OTP Page",
   REDIERCTING_PASSWORD_RESET_PAGE:"Redirecting to Reset Password Page",
+
+  PROFILE_FETCHED: "your profile fecthed successfully",
+  PROFILE_UPDATED : "your profile is updated successfully",
+  PASSWORD_UPDATED : "your password is successfully updated",
 };
 
 export const OtpResponses={
@@ -171,7 +180,7 @@ export const ResponseError = {
 
     PASSWORD_UPDATED : "Password Updated Successfully",
     PASSWORD_NOT_UPDATED : "Password Not Updated",
-    PASSWORD_WRONG : "Current Password is Wrong" ,
+    CURRENTPASSWORD_WRONG : "Current Password is Wrong" ,
 
     ACCOUNT_BLOCKED : "Your account has been blocked !" ,
     ACCOUNT_UNBLOCKED : "Your account has been Unblocked !" ,

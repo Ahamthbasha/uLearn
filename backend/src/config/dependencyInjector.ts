@@ -80,6 +80,26 @@ const instructorVerificationRepository: IInstructorVerificationRepository = new 
 const instructorVerificationService: IInstructorVerificationService = new InstructorVerificationService(instructorVerificationRepository);
 const instructorVerificationController: IInstructorVerificationController = new InstructorVerificationController(instructorVerificationService);
 
+///////////////////////student profile controller/////////////////////////////////////////////////
+
+import { studentProfileRepository } from "../repositories/studentRepository/studentProfileRepository";
+import { IStudentProfileRepository } from "../repositories/interfaces/IStudentProfileRepository";
+import { IStudentProfileService } from "../services/interface/IStudentProfileService";
+import { StudentProfileService } from "../services/studentServices/StudentProfileService";
+import { IStudentProfileController } from "../controllers/studentControllers/interfaces/IStudentProfileController";
+import { StudentProfileController } from "../controllers/studentControllers/studentProfileController";
+
+const studentProfileRepo : IStudentProfileRepository = new studentProfileRepository()
+const studentProfileService : IStudentProfileService = new StudentProfileService(studentProfileRepo)
+const studentProfileController : IStudentProfileController = new StudentProfileController(studentProfileService)
 
 
-export {studentController,instructorController,adminController,adminVerificationController,instructorVerificationController}
+export {
+    studentController,
+    instructorController,
+    adminController,
+    adminVerificationController,instructorVerificationController,
+
+    studentProfileController,
+
+}

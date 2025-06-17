@@ -9,6 +9,9 @@ import OTPVerification from '../pages/student/Auth/OTPVerification'
 import ForgotPassword from '../pages/student/Auth/ForgotPassword'
 import ResetVerificationOTP from '../pages/student/Auth/ResetVerificationOtp'
 import ResetPassword from '../pages/student/Auth/ResetPassword'
+import StudentSidebarLayout from '../components/StudentComponents/StudentSidebarLayout'
+import StudentProfilePage from '../pages/student/StudentProfilePage'
+import StudentProfileEditPage from '../pages/student/StudentEditProfile'
 
 
 const StudentRouter = () => {
@@ -24,10 +27,12 @@ const StudentRouter = () => {
         <Route path='/user/verifyEmail' element={<ForgotPassword/>} />
         <Route path='/user/forgotPasswordOtp' element={<ResetVerificationOTP/>}/>
         <Route path='/user/resetPassword' element={<ResetPassword/>}/>
-
-
         </Route>
 
+        <Route element={<UserSessionRoute><StudentSidebarLayout/></UserSessionRoute>}>
+        <Route path='/user/profile' element={<StudentProfilePage/>}/>
+        <Route path='/user/editProfile' element={<StudentProfileEditPage/>}/>
+        </Route>
     </Routes>
   )
 }

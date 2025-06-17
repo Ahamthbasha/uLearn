@@ -44,12 +44,12 @@ const LoginPage = () => {
         toast.success(response?.message);
 
         dispatch(setUser({
-          userId: user._id,
-          name: user.username,
+          _id: user._id,
+          username: user.username,
           email: user.email,
           role: user.role,
           isBlocked: user.isBlocked,
-          profilePicture: user.profilePicture
+          profilePicUrl: user.profilePicture
         }));
 
         navigate('/');

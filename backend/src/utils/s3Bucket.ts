@@ -23,7 +23,7 @@ export async function uploadToS3Bucket(file: IMulterFile, folderName: string): P
       Bucket: process.env.BUCKET_NAME,
       Key: `${normalizedFolder}/${Date.now()}_${file.originalname}`, // ✅ Correct Key
       Body: file.buffer,
-      ContentType: file.mimetype
+      ContentType: file.mimetype,
     };
 
     AWS.config.update({

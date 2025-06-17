@@ -43,16 +43,16 @@ import React from "react";
 import { Field, ErrorMessage } from "formik";
 
 interface InputfieldProps {
-  type: string;
-  placeholder: string;
+  type?: string;
+  placeholder?: string;
   name: string;
   label: string;
   disabled?: boolean; // ✅ added here
 }
 
 const InputField: React.FC<InputfieldProps> = ({
-  type,
-  placeholder,
+  type='text',
+  placeholder='',
   name,
   label,
   disabled = false, // ✅ optional default

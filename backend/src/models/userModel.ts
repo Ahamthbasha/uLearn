@@ -11,12 +11,14 @@ export interface IUser extends Document{
     username:string,
     email:string,
     password:string,
-    mobileNo:string,
     role?:string,
     profilePicUrl?:string,
     studiedHours:number,
     isVerified:boolean,
     isBlocked:boolean,
+    skills?:string[],
+    expertise?:string[],
+    currentStatus?:string,
     lastLogin?:Date,
     createdAt?:Date,
     updatedAt?:Date
@@ -34,10 +36,6 @@ const userSchema:Schema<IUser> = new Schema({
     password:{
         type:String,
         required:true
-    },
-    mobileNo:{
-        type:String,
-        required:false
     },
     role:{
         type:String,
@@ -61,6 +59,13 @@ const userSchema:Schema<IUser> = new Schema({
         type:Boolean,
         required:true,
         default:false
+    },
+    skills:{type:[String],default:[]},
+    expertise:{type:[String],default:[]},
+    currentStatus:{
+        type:String,
+        enum:['Student','Working Professional',"Freelancer","Job Seeker",'other'],
+        default:"Student"
     }
 },{timestamps:true})
 

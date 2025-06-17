@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { studentController } from "../config/dependencyInjector";
+import { studentController,studentProfileController } from "../config/dependencyInjector";
+import upload from "../utils/multer";
+import authenticateToken from "../middlewares/AuthenticatedRoutes";
+import { isStudent } from "../middlewares/roleAuth";
+import { generatePresignedUrl } from "../controllers/generatePreSignedUrl";
 
 const router = Router();
 
@@ -22,5 +26,15 @@ router.post('/forgotResendOtp',studentController.forgotResendOtp.bind(studentCon
 router.post('/resetPassword',studentController.resetPassword.bind(studentController))
 
 router.post('/googleLogin',studentController.doGoogleLogin.bind(studentController))
+
+/////////////////////student profile controller/////////////////////////////////
+
+router.get('/profile',authenticateToken,isStudent,studentProfileController.getProfile.bind(studentProfileController))
+
+router.put('/profile',authenticateToken,isStudent,upload.single("profilePic"),studentProfileController.updateProfile.bind(studentProfileController))
+
+router.put('/profile/password',authenticateToken,isStudent,studentProfileController.updatePassword.bind(studentProfileController))
+
+router.get("/presignedUrl",generatePresignedUrl)
 
 export default router;
