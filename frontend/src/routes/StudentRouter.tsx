@@ -9,7 +9,7 @@ import OTPVerification from '../pages/student/Auth/OTPVerification'
 import ForgotPassword from '../pages/student/Auth/ForgotPassword'
 import ResetVerificationOTP from '../pages/student/Auth/ResetVerificationOtp'
 import ResetPassword from '../pages/student/Auth/ResetPassword'
-import StudentSidebarLayout from '../components/StudentComponents/StudentSidebarLayout'
+import StudentSidebarLayout from '../layouts/StudentSidebarLayout'
 import StudentProfilePage from '../pages/student/StudentProfilePage'
 import StudentProfileEditPage from '../pages/student/StudentEditProfile'
 import StudentDashboard from '../pages/student/StudentDashboard'
@@ -40,6 +40,7 @@ const StudentRouter = () => {
         <Route path='/user/editProfile' element={<StudentProfileEditPage/>}/>
         </Route>
         </Route>
+        
     </Routes>
   )
 }

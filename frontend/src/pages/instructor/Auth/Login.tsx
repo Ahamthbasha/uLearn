@@ -84,6 +84,7 @@ const LoginPage = () => {
         email: user.email,
         role: user.role,
         isBlocked: user.isBlocked,
+        isVerified:user.isVerified,
         profilePicture: user.profilePicture
       }));
 
@@ -95,7 +96,7 @@ const LoginPage = () => {
 
         console.log("verificationStatus Data",verifyStatus)
 
-        if (verifyStatus) {
+        if (verifyStatus?.data?.status) {
           navigate(`/instructor/verificationStatus/${user.email}`);
         } else {
           navigate("/instructor/verification");

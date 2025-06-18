@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { instructorController,instructorVerificationController } from "../config/dependencyInjector";
+import { instructorController,instructorVerificationController,instructorProfileController } from "../config/dependencyInjector";
 import upload from "../utils/multer";
-
+import authenticateToken from "../middlewares/AuthenticatedRoutes";
+import { isInstructor } from "../middlewares/roleAuth";
 
 let router = Router()
 
@@ -29,6 +30,31 @@ router.post('/googleLogin',instructorController.doGoogleLogin.bind(instructorCon
 router.post('/verificationRequest',upload.fields([{name:"degreeCertificate",maxCount:1},{name:"resume",maxCount:1}]),instructorVerificationController.submitRequest.bind(instructorVerificationController))
 
 router.get('/getVerificationByEmail/:email',instructorVerificationController.getRequestByEmail.bind(instructorVerificationController))
+
+//profile management part
+
+router.get(
+  "/profile",
+  authenticateToken,
+  isInstructor,
+  instructorProfileController.getProfile.bind(instructorProfileController)
+);
+
+router.put(
+  "/profile",
+  authenticateToken,
+  isInstructor,
+  upload.single("profilePic"),
+  instructorProfileController.updateProfile.bind(instructorProfileController)
+);
+
+router.put(
+  "/profile/password",
+  authenticateToken,
+  isInstructor,
+  instructorProfileController.updatePassword.bind(instructorProfileController)
+);
+
 
 const instructorRoutes = router
 

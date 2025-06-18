@@ -28,6 +28,7 @@ export const InstructorSuccessMessages = {
 
   // Account & Profile
   INSTRUCTOR_CREATED: "Instructor account created successfully.",
+  PROFILE_FETCHED: 'your information is retrieved',
   PROFILE_UPDATED: "Profile updated successfully.",
   PASSWORD_UPDATED: "Password updated successfully.",
   PASSWORD_RESET: "Password changed successfully!",
@@ -83,6 +84,10 @@ export const InstructorErrorMessages = {
 
   // Common
   INTERNAL_SERVER_ERROR: "An unexpected error occurred. Please try again later.",
+
+  UNAUTHORIZED:'you are not verified',
+
+  PASSWORD_UPDATE_FAILED:"password updation failed"
 };
 
 export const StudentErrorMessages = {

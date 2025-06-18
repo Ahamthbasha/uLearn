@@ -93,13 +93,33 @@ const studentProfileRepo : IStudentProfileRepository = new studentProfileReposit
 const studentProfileService : IStudentProfileService = new StudentProfileService(studentProfileRepo)
 const studentProfileController : IStudentProfileController = new StudentProfileController(studentProfileService)
 
+////////////////////////INSTRUCTOR PROFILE MANAGEMENT/////////////////////////////////////////////////
+
+import { IInstructorProfileRepository } from "../repositories/interfaces/IInstructorProfileRepository";
+import { InstructorProfileRepository } from "../repositories/instructorRepository/instructorProfileRepository";
+import { IInstructorProfileService } from "../services/interface/IInstructorProfileService";
+import { InstructorProfileService } from "../services/instructorServices/InstructorProfileService";
+import { IInstructorProfileController } from "../controllers/instructorController/interfaces/IInstructorProfileController";
+import { InstructorProfileController } from "../controllers/instructorController/instructorProfileController";
+
+const instructorProfileRepo : IInstructorProfileRepository = new InstructorProfileRepository()
+const instructorProfileService : IInstructorProfileService = new InstructorProfileService(instructorProfileRepo)
+const instructorProfileController : IInstructorProfileController = new InstructorProfileController(instructorProfileService)
+
+
+
+
+
+
+
 
 export {
     studentController,
     instructorController,
     adminController,
+//verification
     adminVerificationController,instructorVerificationController,
-
+//profile management
     studentProfileController,
-
+    instructorProfileController
 }

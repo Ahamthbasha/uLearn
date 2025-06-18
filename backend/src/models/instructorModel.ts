@@ -17,6 +17,8 @@ export interface IInstructor extends Document{
     isVerified:boolean,
     isBlocked:boolean,
     isMentor:boolean,
+    skills?:string[],
+    expertise?:string[]
     memberShipValidTill:Date,
 }
 
@@ -65,6 +67,12 @@ const instructorSchema: Schema<IInstructor> = new Schema({
     memberShipValidTill:{
         type:Date,
         required:false
+    },
+    skills:{
+        type:[String],default:[]
+    },
+    expertise:{
+        type:[String],default:[]
     }
 },{timestamps:true})
 
