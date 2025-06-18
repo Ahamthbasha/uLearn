@@ -6,7 +6,7 @@ interface ProtectedRouteProps{
 
 const UserSessionRoute:React.FC<ProtectedRouteProps> = ({children}) => {
     const user = JSON.parse(localStorage.getItem('user') || 'null')
-    console.log(user)
+    console.log('USER SESSION ROUTE',user)
 
     if(user){
         return <Navigate to='/' replace />

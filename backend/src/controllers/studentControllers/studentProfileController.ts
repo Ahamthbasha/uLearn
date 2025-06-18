@@ -64,11 +64,10 @@ export class StudentProfileController implements IStudentProfileController {
   try {
     const token = req.cookies['accessToken'];
     const decoded = await this.JWT.verifyToken(token);
-    console.log(decoded)
     const userId = decoded.id;
-
-    const { username, skills, expertise, currentStatus } = req.body;
     
+    const { username, skills, expertise, currentStatus } = req.body;
+
     let profilePicUrl;
     if (req.file) {
       profilePicUrl = await uploadToS3Bucket(req.file, 'students');

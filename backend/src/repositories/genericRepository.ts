@@ -37,12 +37,26 @@ export class GenericRepository <T extends Document> implements IGenericRepositor
         return await this.model.findByIdAndUpdate(id,data,{new:true})
     }
 
+    // async updateOne(filter: object, data: Partial<T>): Promise<T | null> {
+    //     return await this.model.findOneAndUpdate(filter,data,{
+    //         new:true,
+    //         upsert:true
+    //     })
+    // }
+
     async updateOne(filter: object, data: Partial<T>): Promise<T | null> {
-        return await this.model.findOneAndUpdate(filter,data,{
-            new:true,
-            upsert:true
-        })
+    const updatedDoc = await this.model.findOneAndUpdate(filter, data, {
+        new: true,
+        upsert: false
+    });
+
+    if (!updatedDoc) {
+        console.warn("No document found to update with filter:", filter);
     }
+
+    return updatedDoc;
+}
+
 
     async delete(id:string):Promise<T | null>{
         return await this.model.findByIdAndDelete(id)

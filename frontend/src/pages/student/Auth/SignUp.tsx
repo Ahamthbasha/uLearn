@@ -56,41 +56,84 @@ const SignUp = () => {
     }
   };
 
-  const handleGoogleLogin = async (credentialResponse: any) => {
-    try {
-      const decoded: any = jwtDecode(credentialResponse.credential);
+  // const handleGoogleLogin = async (credentialResponse: any) => {
+  //   try {
+  //     const decoded: any = jwtDecode(credentialResponse.credential);
 
-      const response = await googleLogin({
-        name: decoded.name,
-        email: decoded.email,
-        password: decoded.sub,
-        profilePicture: decoded.picture,
-        role:"student"
-      });
+  //     const response = await googleLogin({
+  //       name: decoded.name,
+  //       email: decoded.email,
+  //       password: decoded.sub,
+  //       profilePicture: decoded.picture,
+  //       role:"student"
+  //     });
 
-      const user = response?.user;
+  //     const user = response?.user;
 
-      if (user) {
-        dispatch(
-          setUser({
-            userId: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            isBlocked: user.isBlocked,
-            profilePicture: user.profilePicture,
-          })
-        );
-        localStorage.setItem("user", JSON.stringify(user));
-        toast.success(response.message || "Signed up with Google!");
-        navigate("/");
-      } else {
-        toast.error(response.message || "Google sign-up failed");
-      }
-    } catch (error: any) {
-      toast.error(error.message || "Google login failed");
+  //     if (user) {
+  //       dispatch(
+  //         setUser({
+  //           _id: user._id,
+  //           username: user.name,
+  //           email: user.email,
+  //           role: user.role,
+  //           isBlocked: user.isBlocked,
+  //           profilePicUrl: user.profilePicture,
+  //         })
+  //       );
+  //       localStorage.setItem("user", JSON.stringify(user));
+  //       toast.success(response.message || "Signed up with Google!");
+  //       navigate("/");
+  //     } else {
+  //       toast.error(response.message || "Google sign-up failed");
+  //     }
+  //   } catch (error: any) {
+  //     toast.error(error.message || "Google login failed");
+  //   }
+  // };
+
+const handleGoogleLogin = async (credentialResponse: any) => {
+  try {
+    if (!credentialResponse.credential) {
+      toast.error("Invalid Google Credential");
+      return;
     }
-  };
+
+    const decoded: any = jwtDecode(credentialResponse.credential);
+
+    const response = await googleLogin({
+      name: decoded.name,
+      email: decoded.email,
+      password: decoded.sub,
+      profilePicture: decoded.picture,
+      role: "student",
+    });
+
+    const user = response?.user;
+
+    if (user) {
+      dispatch(
+        setUser({
+          _id: user._id,
+          username: user.name,
+          email: user.email,
+          role: user.role,
+          isBlocked: user.isBlocked,
+          profilePicUrl: user.profilePicture,
+        })
+      );
+      localStorage.setItem("user", JSON.stringify(user));
+      toast.success(response.message || "Signed up with Google!"); // ✅ this should now show
+      navigate("/");
+    } else {
+      toast.error(response.message || "Google sign-up failed");
+    }
+  } catch (error: any) {
+    console.error("Google Login Error:", error);
+    toast.error(error.message || "Google login failed");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex flex-col">

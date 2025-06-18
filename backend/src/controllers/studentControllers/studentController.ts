@@ -297,8 +297,8 @@ export class StudentController implements IStudentController {
 
           if(user){
             const role = user.role
-            const accessToken = await this.JWT.accessToken({email,role})
-            const refreshToken = await this.JWT.refreshToken({email,role})
+            const accessToken = await this.JWT.accessToken({id:user._id,email,role})
+            const refreshToken = await this.JWT.refreshToken({id:user._id,email,role})
 
             res.status(StatusCode.OK)
             .cookie("accessToken",accessToken,{httpOnly:true})
