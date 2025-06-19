@@ -2,20 +2,21 @@ import { API } from "../../service/axios";
 
 import AdminRoutersEndPoints from "../../types/endPoints/adminEndPoint";
 
-export const getAllUser = async():Promise<any> => {
-    try {
-        const response = await API.get(AdminRoutersEndPoints.adminGetUsers,{
-            headers:{'Content-Type':'application/json'},
-            withCredentials:true
-        })
+export const getAllUser = async (page = 1, limit = 1, search = ''): Promise<any> => {
+  try {
+    const response = await API.get(`${AdminRoutersEndPoints.adminGetUsers}?page=${page}&limit=${limit}&search=${search}`, {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true
+    });
+    console.log("API Call Params =>", { page, limit, search });
 
-        console.log("getAll users in adminAction api",response)
+    console.log("getAll users in adminAction api", response.data);
+    return response.data; // contains {users, total}
+  } catch (error) {
+    throw error;
+  }
+};
 
-        return response?.data?.users
-    } catch (error) {
-        throw error
-    }
-}
 
 export const blockUser = async(email:string) => {
     try {
@@ -33,15 +34,17 @@ export const blockUser = async(email:string) => {
 }
 
 
-export const getAllInstructor = async() : Promise<any> => {
+export const getAllInstructor = async(page = 1, limit = 1, search = '') : Promise<any> => {
     try {
-        const response = await API.get(AdminRoutersEndPoints.adminGetInstructors,{
+        const response = await API.get(`${AdminRoutersEndPoints.adminGetInstructors}?page=${page}&limit=${limit}&search=${search}`,{
             headers:{'Content-Type':'application/json'},
             withCredentials:true
         })
 
-        console.log('getall instructors',response.data.instructors)
-        return response.data.instructors
+        console.log("Instructor API Call Params =>", { page, limit, search });
+
+        console.log('getall instructors',response.data)
+        return response.data
     } catch (error) {
         throw error
     }
@@ -63,20 +66,25 @@ export const blockInstructor = async(email:string):Promise<any> => {
     }
 }
 
-export const getAllVerificationRequests = async () => {
-    try {
-        const response = await API.get(AdminRoutersEndPoints.adminGetVerifcationsRequest,{
-            headers:{'Content-Type' :'application/json'},
-            withCredentials:true
-        })
+export const getAllVerificationRequests = async (page = 1, limit = 10, search = ''): Promise<any> => {
+  try {
+    const response = await API.get(
+      `${AdminRoutersEndPoints.adminGetVerifcationsRequest}?page=${page}&limit=${limit}&search=${search}`,
+      {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+      }
+    );
 
-        console.log('verification list in adminaction api',response.data)
+    console.log("Verification API Call Params =>", { page, limit, search });
+    console.log("Verification request response =>", response.data);
 
-        return response.data
-    } catch (error) {
-        throw error
-    }
-}
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 
 export const getVerificationRequestByemail = async(email:string) => {
     try {

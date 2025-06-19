@@ -12,9 +12,10 @@ export class AdminVerificationService implements IAdminVerificationService {
     this.instructorService = instructorService
   }
 
-  async getAllRequests(): Promise<IVerificationModel[] | null> {
-    return await this.verificationRepository.getAllRequests();
+  async getAllRequests(page: number, limit: number, search = ''): Promise<{ data: IVerificationModel[]; total: number }> {
+  return await this.verificationRepository.getAllRequests(page, limit, search);
   }
+
 
   async getRequestDataByEmail(email: string): Promise<IVerificationModel | null> {
     return await this.verificationRepository.getRequestDataByEmail(email);

@@ -20,18 +20,18 @@ export class AdminRespository extends GenericRepository<IAdmin> implements IAdmi
         return await this.create(adminData)
     }
 
-    async getAllUsers():Promise<IUser[] | null>{
+    async getAllUsers(page: number, limit: number, search: string):Promise<{users:IUser[];total:number}>{
         try {
-            const users = await this.adminBaseRepository.getAllUsers()
+            const users = await this.adminBaseRepository.getAllUsers(page, limit, search)
             return users
         } catch (error) {
             throw error
         }
     }
 
-    async getAllInstructors():Promise<IInstructor[] | null>{
+    async getAllInstructors(page: number, limit: number, search: string):Promise<{instructors:IInstructor[];total:number}>{
         try {
-            const instructors = await this.adminBaseRepository.getAllInstructors()
+            const instructors = await this.adminBaseRepository.getAllInstructors(page, limit, search)
             return instructors
         } catch (error) {
             throw error

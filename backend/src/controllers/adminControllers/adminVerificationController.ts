@@ -12,15 +12,30 @@ export class AdminVerificationController {
     this.emailService = new SendEmail()
   }
 
-  async getAllRequests(_req: Request, res: Response): Promise<void> {
-    try {
-      const requestData = await this.verificationService.getAllRequests();
+  async getAllRequests(req: Request, res: Response): Promise<void> {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const search = (req.query.search as string) || '';
 
-      res.status(StatusCode.OK).json({ data: requestData });
-    } catch (error:any) {
-      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
-    }
+    const { data, total } = await this.verificationService.getAllRequests(page, limit, search);
+
+    res.status(StatusCode.OK).json({
+      success: true,
+      message: "Verification requests fetched successfully",
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    });
+  } catch (error: any) {
+    res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: error.message || "Something went wrong while fetching verification requests"
+    });
   }
+}
+
 
 async getRequestData(req: Request, res: Response): Promise<void> {
   try {

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DataTable from "../../components/AdminComponents/DataTable";
-import type { Column, ActionButton } from "../../components/AdminComponents/DataTable";
+import DataTable, { type Column, type ActionButton } from "../../components/AdminComponents/DataTable";
 import { Eye } from "lucide-react";
-import { getAllVerificationRequests } from "../../api/action/AdminActionApi"; // ✅ updated
+import { getAllVerificationRequests } from "../../api/action/AdminActionApi";
 
 interface VerificationRequest {
   _id: string;
@@ -18,13 +17,19 @@ interface VerificationRequest {
 const VerificationPage = () => {
   const [requests, setRequests] = useState<VerificationRequest[]>([]);
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit] = useState(1); // Change to any number you prefer per page
+
   const navigate = useNavigate();
 
   const fetchRequests = async () => {
     try {
       setLoading(true);
-      const res = await getAllVerificationRequests(); // ✅ updated
-      setRequests(res?.data || []); // ✅ adjusted to match your backend response shape
+      const res = await getAllVerificationRequests(page, limit, search);
+      setRequests(res?.data || []);
+      setTotalPages(res?.totalPages || 1);
     } catch (err) {
       console.error("Error fetching verification requests", err);
     } finally {
@@ -34,7 +39,7 @@ const VerificationPage = () => {
 
   useEffect(() => {
     fetchRequests();
-  }, []);
+  }, [page, search]); // Re-fetch on page or search change
 
   const columns: Column<VerificationRequest>[] = [
     { key: "username", title: "Name" },
@@ -61,9 +66,17 @@ const VerificationPage = () => {
       loading={loading}
       columns={columns}
       actions={actions}
-      itemsPerPage={1}
+      pagination={{
+        currentPage: page,
+        totalPages: totalPages,
+        onPageChange: (newPage) => setPage(newPage),
+      }}
+      searchValue={search}
+      onSearchChange={(value) => {
+        setSearch(value);
+        setPage(1); // reset to page 1 on search
+      }}
       searchPlaceholder="Search by name or email..."
-      searchableFields={["username", "email"]}
     />
   );
 };

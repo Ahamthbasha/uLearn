@@ -9,8 +9,8 @@ export interface IAdminRepository{
 
 //fetch users and instructors
 
-    getAllUsers():Promise<IUser[] | null>
-    getAllInstructors():Promise<IInstructor [] | null>
+    getAllUsers(page: number, limit: number, search: string):Promise<{users:IUser[] ; total:number}>
+    getAllInstructors(page: number, limit: number, search: string):Promise<{instructors:IInstructor[];total:number}>
 
 //get data based on email
     getUserData(email:string):Promise<IUser | null>

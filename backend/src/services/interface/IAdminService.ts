@@ -6,8 +6,8 @@ export interface IAdminService{
     getAdminData(email:string):Promise<IAdmin | null>
     createAdmin(adminData:IAdminDTO):Promise<IAdmin | null>
 
-    getAllUsers():Promise<IUser[] | null>
-    getAllInstructors():Promise<IInstructor[] | null>
+    getAllUsers(page:number,limit:number,search:string):Promise<{users:IUser[];total:number}>
+    getAllInstructors(page:number,limit:number,search:string):Promise<{instructors:IInstructor[];total:number}>
 
 //specified data based on email
     getUserData(email:string):Promise<IUser | null>

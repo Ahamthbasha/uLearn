@@ -1,64 +1,79 @@
-import { Model,Document } from "mongoose";
+import { Model, Document, SortOrder } from "mongoose";
 
-export interface IGenericRepository <T extends Document>{
-    create(payload : Partial<T>):Promise<T>
-    findOne(filter:object):Promise<T|null>
-    findById(id:string):Promise<T | null>
-    findAll(filter?:object):Promise<T[] | null>
-    update(id:string,data:Partial<T>):Promise<T|null>
-    updateOne(filter:object,data:Partial<T>):Promise<T|null>
-    delete(id:string):Promise<T|null>
+export interface IGenericRepository<T extends Document> {
+  create(payload: Partial<T>): Promise<T>;
+  findOne(filter: object): Promise<T | null>;
+  findById(id: string): Promise<T | null>;
+  findAll(filter?: object): Promise<T[] | null>;
+  update(id: string, data: Partial<T>): Promise<T | null>;
+  updateOne(filter: object, data: Partial<T>): Promise<T | null>;
+  delete(id: string): Promise<T | null>;
+
+  paginate(
+    filter: object,
+    page: number,
+    limit: number,
+    sort?: Record<string, SortOrder>
+  ): Promise<{ data: T[]; total: number }>;
 }
 
-export class GenericRepository <T extends Document> implements IGenericRepository<T>{
-    private model:Model<T>
+export class GenericRepository<T extends Document> implements IGenericRepository<T> {
+  private model: Model<T>;
 
-    constructor(model:Model<T>){
-        this.model = model
-    }
+  constructor(model: Model<T>) {
+    this.model = model;
+  }
 
-    async create(payload:Partial<T>):Promise<T>{
-        return await this.model.create(payload)
-    }
+  async create(payload: Partial<T>): Promise<T> {
+    return await this.model.create(payload);
+  }
 
-    async findOne(filter:object):Promise<T | null>{
-        return await this.model.findOne(filter)
-    }
+  async findOne(filter: object): Promise<T | null> {
+    return await this.model.findOne(filter);
+  }
 
-    async findAll(filter:object):Promise<T[] | null>{
-        return await this.model.find(filter)
-    }
+  async findAll(filter: object = {}): Promise<T[] | null> {
+    return await this.model.find(filter);
+  }
 
-    async findById(id: string): Promise<T | null> {
-        return await this.model.findById(id)
-    }
+  async findById(id: string): Promise<T | null> {
+    return await this.model.findById(id);
+  }
 
-    async update(id: string, data: Partial<T>): Promise<T | null> {
-        return await this.model.findByIdAndUpdate(id,data,{new:true})
-    }
+  async update(id: string, data: Partial<T>): Promise<T | null> {
+    return await this.model.findByIdAndUpdate(id, data, { new: true });
+  }
 
-    // async updateOne(filter: object, data: Partial<T>): Promise<T | null> {
-    //     return await this.model.findOneAndUpdate(filter,data,{
-    //         new:true,
-    //         upsert:true
-    //     })
-    // }
-
-    async updateOne(filter: object, data: Partial<T>): Promise<T | null> {
+  async updateOne(filter: object, data: Partial<T>): Promise<T | null> {
     const updatedDoc = await this.model.findOneAndUpdate(filter, data, {
-        new: true,
-        upsert: false
+      new: true,
+      upsert: false,
     });
 
     if (!updatedDoc) {
-        console.warn("No document found to update with filter:", filter);
+      console.warn("No document found to update with filter:", filter);
     }
 
     return updatedDoc;
-}
+  }
 
+  async delete(id: string): Promise<T | null> {
+    return await this.model.findByIdAndDelete(id);
+  }
 
-    async delete(id:string):Promise<T | null>{
-        return await this.model.findByIdAndDelete(id)
-    }
+  async paginate(
+    filter: object,
+    page: number,
+    limit: number,
+    sort: Record<string, SortOrder> = { createdAt: -1} as Record<string,SortOrder>
+  ): Promise<{ data: T[]; total: number }> {
+    const total = await this.model.countDocuments(filter);
+    const data = await this.model
+      .find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort(sort);
+
+    return { data, total };
+  }
 }

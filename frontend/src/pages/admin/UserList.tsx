@@ -1,6 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { UserX, UserCheck, Users } from 'lucide-react';
-import DataTable, { type Column, type ActionButton } from '../../components/AdminComponents/DataTable';
+import DataTable, {
+  type Column,
+  type ActionButton
+} from '../../components/AdminComponents/DataTable';
 import { getAllUser, blockUser } from '../../api/action/AdminActionApi';
 import { toast } from 'react-toastify';
 
@@ -17,42 +20,50 @@ const UserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(2); // 👈 You can change to 1 to show one user per page
+  const [total, setTotal] = useState(0);
+  const [search, setSearch] = useState('');
 
-  const fetchUsers = useCallback(async () => {
+  const fetchUsers = async () => {
+    console.log("🔄 Fetching users with:", { page, limit, search });
     try {
       setLoading(true);
       setError(null);
-      const userData = await getAllUser();
-      
-      if (!userData || !Array.isArray(userData)) {
+      const data = await getAllUser(page, limit, search);
+      console.log('✅ userList.tsx:=>', data);
+
+      if (!data || !Array.isArray(data.users)) {
         throw new Error('Invalid user data received');
       }
-      
-      // Fixed: Properly type the user data and ensure status is correctly typed
-      const formattedUsers: User[] = userData.map((user: any) => ({
+
+      const formattedUsers: User[] = data.users.map((user: any) => ({
         id: user._id,
         username: user.username || 'N/A',
         email: user.email || 'N/A',
-        status: (user.isBlocked ? 'Blocked' : 'Active') as 'Blocked' | 'Active', // Explicit type assertion
-        created: user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-GB') : 'N/A',
-        isBlocked: user.isBlocked || false,
+        status: user.isBlocked ? 'Blocked' : 'Active',
+        created: user.createdAt
+          ? new Date(user.createdAt).toLocaleDateString('en-GB')
+          : 'N/A',
+        isBlocked: user.isBlocked || false
       }));
-      
+
       setUsers(formattedUsers);
+      setTotal(data.total || 0);
     } catch (error: any) {
-      const errorMessage = error.message || "Failed to fetch users";
+      const errorMessage = error.message || 'Failed to fetch users';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     fetchUsers();
-  }, [fetchUsers]);
+  }, [page, limit, search]);
 
-  const handleBlockToggle = useCallback(async (user: User) => {
+  const handleBlockToggle = async (user: User) => {
     try {
       const response = await blockUser(user.email);
       if (response.success) {
@@ -60,10 +71,10 @@ const UserList: React.FC = () => {
         setUsers((prev) =>
           prev.map((u) =>
             u.email === user.email
-              ? { 
-                  ...u, 
-                  status: (u.status === 'Blocked' ? 'Active' : 'Blocked') as 'Blocked' | 'Active',
-                  isBlocked: !u.isBlocked 
+              ? {
+                  ...u,
+                  status: u.status === 'Blocked' ? 'Active' : 'Blocked',
+                  isBlocked: !u.isBlocked
                 }
               : u
           )
@@ -74,9 +85,17 @@ const UserList: React.FC = () => {
     } catch (error: any) {
       toast.error(error.message || 'Error occurred while blocking user');
     }
-  }, []);
+  };
 
-  // Define columns for users
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1); // Reset to page 1 on new search
+  };
+
   const columns: Column<User>[] = [
     {
       key: 'username',
@@ -110,35 +129,48 @@ const UserList: React.FC = () => {
     }
   ];
 
-  // Fixed: Define actions with proper function signatures
   const actions: ActionButton<User>[] = [
     {
       key: 'block-toggle',
-      label: (user: User) => user.status === 'Blocked' ? 'Unblock User' : 'Block User',
-      icon: (user: User) => user.status === 'Blocked' ? <UserX size={16} /> : <UserCheck size={16} />,
+      label: (user) =>
+        user.status === 'Blocked' ? 'Unblock User' : 'Block User',
+      icon: (user) =>
+        user.status === 'Blocked' ? <UserCheck size={16} /> : <UserX size={16} />,
       onClick: handleBlockToggle,
-      className: (user: User) => user.status === 'Blocked'
-        ? 'bg-red-500 hover:bg-red-600 text-white'
-        : 'bg-green-500 hover:bg-green-600 text-white'
+      className: (user) =>
+        user.status === 'Blocked'
+          ? 'bg-red-500 hover:bg-red-600 text-white'
+          : 'bg-green-500 hover:bg-green-600 text-white'
     }
   ];
 
+  const totalPages = Math.ceil(total / limit);
+
   return (
-    <DataTable
-      data={users}
-      columns={columns}
-      actions={actions}
-      loading={loading}
-      error={error}
-      title="User List"
-      description="Manage and monitor all registered users"
-      searchPlaceholder="Search by name or email"
-      searchableFields={['username', 'email']}
-      onRetry={fetchUsers}
-      emptyStateIcon={<Users size={48} className="text-gray-300" />}
-      emptyStateTitle="No users available"
-      emptyStateDescription="No users have been registered yet."
-    />
+    <div className="px-4">
+      {/* 🧾 User Table with integrated search and pagination */}
+      <DataTable
+        data={users}
+        columns={columns}
+        actions={actions}
+        loading={loading}
+        error={error}
+        title="User List"
+        description="Manage and monitor all registered users"
+        onRetry={fetchUsers}
+        emptyStateIcon={<Users size={48} className="text-gray-300" />}
+        emptyStateTitle="No users available"
+        emptyStateDescription="No users have been registered yet."
+        searchValue={search}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder="Search by name or email"
+        pagination={{
+          currentPage: page,
+          totalPages: totalPages,
+          onPageChange: handlePageChange
+        }}
+      />
+    </div>
   );
 };
 

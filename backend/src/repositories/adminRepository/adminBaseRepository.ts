@@ -6,29 +6,54 @@ export class AdminBaseRespository implements IAdminBaseRepository{
 
 //fetch all users and instructors
 
-    async getAllUsers(): Promise<IUser[] | null> {
-    try {
-        const users = await UserModel.find() 
+async getAllUsers(page: number, limit: number, search: string): Promise<{ users: IUser[]; total: number }> {
+  try {
+    let query = {};
 
-        console.log("All users admin base repo",users)
-        
-        return users
-    } catch (error) {
-        throw error
-    }    
+    if (search && search.trim() !== '') {
+      query = {
+        $or: [
+          { username: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } }
+        ]
+      };
     }
 
-    async getAllInstructors(): Promise<IInstructor[] | null> {
-        try {
-            const instructors = await InstructorModel.find()
-            console.log('all instructors in admin base repo',instructors)
+    const total = await UserModel.countDocuments(query);
+    const users = await UserModel.find(query)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 });
 
-            return instructors 
+    return { users, total };
+  } catch (error) {
+    throw error;
+  }
+}
 
-        } catch (error) {
-            throw error
-        }
-    }
+
+
+async getAllInstructors(page: number, limit: number, search: string): Promise<{ instructors: IInstructor[]; total: number }> {
+  try {
+    const query = {
+      $or: [
+        { username: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ]
+    };
+
+    const total = await InstructorModel.countDocuments(query);
+    const instructors = await InstructorModel.find(query)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 }); // Optional sorting
+
+    return { instructors, total };
+  } catch (error) {
+    throw error;
+  }
+}
+
 
  //get specified data based on email   
 

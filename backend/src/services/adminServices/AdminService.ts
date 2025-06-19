@@ -18,12 +18,12 @@ export class AdminService implements IAdminService{
         return await this.adminRepository.createAdmin(adminData)
     }
 
-    async getAllUsers(): Promise<IUser[] | null> {
-        return await this.adminRepository.getAllUsers()
+    async getAllUsers(page:number,limit:number,search:string): Promise<{users:IUser[];total:number}> {
+        return await this.adminRepository.getAllUsers(page,limit,search)
     }
 
-    async getAllInstructors(): Promise<IInstructor[] | null> {
-        return await this.adminRepository.getAllInstructors()
+    async getAllInstructors(page:number,limit:number,search:string): Promise<{instructors:IInstructor[];total:number}> {
+        return await this.adminRepository.getAllInstructors(page,limit,search)
     }
 
 //specified data based on email
