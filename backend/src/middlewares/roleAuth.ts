@@ -39,7 +39,7 @@ export const isInstructor = async(req:Request,res:Response,next:NextFunction):Pr
         const decode = await JWT.verifyToken(Token)
 
         if(decode){
-            if(decode.role != Roles.STUDENT){
+            if(decode.role != Roles.INSTRUCTOR){
                 res.status(StatusCode.UNAUTHORIZED).send(AuthErrorMsg.ACCESS_FORBIDDEN)
                 return
             }

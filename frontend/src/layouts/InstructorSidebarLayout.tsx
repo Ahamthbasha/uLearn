@@ -16,8 +16,10 @@ const navItems = [
 ];
 
 const InstructorSidebarLayout = () => {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const username = (user?.name || "Instructor").toUpperCase();
+  const instructor = JSON.parse(localStorage.getItem("instructor") || "{}");
+
+  console.log('instructor sidebar layout',instructor)
+  const username = (instructor?.name || "Instructor").toUpperCase();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -55,16 +57,25 @@ const InstructorSidebarLayout = () => {
 
         {/* User Profile Section */}
         <div className="p-6 border-b border-gray-100">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-semibold text-lg">👨‍🏫</span>
-            </div>
-            <div>
-              <p className="font-semibold text-gray-800">{username}</p>
-              <p className="text-xs text-gray-500">Instructor</p>
-            </div>
-          </div>
-        </div>
+  <div className="flex items-center space-x-3">
+    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+      {instructor?.profilePicture ? (
+        <img
+          src={instructor.profilePicture}
+          alt="Profile"
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <span className="text-xl">👨‍🏫</span>
+      )}
+    </div>
+    <div>
+      <p className="font-semibold text-gray-800">{username}</p>
+      <p className="text-xs text-gray-500">Instructor</p>
+    </div>
+  </div>
+</div>
+
 
         {/* Navigation */}
         <div className="p-6 flex-1">

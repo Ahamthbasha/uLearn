@@ -49,8 +49,10 @@ export class JwtService {
       const secret = process.env.JWT_SECRET || "Sombu";
 
       const data = await jwt.verify(token, secret);
+      
       return data;
     } catch (error) {
+      console.error("❌ Token verification failed:", error);
       throw error;
     }
   }

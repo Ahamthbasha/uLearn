@@ -33,6 +33,7 @@ const InstructorProfilePage = () => {
             profilePicture: response.data.profilePicUrl || null,
           }));
           setProfile(response.data);
+          toast.success(response.message)
         }
       } catch (error) {
         console.error("Failed to load instructor profile", error);
@@ -85,7 +86,6 @@ const InstructorProfilePage = () => {
         <div className="space-y-2 text-sm sm:text-base">
           <p><strong>Username:</strong> {profile.username}</p>
           <p><strong>Email:</strong> {profile.email}</p>
-          <p><strong>Mobile:</strong> {profile.mobileNo || "N/A"}</p>
           <p><strong>Skills:</strong> {profile.skills?.join(", ") || "None"}</p>
           <p><strong>Expertise:</strong> {profile.expertise?.join(", ") || "None"}</p>
           <p><strong>Status:</strong> {profile.isVerified ? "✅ Verified" : "⏳ Not Verified"}</p>

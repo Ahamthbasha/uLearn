@@ -44,8 +44,10 @@ export const instructorGetProfile = async() =>{
         console.log('instructor profile data response',response.data)
 
         return response.data
-    } catch (error) {
-        throw error
+    } catch (error:any) {
+        if(error.response && error.response.data){
+            return error.response.data
+        }
     }
 }
 
@@ -73,7 +75,9 @@ export const instructorUpdatePassword = async(data:any):Promise<any>=>{
         console.log('instructor password updation data',response.data)
 
         return response.data
-    } catch (error) {
-        throw error
+    } catch (error:any) {
+        if(error.response && error.response.data){
+            return error.response.data
+        }
     }
 }

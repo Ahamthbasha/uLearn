@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { instructorController,instructorVerificationController,instructorProfileController } from "../config/dependencyInjector";
 import upload from "../utils/multer";
+
 import authenticateToken from "../middlewares/AuthenticatedRoutes";
 import { isInstructor } from "../middlewares/roleAuth";
 

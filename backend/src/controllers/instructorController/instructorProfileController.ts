@@ -22,7 +22,9 @@ export class InstructorProfileController implements IInstructorProfileController
   async getProfile(req: Request, res: Response): Promise<void> {
     try {
       const token = req.cookies["accessToken"];
+    
       const decoded = await this.jwt.verifyToken(token);
+
       const instructor = await this.service.getProfile(decoded.email);
 
       if (!instructor || !instructor.isVerified) {
@@ -101,10 +103,9 @@ export class InstructorProfileController implements IInstructorProfileController
       const token = req.cookies["accessToken"];
       const decoded = await this.jwt.verifyToken(token);
       const email = decoded.email;
-
       const { currentPassword, newPassword } = req.body;
       const instructor = await this.service.getProfile(email);
-
+      
       if (!instructor) {
         res.status(StatusCode.NOT_FOUND).json({
           success: false,
@@ -114,6 +115,7 @@ export class InstructorProfileController implements IInstructorProfileController
       }
 
       const isMatch = await bcrypt.compare(currentPassword, instructor.password);
+
       if (!isMatch) {
         res.status(StatusCode.UNAUTHORIZED).json({
           success: false,

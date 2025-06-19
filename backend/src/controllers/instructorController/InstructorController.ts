@@ -166,10 +166,19 @@ export class InstructorController implements IInstructorController{
       const accesstoken = await this.jwt.accessToken({ email, role, id });
       const refreshToken = await this.jwt.refreshToken({ email, role, id });
 
+      const isProd = process.env.NODE_ENV === 'production'
       res
         .status(StatusCode.OK)
-        .cookie("accessToken", accesstoken, { httpOnly: true })
-        .cookie("refreshToken", refreshToken, { httpOnly: true })
+        .cookie("accessToken", accesstoken, { 
+          httpOnly: true,
+          sameSite:isProd ? 'none' :'lax',
+          secure: isProd
+        })
+        .cookie("refreshToken", refreshToken, { 
+          httpOnly: true ,
+          sameSite : isProd ? "none" : 'lax',
+          secure : isProd
+        })
 
         .send({
           success: true,
