@@ -123,50 +123,58 @@ export class StudentController implements IStudentController {
     }
   }
 
-  async login(req:Request,res:Response):Promise<any>{
-    try {
-        let {email,password} = req.body
+async login(req: Request, res: Response): Promise<any> {
+  try {
+    const { email, password } = req.body;
 
-        let student = await this.studentService.findByEmail(email)
+    const student = await this.studentService.findByEmail(email);
 
-        if(!student){
-            return res.status(StatusCode.NOT_FOUND).json({
-                success:false,
-                message:StudentErrorMessages.INVALID_CREDENTIALS
-            })
-        }
-
-        let passwordMatch = await bcrypt.compare(password,student.password)
-
-        if(!passwordMatch){
-            return res.status(StatusCode.NOT_FOUND).json({
-                success:false,
-                message:StudentErrorMessages.INVALID_CREDENTIALS 
-            })
-        }
-
-        let role = student.role
-        let id = student.id
-
-        const accessToken = await this.JWT.accessToken({id,role,email})
-
-        const refreshToken = await this.JWT.refreshToken({id,role,email})
-
-        console.log("ACCESS TOKEN:",accessToken)
-        console.log("REFRESHTOKEN:",refreshToken)
-        return res
-        .status(StatusCode.OK)
-        .cookie("accessToken",accessToken,{httpOnly:true})
-        .cookie("refreshToken",refreshToken,{httpOnly:true})
-        .send({
-            success:true,
-            message:"user logged successfully",
-            user:student
-        })
-    } catch (error) {
-        throw error
+    if (!student) {
+      return res.status(StatusCode.NOT_FOUND).json({
+        success: false,
+        message: StudentErrorMessages.INVALID_CREDENTIALS,
+      });
     }
+
+    // ✅ Block check
+    if (student.isBlocked) {
+      return res.status(StatusCode.FORBIDDEN).json({
+        success: false,
+        message: "Your login has been declined. Your account is blocked.",
+      });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, student.password);
+
+    if (!passwordMatch) {
+      return res.status(StatusCode.NOT_FOUND).json({
+        success: false,
+        message: StudentErrorMessages.INVALID_CREDENTIALS,
+      });
+    }
+
+    const role = student.role;
+    const id = student.id;
+
+    const accessToken = await this.JWT.accessToken({ id, role, email });
+    const refreshToken = await this.JWT.refreshToken({ id, role, email });
+
+    console.log("ACCESS TOKEN:", accessToken);
+    console.log("REFRESH TOKEN:", refreshToken);
+
+    return res
+      .status(StatusCode.OK)
+      .cookie("accessToken", accessToken, { httpOnly: true })
+      .cookie("refreshToken", refreshToken, { httpOnly: true })
+      .send({
+        success: true,
+        message: "User logged in successfully",
+        user: student,
+      });
+  } catch (error) {
+    throw error;
   }
+}
 
   async logout(_req:Request,res:Response){
     try {
