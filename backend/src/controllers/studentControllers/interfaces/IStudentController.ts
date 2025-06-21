@@ -10,4 +10,5 @@ export default interface IStudentController {
     forgotResendOtp(req:Request,res:Response):Promise<void>
     resetPassword(req:Request,res:Response):Promise<void>
     doGoogleLogin(req:Request,res:Response):Promise<void>
+    statusCheck(req:Request,res:Response):Promise<void>
 }

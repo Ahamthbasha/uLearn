@@ -26,6 +26,11 @@ router.post('/resetPassword',studentController.resetPassword.bind(studentControl
 
 router.post('/googleLogin',studentController.doGoogleLogin.bind(studentController))
 
+//isBlocked checker
+router.get("/statusCheck", studentController.statusCheck.bind(studentController));
+
+
+
 /////////////////////student profile controller/////////////////////////////////
 
 router.get('/profile',authenticateToken,isStudent,studentProfileController.getProfile.bind(studentProfileController))

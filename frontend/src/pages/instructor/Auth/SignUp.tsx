@@ -19,7 +19,7 @@ import type { signUp } from "../../../types/signUpType";
 const signupSchema = Yup.object().shape({
   username: Yup.string()
     .matches(
-      /^(?=.*[a-zA-Z])[a-zA-Z0-9_]{3,20}$/,
+      /^(?=.*[a-zA-Z])[a-zA-Z0-9 _]{3,20}$/,
       "Username must contain letters and be 3–20 characters long"
     )
     .required("Username is required"),
@@ -80,6 +80,7 @@ const SignUp = () => {
             role: instructor.role,
             isBlocked: instructor.isBlocked,
             profilePicture: instructor.profilePicture,
+            isVerified:instructor.isVerified
           })
         );
         localStorage.setItem("instructor", JSON.stringify(instructor));

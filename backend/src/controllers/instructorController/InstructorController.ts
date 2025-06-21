@@ -156,7 +156,7 @@ export class InstructorController implements IInstructorController{
       if (instructor.isBlocked) {
         res.json({
           success: false,
-          message: InstructorErrorMessages.INTERNAL_SERVER_ERROR,
+          message: InstructorErrorMessages.INSTRUCTOR_BLOCKED,
         });
         return;
       }
@@ -349,4 +349,36 @@ export class InstructorController implements IInstructorController{
         throw error
       }
   }
+
+  async statusCheck(req: Request, res: Response): Promise<void> {
+  try {
+    const token = req.cookies.accessToken;
+    const decoded = await this.jwt.verifyToken(token);
+
+    if (!decoded?.email) {
+      res.status(StatusCode.UNAUTHORIZED).json({ success: false, message: "Invalid token" });
+      return;
+    }
+
+    const instructor = await this.instructorService.findByEmail(decoded.email);
+
+    if (!instructor) {
+      res.status(StatusCode.NOT_FOUND).json({ success: false, message: "Instructor not found" });
+      return;
+    }
+
+    res.status(StatusCode.OK).json({
+      success: true,
+      data: {
+        isBlocked: instructor.isBlocked,
+      },
+    });
+  } catch (err) {
+    res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Status check failed",
+    });
+  }
+}
+
 }

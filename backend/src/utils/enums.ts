@@ -9,8 +9,6 @@ export enum StatusCode {
     INTERNAL_SERVER_ERROR = 500,
 }
 
-
-
 export enum Roles{
     ADMIN='admin',
     INSTRUCTOR='instructor',

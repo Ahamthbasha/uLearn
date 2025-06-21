@@ -16,20 +16,27 @@ const StudentProfilePage = () => {
   const [showPasswordForm, setShowPasswordForm] = useState(false);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await getProfile();
-        if (response.success) {
-          dispatch(setUser(response.data));
-          setProfile(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to load profile", error);
+  const fetchProfile = async () => {
+    try {
+      const response = await getProfile();
+      console.log(response);
+      
+      if (response.success) {
+        dispatch(setUser(response.data));
+        setProfile(response.data);
+        toast.success(response.message);
+      } else {
+        toast.error(response.message || "Failed to fetch profile ❌");
       }
-    };
+    } catch (error: any) {
+      console.error("Failed to load profile", error);
+      toast.error("Something went wrong while fetching profile.");
+    }
+  };
 
-    fetchProfile();
-  }, []);
+  fetchProfile();
+}, []);
+
 
   if (!profile) {
     return <div className="p-4">Loading...</div>;
@@ -109,7 +116,7 @@ const StudentProfilePage = () => {
                   currentPassword: values.currentPassword,
                   newPassword: values.newPassword,
                 });
-
+                console.log(res)
                 if (res.success) {
                   toast.success("Password updated successfully");
                   resetForm();
@@ -117,8 +124,9 @@ const StudentProfilePage = () => {
                 } else {
                   toast.error(res.message || "Password update failed");
                 }
-              } catch (error) {
-                toast.error("Something went wrong");
+              } catch (error:any) {
+                const errorMessage = error?.response?.data?.message || "Password update failed"
+                toast.error(errorMessage);
               }
             }}
           >

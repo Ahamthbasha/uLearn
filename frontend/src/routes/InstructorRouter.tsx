@@ -31,7 +31,6 @@ const InstructorRouter = () => {
         <Route path='forgotPasswordOtp' element={<ResetVerificationOTP/>}/>
         <Route path='resetPassword' element={<ResetPassword/>}/>
 
-
         <Route path='verification' element={<VerificationForm/>}/>
         <Route path='verificationStatus/:email' element={<InstructorVerificationStatus/>}/>
         <Route path='reverify' element={<VerificationForm/>}/>

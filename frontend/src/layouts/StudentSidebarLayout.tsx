@@ -54,9 +54,20 @@ const StudentSidebarLayout = () => {
         {/* User Profile Section */}
         <div className="p-6 border-b border-gray-100">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-semibold text-lg">👤</span>
-            </div>
+            <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-300 bg-white">
+  {user?.profilePicture ? (
+    <img
+      src={user.profilePicture}
+      alt="Profile"
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    <div className="w-full h-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+      <span className="text-white font-semibold text-lg">👤</span>
+    </div>
+  )}
+</div>
+
             <div>
               <p className="font-semibold text-gray-800">{username}</p>
             </div>

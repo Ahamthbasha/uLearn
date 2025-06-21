@@ -84,7 +84,7 @@ export const InstructorErrorMessages = {
 
   // Common
   INTERNAL_SERVER_ERROR: "An unexpected error occurred. Please try again later.",
-
+  INSTRUCTOR_BLOCKED:'you are blocked by admin',
   UNAUTHORIZED:'you are not verified',
 
   PASSWORD_UPDATE_FAILED:"password updation failed"
@@ -104,7 +104,9 @@ export const StudentErrorMessages = {
   PROFILE_UPDATE_FAILED: "profile updation failed",
   INTERNAL_ERROR : "Error related to server",
   PASSWORD_UPDATE_FAILED:"your password updation is failed",
-  CURRENT_PASSWORD_INCORRECT:"your current password you entered is wrong"
+  CURRENT_PASSWORD_INCORRECT:"your current password you entered is wrong",
+  ACCESS_TOKEN_MISSING:'Access token missing'
+
 };
 
 export const StudentSuccessMessages = {

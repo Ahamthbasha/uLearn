@@ -32,30 +32,17 @@ router.post('/verificationRequest',upload.fields([{name:"degreeCertificate",maxC
 
 router.get('/getVerificationByEmail/:email',instructorVerificationController.getRequestByEmail.bind(instructorVerificationController))
 
+//isBlocked check
+
+router.get('/statusCheck',authenticateToken,isInstructor,instructorController.statusCheck.bind(instructorController))
+
 //profile management part
 
-router.get(
-  "/profile",
-  authenticateToken,
-  isInstructor,
-  instructorProfileController.getProfile.bind(instructorProfileController)
-);
+router.get("/profile",authenticateToken,isInstructor,instructorProfileController.getProfile.bind(instructorProfileController));
 
-router.put(
-  "/profile",
-  authenticateToken,
-  isInstructor,
-  upload.single("profilePic"),
-  instructorProfileController.updateProfile.bind(instructorProfileController)
-);
+router.put("/profile",authenticateToken,isInstructor,upload.single("profilePic"),instructorProfileController.updateProfile.bind(instructorProfileController));
 
-router.put(
-  "/profile/password",
-  authenticateToken,
-  isInstructor,
-  instructorProfileController.updatePassword.bind(instructorProfileController)
-);
-
+router.put("/profile/password",authenticateToken,isInstructor,instructorProfileController.updatePassword.bind(instructorProfileController));
 
 const instructorRoutes = router
 

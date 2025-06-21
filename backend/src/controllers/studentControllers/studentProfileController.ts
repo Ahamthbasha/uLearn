@@ -130,7 +130,7 @@ export class StudentProfileController implements IStudentProfileController {
 
       const isMatch = await bcrypt.compare(currentPassword, student.password);
       if (!isMatch) {
-        res.status(StatusCode.UNAUTHORIZED).json({
+        res.status(StatusCode.BAD_REQUEST).json({
           success: false,
           message: StudentErrorMessages.CURRENT_PASSWORD_INCORRECT,
         });

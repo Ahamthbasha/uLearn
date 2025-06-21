@@ -22,8 +22,13 @@ const InstructorVerificationForm: React.FC = () => {
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("Name is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
+    name: Yup.string()
+  .matches(/^[A-Za-z\s]+$/, "Name can only contain letters and spaces")
+  .min(2, "Name must be at least 2 characters")
+  .max(50, "Name must be at most 50 characters")
+  .required("Name is required")
+  .trim(),
+    email: Yup.string().matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,"Enter a valid email format").trim().lowercase().required("Email is required"),
     degreeCertificate: Yup.mixed().required("Degree Certificate is required"),
     resume: Yup.mixed().required("Resume is required"),
   });

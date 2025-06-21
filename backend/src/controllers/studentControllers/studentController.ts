@@ -347,4 +347,36 @@ async login(req: Request, res: Response): Promise<any> {
         throw error
       }
   }
+
+  async statusCheck(req: Request, res: Response): Promise<void> {
+  try {
+    const token = req.cookies.accessToken;
+    const decoded = await this.JWT.verifyToken(token);
+
+    if (!decoded?.email) {
+      res.status(StatusCode.UNAUTHORIZED).json({ success: false, message: "Invalid token" });
+      return;
+    }
+
+    const student = await this.studentService.findByEmail(decoded.email);
+
+    if (!student) {
+      res.status(StatusCode.NOT_FOUND).json({ success: false, message: "Student not found" });
+      return;
+    }
+
+    res.status(StatusCode.OK).json({
+      success: true,
+      data: {
+        isBlocked: student.isBlocked,
+      },
+    });
+  } catch (err) {
+    res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Status check failed",
+    });
+  }
+}
+
 }

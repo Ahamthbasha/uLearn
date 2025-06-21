@@ -105,15 +105,28 @@ const InstructorProfileEditPage = () => {
               <div className="flex flex-col">
                 <label className="mb-1 font-medium text-sm">Profile Picture</label>
                 <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(event: any) => {
-                    setFieldValue("profilePic", event.currentTarget.files[0]);
-                    const reader = new FileReader();
-                    reader.onload = () => setPreviewImage(reader.result as string);
-                    reader.readAsDataURL(event.currentTarget.files[0]);
-                  }}
-                />
+  type="file"
+  accept="image/*"
+  onChange={(event: any) => {
+    const file = event.currentTarget.files[0];
+
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Only JPG, JPEG, PNG, or WEBP images are allowed");
+      return;
+    }
+
+    setFieldValue("profilePic", file);
+
+    const reader = new FileReader();
+    reader.onload = () => setPreviewImage(reader.result as string);
+    reader.readAsDataURL(file);
+  }}
+/>
+
                 {previewImage && (
                   <img
                     src={previewImage}
