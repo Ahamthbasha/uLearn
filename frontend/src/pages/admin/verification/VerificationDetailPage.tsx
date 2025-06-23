@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import {
   getVerificationRequestByemail,
   updateVerificationStatus,
-} from "../../api/action/AdminActionApi";
-import { Button } from "../../components/common/Button";
+} from "../../../api/action/AdminActionApi";
+import { Button } from "../../../components/common/Button";
 import { Loader } from "lucide-react";
 import {toast} from "react-toastify";
 

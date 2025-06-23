@@ -18,23 +18,25 @@ const LoginPage = () => {
     password: '',
   };
 
-  const onSubmit = async (data:{email:string,password:string}) => {
-    try {
-      const response = await adminLogin(data);
-      const email = response.data.email
-      if(response.success){
+  const onSubmit = async (data: { email: string; password: string }) => {
+  try {
+    const response = await adminLogin(data);
+    console.log('login response in login page', response);
+
+    if (response.success) {
+      const email = response.data.email; // ✅ Only read when success
       localStorage.setItem("admin", JSON.stringify(email));
-      toast.success(response.message)
-      navigate('/admin/home')
-     
-    }else{
-      toast.error(response.message)
+      toast.success(response.message);
+      navigate('/admin/home');
+    } else {
+      toast.error(response.message); // ✅ Correct error message from backend
     }
-    } catch (error: any) {
-      console.error("Login error:", error);
-      toast.error("Login failed. Please try again.");
-    }
-  };
+  } catch (error: any) {
+    console.error("Login error:", error);
+    toast.error("Login failed. Please try again.");
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -51,7 +53,6 @@ const LoginPage = () => {
 
               <div>
                 <PasswordField name="password" placeholder="Password" />
-                <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
               </div>
 
               <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">

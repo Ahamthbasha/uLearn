@@ -1,10 +1,13 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import DataTable, { type Column, type ActionButton } from '../../components/AdminComponents/DataTable';
-import { getAllInstructor, blockInstructor } from '../../api/action/AdminActionApi';
+import React, { useEffect, useState } from 'react';
 import { UserX, UserCheck, Users } from 'lucide-react';
+import DataTable, {
+  type Column,
+  type ActionButton
+} from '../../../components/AdminComponents/DataTable';
+import { getAllUser, blockUser } from '../../../api/action/AdminActionApi';
 import { toast } from 'react-toastify';
 
-interface Instructors {
+interface User {
   id: string;
   username: string;
   email: string;
@@ -13,28 +16,28 @@ interface Instructors {
   isBlocked: boolean;
 }
 
-const InstructorList: React.FC = () => {
-  const [users, setUsers] = useState<Instructors[]>([]);
+const UserList: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [limit] = useState(2);
+  const [limit] = useState(5); // 👈 Adjust the number of users per page
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
 
-  const fetchUsers = useCallback(async () => {
-    console.log("🔄 Fetching instructors with:", { page, limit, search });
+  const fetchUsers = async () => {
+    console.log("🔄 Fetching users with:", { page, limit, search });
     try {
       setLoading(true);
       setError(null);
-      const response = await getAllInstructor(page, limit, search);
-      console.log('✅ instructorList.tsx:=>', response);
+      const data = await getAllUser(page, limit, search);
+      console.log('✅ userList.tsx:=>', data);
 
-      if (!response || !Array.isArray(response.instructors)) {
-        throw new Error('Invalid instructor data received');
+      if (!data || !Array.isArray(data.users)) {
+        throw new Error('Invalid user data received');
       }
 
-      const formattedUsers: Instructors[] = response.instructors.map((user: any) => ({
+      const formattedUsers: User[] = data.users.map((user: any) => ({
         id: user._id,
         username: user.username || 'N/A',
         email: user.email || 'N/A',
@@ -42,27 +45,27 @@ const InstructorList: React.FC = () => {
         created: user.createdAt
           ? new Date(user.createdAt).toLocaleDateString('en-GB')
           : 'N/A',
-        isBlocked: user.isBlocked || false,
+        isBlocked: user.isBlocked || false
       }));
 
       setUsers(formattedUsers);
-      setTotal(response.total);
+      setTotal(data.total || 0);
     } catch (error: any) {
-      const errorMessage = error.message || 'Failed to fetch instructors';
+      const errorMessage = error.message || 'Failed to fetch users';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
-  }, [page, limit, search]);
+  };
 
   useEffect(() => {
     fetchUsers();
-  }, [fetchUsers]);
+  }, [page, limit, search]);
 
-  const handleBlockToggle = useCallback(async (user: Instructors) => {
+  const handleBlockToggle = async (user: User) => {
     try {
-      const response = await blockInstructor(user.email);
+      const response = await blockUser(user.email);
       if (response.success) {
         toast.success(response.message);
         setUsers((prev) =>
@@ -71,7 +74,7 @@ const InstructorList: React.FC = () => {
               ? {
                   ...u,
                   status: u.status === 'Blocked' ? 'Active' : 'Blocked',
-                  isBlocked: !u.isBlocked,
+                  isBlocked: !u.isBlocked
                 }
               : u
           )
@@ -80,9 +83,9 @@ const InstructorList: React.FC = () => {
         toast.error(response.message);
       }
     } catch (error: any) {
-      toast.error(error.message || 'Error occurred while blocking instructor');
+      toast.error(error.message || 'Error occurred while blocking user');
     }
-  }, []);
+  };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -90,19 +93,28 @@ const InstructorList: React.FC = () => {
 
   const handleSearchChange = (value: string) => {
     setSearch(value);
-    setPage(1);
+    setPage(1); // Reset to page 1 on new search
   };
 
-  const columns: Column<Instructors>[] = [
+  const columns: Column<User>[] = [
+    {
+      key: 'serialNo',
+      title: 'S.NO',
+      render: (_, __, index) => (
+        <span className="text-sm text-gray-900">
+          {(page - 1) * limit + index + 1}
+        </span>
+      )
+    },
     {
       key: 'username',
       title: 'Name',
-      render: (value) => <div className="text-sm font-medium text-gray-900">{value}</div>,
+      render: (value) => <div className="text-sm font-medium text-gray-900">{value}</div>
     },
     {
       key: 'email',
       title: 'Email',
-      render: (value) => <div className="text-sm text-gray-900">{value}</div>,
+      render: (value) => <div className="text-sm text-gray-900">{value}</div>
     },
     {
       key: 'status',
@@ -117,26 +129,28 @@ const InstructorList: React.FC = () => {
         >
           {value}
         </span>
-      ),
+      )
     },
     {
       key: 'created',
       title: 'Created',
-      render: (value) => <span className="text-sm text-gray-900">{value}</span>,
-    },
+      render: (value) => <span className="text-sm text-gray-900">{value}</span>
+    }
   ];
 
-  const actions: ActionButton<Instructors>[] = [
+  const actions: ActionButton<User>[] = [
     {
       key: 'block-toggle',
-      label: (user) => (user.status === 'Blocked' ? 'Unblock Instructor' : 'Block Instructor'),
-      icon: (user) => (user.status === 'Blocked' ? <UserCheck size={16} /> : <UserX size={16} />),
+      label: (user) =>
+        user.status === 'Blocked' ? 'Unblock User' : 'Block User',
+      icon: (user) =>
+        user.status === 'Blocked' ? <UserCheck size={16} /> : <UserX size={16} />,
       onClick: handleBlockToggle,
       className: (user) =>
         user.status === 'Blocked'
           ? 'bg-red-500 hover:bg-red-600 text-white'
-          : 'bg-green-500 hover:bg-green-600 text-white',
-    },
+          : 'bg-green-500 hover:bg-green-600 text-white'
+    }
   ];
 
   const totalPages = Math.ceil(total / limit);
@@ -149,23 +163,23 @@ const InstructorList: React.FC = () => {
         actions={actions}
         loading={loading}
         error={error}
-        title="Instructor List"
-        description="Manage and monitor all registered instructors"
+        title="User List"
+        description="Manage and monitor all registered users"
         onRetry={fetchUsers}
         emptyStateIcon={<Users size={48} className="text-gray-300" />}
-        emptyStateTitle="No instructors available"
-        emptyStateDescription="No instructors have been registered yet."
+        emptyStateTitle="No users available"
+        emptyStateDescription="No users have been registered yet."
         searchValue={search}
         onSearchChange={handleSearchChange}
         searchPlaceholder="Search by name or email"
         pagination={{
           currentPage: page,
           totalPages: totalPages,
-          onPageChange: handlePageChange,
+          onPageChange: handlePageChange
         }}
       />
     </div>
   );
 };
 
-export default InstructorList;
+export default UserList;

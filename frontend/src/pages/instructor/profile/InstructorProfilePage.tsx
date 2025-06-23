@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import InputField from "../../components/common/InputField";
-import Card from "../../components/common/Card";
+import InputField from "../../../components/common/InputField";
+import Card from "../../../components/common/Card";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 
 import {
   instructorGetProfile,
   instructorUpdatePassword
-} from "../../api/action/InstructorActionApi";
-import { setInstructor } from "../../redux/slices/instructorSlice";
+} from "../../../api/action/InstructorActionApi";
+import { setInstructor } from "../../../redux/slices/instructorSlice";
 
 const InstructorProfilePage = () => {
   const [profile, setProfile] = useState<any>(null);

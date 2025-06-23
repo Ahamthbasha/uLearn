@@ -1,21 +1,42 @@
 import { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import InputField from "../../components/common/InputField";
-import { getProfile, updateProfile } from "../../api/action/StudentAction";
-import Card from "../../components/common/Card";
+import InputField from "../../../components/common/InputField";
+import { getProfile, updateProfile } from "../../../api/action/StudentAction";
+import Card from "../../../components/common/Card";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from "react-redux";
-import { setUser } from "../../redux/slices/userSlice";
+import { setUser } from "../../../redux/slices/userSlice";
 
 const ProfileSchema = Yup.object().shape({
-  username: Yup.string().required("Username is required"),
-  skills: Yup.string(),
-  expertise: Yup.string(),
-  currentStatus: Yup.string(),
+  username: Yup.string()
+    .matches(/^[a-zA-Z0-9_]{3,30}$/, "Username must be 3-30 characters, only letters, numbers, underscores")
+    .required("Username is required"),
+
+  skills: Yup.string()
+    .test("valid-skills", "Please enter at least one skill", (value) => {
+      if (!value) return false;
+      const skills = value.split(",").map((s) => s.trim()).filter(Boolean);
+      return skills.length > 0;
+    }),
+
+  expertise: Yup.string()
+    .test("valid-expertise", "Please enter at least one expertise", (value) => {
+      if (!value) return false;
+      const expertise = value.split(",").map((s) => s.trim()).filter(Boolean);
+      return expertise.length > 0;
+    }),
+
+  currentStatus: Yup.string()
+  .trim()
+  .matches(/^(?!\s*$).+$/, "Status cannot be empty or just spaces")
+  .min(3, "Status must be at least 3 characters")
+  .required("Current status is required"),
+
 });
+
 
 const StudentProfileEditPage = () => {
   const [initialValues, setInitialValues] = useState<any>(null);
@@ -95,16 +116,19 @@ const StudentProfileEditPage = () => {
 
               <div className="flex flex-col">
                 <label className="mb-1 font-medium text-sm">Profile Picture</label>
-                                <input
+
+<input
   type="file"
   accept="image/*"
   onChange={(event: any) => {
-    const file = event.currentTarget.files[0];
+    const fileInput = event.currentTarget;
+    const file = fileInput.files[0];
 
     if (file) {
       const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
       if (!validImageTypes.includes(file.type)) {
         toast.error("Only image files (JPG, PNG, GIF, WebP) are allowed");
+        fileInput.value = ""; // ❌ Clear invalid file
         return;
       }
 

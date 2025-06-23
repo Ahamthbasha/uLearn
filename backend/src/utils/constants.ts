@@ -87,7 +87,9 @@ export const InstructorErrorMessages = {
   INSTRUCTOR_BLOCKED:'you are blocked by admin',
   UNAUTHORIZED:'you are not verified',
 
-  PASSWORD_UPDATE_FAILED:"password updation failed"
+  PASSWORD_UPDATE_FAILED:"password updation failed",
+  OTP_EXPIRED : "otp is expired.Request new One",
+  OTP_NOT_FOUND:"otp is not found"
 };
 
 export const StudentErrorMessages = {
@@ -105,8 +107,8 @@ export const StudentErrorMessages = {
   INTERNAL_ERROR : "Error related to server",
   PASSWORD_UPDATE_FAILED:"your password updation is failed",
   CURRENT_PASSWORD_INCORRECT:"your current password you entered is wrong",
-  ACCESS_TOKEN_MISSING:'Access token missing'
-
+  ACCESS_TOKEN_MISSING:'Access token missing',
+  OTP_EXPIRED: "OTP expired. Please request a new one.",
 };
 
 export const StudentSuccessMessages = {

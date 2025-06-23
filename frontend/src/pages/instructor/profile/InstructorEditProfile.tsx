@@ -1,20 +1,34 @@
 import { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import InputField from "../../components/common/InputField";
-import Card from "../../components/common/Card";
+import InputField from "../../../components/common/InputField";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import Card from "../../../components/common/Card";
+import { instructorGetProfile, instructorUpdateProfile } from "../../../api/action/InstructorActionApi";
 import { useDispatch } from "react-redux";
-import { instructorGetProfile, instructorUpdateProfile } from "../../api/action/InstructorActionApi";
-import { setInstructor } from "../../redux/slices/instructorSlice";
+import { setInstructor } from "../../../redux/slices/instructorSlice";
 
 const ProfileSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
-  skills: Yup.string(),
-  expertise: Yup.string(),
-  currentStatus: Yup.string(),
+  name: Yup.string()
+    .trim()
+    .matches(/^[a-zA-Z0-9_ ]{3,30}$/, "Name must be 3–30 characters and can contain letters, numbers, spaces, or underscores")
+    .required("Name is required"),
+
+  skills: Yup.string()
+    .test("valid-skills", "Please enter at least one skill", (value) => {
+      if (!value) return false;
+      const skills = value.split(",").map((s) => s.trim()).filter(Boolean);
+      return skills.length > 0;
+    }),
+
+  expertise: Yup.string()
+    .test("valid-expertise", "Please enter at least one expertise", (value) => {
+      if (!value) return false;
+      const exp = value.split(",").map((s) => s.trim()).filter(Boolean);
+      return exp.length > 0;
+    }),
 });
 
 const InstructorProfileEditPage = () => {
@@ -33,7 +47,6 @@ const InstructorProfileEditPage = () => {
             name: profile.username || "",
             skills: profile.skills?.join(", ") || "",
             expertise: profile.expertise?.join(", ") || "",
-            currentStatus: profile.currentStatus || "",
             profilePic: null,
           });
           if (profile.profilePicUrl) {
@@ -41,7 +54,7 @@ const InstructorProfileEditPage = () => {
           }
         }
       } catch (err) {
-        console.error("Error loading instructor profile", err);
+        console.error("Error fetching profile", err);
         toast.error("Failed to load profile");
       }
     };
@@ -51,10 +64,9 @@ const InstructorProfileEditPage = () => {
 
   const handleSubmit = async (values: any) => {
     const formData = new FormData();
-    formData.append("username", values.name);
+    formData.append("username", values.name.trim());
     formData.append("skills", JSON.stringify(values.skills.split(",").map((s: string) => s.trim())));
     formData.append("expertise", JSON.stringify(values.expertise.split(",").map((e: string) => e.trim())));
-    formData.append("currentStatus", values.currentStatus);
     if (values.profilePic) {
       formData.append("profilePic", values.profilePic);
     }
@@ -68,7 +80,7 @@ const InstructorProfileEditPage = () => {
           email: response.data.email,
           role: response.data.role,
           isBlocked: response.data.isBlocked,
-          isVerified:response.data.isVerified,
+          isVerified: response.data.isVerified,
           profilePicture: response.data.profilePicUrl,
         }));
         toast.success("Profile updated successfully");
@@ -79,7 +91,7 @@ const InstructorProfileEditPage = () => {
         toast.error("Failed to update profile");
       }
     } catch (err) {
-      console.error("Error updating profile", err);
+      console.error("Update error", err);
       toast.error("Something went wrong");
     }
   };
@@ -98,34 +110,34 @@ const InstructorProfileEditPage = () => {
           {({ setFieldValue }) => (
             <Form className="space-y-4">
               <InputField name="name" label="Name" type="text" placeholder="Enter your name" />
-              <InputField name="skills" label="Skills (comma separated)" type="text" placeholder="e.g. React, Node" />
+              <InputField name="skills" label="Skills (comma separated)" type="text" placeholder="e.g. JavaScript, React" />
               <InputField name="expertise" label="Expertise (comma separated)" type="text" placeholder="e.g. MERN Stack" />
-              <InputField name="currentStatus" label="Current Status" type="text" placeholder="e.g. Instructor at uLearn" />
 
               <div className="flex flex-col">
                 <label className="mb-1 font-medium text-sm">Profile Picture</label>
                 <input
-  type="file"
-  accept="image/*"
-  onChange={(event: any) => {
-    const file = event.currentTarget.files[0];
+                  type="file"
+                  accept="image/*"
+                  onChange={(event: any) => {
+                    const fileInput = event.currentTarget;
+                    const file = fileInput.files[0];
+                    const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
 
-    if (!file) return;
+                    if (file) {
+                      if (!allowedTypes.includes(file.type)) {
+                        toast.error("Only image files (JPG, JPEG, PNG, WebP) are allowed");
+                        fileInput.value = ""; // ❌ Clear the invalid file
+                        return;
+                      }
 
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                      setFieldValue("profilePic", file);
 
-    if (!allowedTypes.includes(file.type)) {
-      toast.error("Only JPG, JPEG, PNG, or WEBP images are allowed");
-      return;
-    }
-
-    setFieldValue("profilePic", file);
-
-    const reader = new FileReader();
-    reader.onload = () => setPreviewImage(reader.result as string);
-    reader.readAsDataURL(file);
-  }}
-/>
+                      const reader = new FileReader();
+                      reader.onload = () => setPreviewImage(reader.result as string);
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
 
                 {previewImage && (
                   <img

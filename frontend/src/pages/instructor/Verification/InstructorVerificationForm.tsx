@@ -1,8 +1,8 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import InputField from "../../components/common/InputField";
-import { sendVerification } from "../../api/action/InstructorActionApi";
+import InputField from "../../../components/common/InputField";
+import { sendVerification } from "../../../api/action/InstructorActionApi";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
 

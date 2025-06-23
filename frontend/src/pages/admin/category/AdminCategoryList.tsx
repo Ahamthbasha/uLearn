@@ -5,14 +5,14 @@ import DataTable, { type Column, type ActionButton } from '../../../components/A
 import { getAllCategories, toggleCategoryStatus } from '../../../api/action/AdminActionApi';
 
 const AdminCategoryListPage = () => {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [limit] = useState(1);
+  const [limit] = useState(1); // ⬅️ Set how many items per page
+  const [total, setTotal] = useState(0); // Total categories
 
   const navigate = useNavigate();
 
@@ -20,8 +20,13 @@ const AdminCategoryListPage = () => {
     setLoading(true);
     try {
       const response = await getAllCategories(currentPage, limit, searchTerm);
+
+      if (!response || !Array.isArray(response.data)) {
+        throw new Error("Invalid category data received");
+      }
+
       setCategories(response.data || []);
-      setTotalPages(response.totalPages || 1);
+      setTotal(response.total || 0); // ✅ Total item count
       setError(null);
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Failed to load categories');
@@ -49,7 +54,7 @@ const AdminCategoryListPage = () => {
 
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
-    setCurrentPage(1); // Reset to first page on search
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page: number) => {
@@ -57,8 +62,27 @@ const AdminCategoryListPage = () => {
   };
 
   const columns: Column[] = [
+    {
+      key: 'serialNo',
+      title: 'S.NO',
+      render: (_value, _record, index) => (
+        <span className="text-sm text-gray-900">
+          {(currentPage - 1) * limit + index + 1}
+        </span>
+      ),
+    },
     { key: 'categoryName', title: 'Category Name' },
-    { key: 'isListed', title: 'Listed', render: (value) => (value ? 'Yes' : 'No') },
+    {
+      key: 'isListed',
+      title: 'Listed',
+      render: (value) => (
+        <span className={`inline-block px-2 py-1 text-xs rounded-full ${
+          value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          {value ? 'Yes' : 'No'}
+        </span>
+      ),
+    },
   ];
 
   const actions: ActionButton[] = [
@@ -79,6 +103,8 @@ const AdminCategoryListPage = () => {
           : 'bg-green-500 hover:bg-green-600 text-white',
     },
   ];
+
+  const totalPages = Math.ceil(total / limit); // ✅ Compute total pages
 
   return (
     <DataTable

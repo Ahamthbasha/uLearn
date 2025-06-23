@@ -1,12 +1,12 @@
 import { useState,useEffect } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import InputField from "../../components/common/InputField"; // path as per your setup
-import { updatePassword } from "../../api/action/StudentAction"; // your axios API
+import InputField from "../../../components/common/InputField"; // path as per your setup
+import { updatePassword } from "../../../api/action/StudentAction"; // your axios API
 import { toast } from "react-toastify";
-import Card from "../../components/common/Card";
-import { setUser } from "../../redux/slices/userSlice";
-import { getProfile } from "../../api/action/StudentAction";
+import Card from "../../../components/common/Card";
+import { setUser } from "../../../redux/slices/userSlice";
+import { getProfile } from "../../../api/action/StudentAction";
 
 
 import { useDispatch } from "react-redux";

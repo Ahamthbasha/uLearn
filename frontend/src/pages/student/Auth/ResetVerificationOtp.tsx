@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { verifyEmail,verifyResetOtp } from '../../../api/auth/UserAuthentication';
+import { verifyEmail, verifyResetOtp } from '../../../api/auth/UserAuthentication';
 
 const ResetVerificationOTP = () => {
   const [otp, setOtp] = useState<string[]>(Array(4).fill(''));
-  const [counter, setCounter] = useState<number>(30);
+  const [counter, setCounter] = useState<number>(60);
   const [resendActive, setResendActive] = useState(false);
   const navigate = useNavigate();
 
@@ -23,7 +23,9 @@ const ResetVerificationOTP = () => {
 
   const handleResend = async () => {
     setResendActive(false);
-    setCounter(30);
+    setCounter(60);
+    setOtp(Array(4).fill("")); // reset OTP input
+
     const email = localStorage.getItem("ForgotPassEmail") || "";
     const response = await verifyEmail(email);
     if (response.success) {
@@ -35,6 +37,8 @@ const ResetVerificationOTP = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value;
+    if (!/^\d?$/.test(value)) return; // only digits
+
     const newOTP = [...otp];
     newOTP[index] = value;
     setOtp(newOTP);
@@ -54,7 +58,7 @@ const ResetVerificationOTP = () => {
 
   const handleSubmit = async () => {
     const OTP = otp.join('');
-    if (OTP.length !== 4) {
+    if (OTP.length !== 4 || otp.some((digit) => digit === '')) {
       toast.error("Please enter the full OTP!");
       return;
     }
@@ -73,13 +77,14 @@ const ResetVerificationOTP = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-cyan-100 px-4">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-8 sm:p-10">
         
-        {/* Logo (text-based for now) */}
+        {/* Logo */}
         <div className="text-center mb-6">
           <h1 className="text-3xl font-extrabold text-indigo-700 tracking-wide">
             <span className="text-orange-500">U</span>learn
           </h1>
         </div>
 
+        {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-xl font-bold text-gray-800">Verify Your Email</h2>
           <p className="text-sm text-gray-600 mt-2">
@@ -87,7 +92,7 @@ const ResetVerificationOTP = () => {
           </p>
         </div>
 
-        {/* OTP Inputs */}
+        {/* OTP Input */}
         <div className="flex justify-center gap-3 mb-6">
           {otp.map((value, index) => (
             <input
@@ -103,23 +108,30 @@ const ResetVerificationOTP = () => {
           ))}
         </div>
 
-        {/* Submit Button */}
-        <button
-          type="button"
-          onClick={handleSubmit}
-          className="w-full py-3 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white text-base font-medium rounded-lg shadow hover:opacity-90 transition"
-        >
-          Continue
-        </button>
+        {/* Conditional Button */}
+        {!resendActive ? (
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="w-full py-3 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white text-base font-medium rounded-lg shadow hover:opacity-90 transition"
+          >
+            Continue
+          </button>
+        ) : (
+          <button
+            onClick={handleResend}
+            className="w-full py-3 border border-indigo-600 text-indigo-600 font-medium rounded-lg hover:bg-indigo-50 transition"
+          >
+            Resend OTP
+          </button>
+        )}
 
-        {/* Resend Link */}
-        <div className="text-center mt-4 text-sm">
+        {/* Timer / Info */}
+        <div className="text-center mt-4 text-sm text-gray-600">
           {resendActive ? (
-            <button onClick={handleResend} className="text-indigo-600 font-medium hover:underline">
-              Resend OTP
-            </button>
+            <p>Didn't receive the code? Click above to resend.</p>
           ) : (
-            <span className="text-gray-500">Resend in {counter} seconds</span>
+            <span>Resend in {counter} seconds</span>
           )}
         </div>
       </div>

@@ -89,7 +89,7 @@ export class InstructorController implements IInstructorController{
   public async createUser(req: Request, res: Response): Promise<void> {
     try {
       const { otp } = req.body;
-
+      console.log(req.body)
       const token = req.headers["the-verify-token"] || "";
 
       if (typeof token != "string") {
@@ -101,6 +101,7 @@ export class InstructorController implements IInstructorController{
         throw new Error(InstructorErrorMessages.TOKEN_INVALID);
       }
       const resultOtp = await this.otpService.findOtp(decode.email);
+      console.log(resultOtp)
       console.log(resultOtp?.otp, "<>", otp);
       if (resultOtp?.otp === otp) {
         const user = await this.instructorService.createUser(decode);

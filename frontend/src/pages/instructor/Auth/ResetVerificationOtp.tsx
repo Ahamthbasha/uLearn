@@ -6,7 +6,7 @@ import { instructorVerifyResetOtp, instructorForgotResendOtp } from '../../../ap
 
 const ResetVerificationOTP = () => {
   const [otp, setOtp] = useState<string[]>(Array(4).fill(''));
-  const [counter, setCounter] = useState<number>(30);
+  const [counter, setCounter] = useState<number>(60);
   const [resendActive, setResendActive] = useState(false);
   const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ const ResetVerificationOTP = () => {
 
   const handleResend = async () => {
     setResendActive(false);
-    setCounter(30);
+    setCounter(60);
     const email = localStorage.getItem("ForgotPassEmail") || "";
     const response = await instructorForgotResendOtp(email);
     if (response.success) {
@@ -103,25 +103,28 @@ const ResetVerificationOTP = () => {
           ))}
         </div>
 
-        {/* Submit Button */}
-        <button
-          type="button"
-          onClick={handleSubmit}
-          className="w-full py-3 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white text-base font-medium rounded-lg shadow hover:opacity-90 transition"
-        >
-          Continue
-        </button>
+        {/* Submit Button - Hidden after 60 seconds */}
+{counter > 0 && (
+  <button
+    type="button"
+    onClick={handleSubmit}
+    className="w-full py-3 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white text-base font-medium rounded-lg shadow hover:opacity-90 transition"
+  >
+    Continue
+  </button>
+)}
 
-        {/* Resend Link */}
-        <div className="text-center mt-4 text-sm">
-          {resendActive ? (
-            <button onClick={handleResend} className="text-indigo-600 font-medium hover:underline">
-              Resend OTP
-            </button>
-          ) : (
-            <span className="text-gray-500">Resend in {counter} seconds</span>
-          )}
-        </div>
+{/* Resend Link */}
+<div className="text-center mt-4 text-sm">
+  {resendActive ? (
+    <button onClick={handleResend} className="text-indigo-600 font-medium hover:underline">
+      Resend OTP
+    </button>
+  ) : (
+    <span className="text-gray-500">Resend in {counter} seconds</span>
+  )}
+</div>
+
       </div>
     </div>
   );

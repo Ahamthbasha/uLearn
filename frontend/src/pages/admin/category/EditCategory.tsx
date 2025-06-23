@@ -17,13 +17,14 @@ const EditCategoryPage = () => {
     const fetchCategory = async () => {
       try {
         const response = await getCategoryById(categoryId!);
+
         if (response?.success && response?.data) {
           setInitialValues({ name: response.data.categoryName });
         } else {
-          toast.error("Failed to fetch category details");
+          toast.error(response?.data?.message);
         }
-      } catch (err) {
-        toast.error("Something went wrong");
+      } catch (err) { 
+        toast.error("something went wrong");
       } finally {
         setLoading(false);
       }
@@ -72,8 +73,9 @@ const EditCategoryPage = () => {
               } else {
                 toast.error(response.message || "Failed to update category");
               }
-            } catch (err) {
-              toast.error("Something went wrong");
+            } catch (err:any) {
+              const message = err?.response?.data?.message
+              toast.error(message);
             } finally {
               setSubmitting(false);
             }

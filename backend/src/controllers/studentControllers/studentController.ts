@@ -123,6 +123,7 @@ export class StudentController implements IStudentController {
     }
   }
 
+
 async login(req: Request, res: Response): Promise<any> {
   try {
     const { email, password } = req.body;

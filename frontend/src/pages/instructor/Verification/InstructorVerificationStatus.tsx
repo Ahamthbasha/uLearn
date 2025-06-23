@@ -1,9 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getVerificationRequestByemail } from "../../api/action/InstructorActionApi";
+import { getVerificationRequestByemail } from "../../../api/action/InstructorActionApi";
 import { Loader } from "lucide-react";
-import { Button } from "../../components/common/Button";
-import type { IVerificationRequest } from "../../types/IVerificationRequest";
+import { Button } from "../../../components/common/Button";
+import type { IVerificationRequest } from "../../../types/IVerificationRequest";
 
 const InstructorVerificationStatus = () => {
   const { email } = useParams<{ email: string }>(); // 👈 extract from URL

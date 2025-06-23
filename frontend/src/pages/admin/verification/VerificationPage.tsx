@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DataTable, { type Column, type ActionButton } from "../../components/AdminComponents/DataTable";
+import DataTable, { type Column, type ActionButton } from "../../../components/AdminComponents/DataTable";
 import { Eye } from "lucide-react";
-import { getAllVerificationRequests } from "../../api/action/AdminActionApi";
+import { getAllVerificationRequests } from "../../../api/action/AdminActionApi";
 
 interface VerificationRequest {
   _id: string;
@@ -19,8 +19,8 @@ const VerificationPage = () => {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [limit] = useState(1); // Change to any number you prefer per page
+  const [limit] = useState(5); // ⬅️ Change this to desired items per page
+  const [total, setTotal] = useState(0);
 
   const navigate = useNavigate();
 
@@ -28,8 +28,12 @@ const VerificationPage = () => {
     try {
       setLoading(true);
       const res = await getAllVerificationRequests(page, limit, search);
-      setRequests(res?.data || []);
-      setTotalPages(res?.totalPages || 1);
+      if (!res || !Array.isArray(res.data)) {
+        throw new Error("Invalid data received");
+      }
+
+      setRequests(res.data);
+      setTotal(res.total || 0);
     } catch (err) {
       console.error("Error fetching verification requests", err);
     } finally {
@@ -39,9 +43,18 @@ const VerificationPage = () => {
 
   useEffect(() => {
     fetchRequests();
-  }, [page, search]); // Re-fetch on page or search change
+  }, [page, search]);
 
   const columns: Column<VerificationRequest>[] = [
+    {
+      key: "serialNo",
+      title: "S.NO",
+      render: (_, __, index) => (
+        <span className="text-sm text-gray-900">
+          {(page - 1) * limit + index + 1}
+        </span>
+      ),
+    },
     { key: "username", title: "Name" },
     { key: "email", title: "Email" },
     { key: "status", title: "Status" },
@@ -57,6 +70,8 @@ const VerificationPage = () => {
       },
     },
   ];
+
+  const totalPages = Math.ceil(total / limit);
 
   return (
     <DataTable
