@@ -17,7 +17,6 @@ export const getAllUser = async (page = 1, limit = 1, search = ''): Promise<any>
   }
 };
 
-
 export const blockUser = async(email:string) => {
     try {
         const response = await API.get(`${AdminRoutersEndPoints.adminBlockUser}/${email}`,{
@@ -32,7 +31,6 @@ export const blockUser = async(email:string) => {
         throw error
     }
 }
-
 
 export const getAllInstructor = async(page = 1, limit = 1, search = '') : Promise<any> => {
     try {
@@ -50,7 +48,6 @@ export const getAllInstructor = async(page = 1, limit = 1, search = '') : Promis
     }
 }
 
-
 export const blockInstructor = async(email:string):Promise<any> => {
     try {
         const response = await API.get(`${AdminRoutersEndPoints.adminBlockInstructor}/${email}`,{
@@ -66,7 +63,7 @@ export const blockInstructor = async(email:string):Promise<any> => {
     }
 }
 
-export const getAllVerificationRequests = async (page = 1, limit = 10, search = ''): Promise<any> => {
+export const getAllVerificationRequests = async (page = 1, limit = 1, search = ''): Promise<any> => {
   try {
     const response = await API.get(
       `${AdminRoutersEndPoints.adminGetVerifcationsRequest}?page=${page}&limit=${limit}&search=${search}`,
@@ -85,7 +82,6 @@ export const getAllVerificationRequests = async (page = 1, limit = 10, search = 
   }
 };
 
-
 export const getVerificationRequestByemail = async(email:string) => {
     try {
         const response = await API.get(`${AdminRoutersEndPoints.adminGetVerificationByEamil}/${email}`,{
@@ -99,20 +95,6 @@ export const getVerificationRequestByemail = async(email:string) => {
         throw error
     }
 }
-
-// export const updateVerificationStatus = async (email:string,status:"approved"|"rejected",reason?:string) => {
-//     try {
-//         const response = await API.post(AdminRoutersEndPoints.adminApproveVerification,{email,status},{
-//             headers:{"Content-Type":"application/json"},
-//             withCredentials:true
-//         })
-
-//         console.log('approved request',response.data)
-//         return response.data
-//     } catch (error) {
-//         throw error
-//     }
-// }
 
 export const updateVerificationStatus = async (
   email: string,
@@ -139,6 +121,84 @@ export const updateVerificationStatus = async (
     );
 
     console.log("approved/rejected request", response.data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAllCategories = async (page = 1, limit = 1, search = ''): Promise<any> => {
+  try {
+    const response = await API.get(AdminRoutersEndPoints.adminGetAllCategories, {
+      params: { page, limit, search },
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const getCategoryById = async (categoryId: string): Promise<any> => {
+  try {
+    const response = await API.get(`${AdminRoutersEndPoints.adminGetCategoryById}/${categoryId}`, {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
+    });
+    console.log("Fetched category by ID:", response.data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addCategory = async (categoryName: string): Promise<any> => {
+  try {
+    const response = await API.post(
+      AdminRoutersEndPoints.adminCreateCategory,
+      { categoryName },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+      }
+    );
+    console.log("Category added:", response.data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const editCategory = async (id: string, categoryName: string): Promise<any> => {
+  try {
+    const response = await API.put(
+      AdminRoutersEndPoints.adminEditCategory,
+      { id, categoryName },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+      }
+    );
+    console.log("Category edited:", response.data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const toggleCategoryStatus = async (id: string): Promise<any> => {
+  try {
+    const response = await API.put(
+      `${AdminRoutersEndPoints.adminListOrUnListCategory}/${id}`,
+      {},
+      {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+      }
+    );
+    console.log("Toggled category listing:", response.data);
     return response.data;
   } catch (error) {
     throw error;

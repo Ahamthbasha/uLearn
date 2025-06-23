@@ -106,11 +106,22 @@ const instructorProfileRepo : IInstructorProfileRepository = new InstructorProfi
 const instructorProfileService : IInstructorProfileService = new InstructorProfileService(instructorProfileRepo)
 const instructorProfileController : IInstructorProfileController = new InstructorProfileController(instructorProfileService)
 
+//////////////////////ADMIN CATEGORY CONTROLLER////////////////////////////////////////
+
+import { IAdminCategoryRepository } from "../repositories/interfaces/IAdminCategoryRepository";
+import { AdminCategoryRepository } from "../repositories/adminRepository/adminCateogyRepository";
+
+import { IAdminCategoryService } from "../services/interface/IAdminCategoryService";
+import { AdminCategoryService } from "../services/adminServices/AdminCategoryService";
+
+import { IAdminCategoryController } from "../controllers/adminControllers/interface/IAdminCategoryController";
+import { AdminCategoryContoller } from "../controllers/adminControllers/adminCategoryController";
 
 
+const adminCategoryRepository : IAdminCategoryRepository = new AdminCategoryRepository()
+const adminCategoryServie : IAdminCategoryService = new AdminCategoryService(adminCategoryRepository)
 
-
-
+const adminCategoryController : IAdminCategoryController = new AdminCategoryContoller(adminCategoryServie)
 
 
 export {
@@ -121,5 +132,7 @@ export {
     adminVerificationController,instructorVerificationController,
 //profile management
     studentProfileController,
-    instructorProfileController
+    instructorProfileController,
+//adminCategoryController
+    adminCategoryController
 }

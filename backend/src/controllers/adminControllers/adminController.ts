@@ -122,8 +122,6 @@ export class AdminController implements IAdminController {
         String(search)
       );
 
-      console.log("Fetched instructors:", instructors.length);
-
       return res.status(StatusCode.OK).json({
         success: true,
         message:
