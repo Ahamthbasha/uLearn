@@ -19,6 +19,8 @@ export class JwtService {
 
     return verifyToken;
   }
+
+  //authenticate
   async accessToken(payload: Object): Promise<string> {
     const secret = process.env.JWT_SECRET;
 
@@ -29,7 +31,8 @@ export class JwtService {
       expiresIn: JwtErrorMsg.JWT_EXPIRATION,
     });
   }
-
+  
+//to get accessToken
   async refreshToken(payload: Object): Promise<string> {
     const secret = process.env.JWT_SECRET;
 
@@ -46,7 +49,7 @@ export class JwtService {
 
   async verifyToken(token: string): Promise<any> {
     try {
-      const secret = process.env.JWT_SECRET || "Sombu";
+      const secret = process.env.JWT_SECRET || "MYLIFEMYRULE";
 
       const data = await jwt.verify(token, secret);
       

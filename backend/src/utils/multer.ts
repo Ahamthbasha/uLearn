@@ -2,6 +2,8 @@ import multer from "multer"
 
 const storage = multer.memoryStorage()
 
+//store file temporarily in ram.useFull to upload the file directly to s3
+
 const upload = multer({
     storage,
     limits:{
