@@ -110,8 +110,6 @@ export class AdminController implements IAdminController {
   }
 }
 
-
-
   async getAllInstructors(req: Request, res: Response): Promise<any> {
     try {
       const { page = 1, limit = 10, search = "" } = req.query;

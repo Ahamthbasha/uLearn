@@ -56,42 +56,6 @@ const SignUp = () => {
     }
   };
 
-  // const handleGoogleLogin = async (credentialResponse: any) => {
-  //   try {
-  //     const decoded: any = jwtDecode(credentialResponse.credential);
-
-  //     const response = await googleLogin({
-  //       name: decoded.name,
-  //       email: decoded.email,
-  //       password: decoded.sub,
-  //       profilePicture: decoded.picture,
-  //       role:"student"
-  //     });
-
-  //     const user = response?.user;
-
-  //     if (user) {
-  //       dispatch(
-  //         setUser({
-  //           _id: user._id,
-  //           username: user.name,
-  //           email: user.email,
-  //           role: user.role,
-  //           isBlocked: user.isBlocked,
-  //           profilePicUrl: user.profilePicture,
-  //         })
-  //       );
-  //       localStorage.setItem("user", JSON.stringify(user));
-  //       toast.success(response.message || "Signed up with Google!");
-  //       navigate("/");
-  //     } else {
-  //       toast.error(response.message || "Google sign-up failed");
-  //     }
-  //   } catch (error: any) {
-  //     toast.error(error.message || "Google login failed");
-  //   }
-  // };
-
 const handleGoogleLogin = async (credentialResponse: any) => {
   try {
     if (!credentialResponse.credential) {
