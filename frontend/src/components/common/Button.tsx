@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "destructive";
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -13,10 +13,13 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const baseClass =
     "px-4 py-2 rounded font-medium transition-colors duration-200";
+
   const variantClass =
     variant === "primary"
       ? "bg-blue-600 text-white hover:bg-blue-700"
-      : "bg-gray-200 text-gray-800 hover:bg-gray-300";
+      : variant === "secondary"
+      ? "bg-gray-200 text-gray-800 hover:bg-gray-300"
+      : "bg-red-500 text-white hover:bg-red-600";
 
   return (
     <button className={classNames(baseClass, variantClass, className)} {...props}>

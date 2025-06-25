@@ -120,9 +120,46 @@ import { AdminCategoryContoller } from "../controllers/adminControllers/adminCat
 
 const adminCategoryRepository : IAdminCategoryRepository = new AdminCategoryRepository()
 const adminCategoryServie : IAdminCategoryService = new AdminCategoryService(adminCategoryRepository)
-
 const adminCategoryController : IAdminCategoryController = new AdminCategoryContoller(adminCategoryServie)
 
+///////////////////////INSTRUCTROR CATEGORY FETCH/////////////////////////////////////
+
+import { IInstructorCategoryRepository } from "../repositories/interfaces/IInstructorCategoryRepository";
+import { InstructorCategoryRepository } from "../repositories/instructorRepository/instructorCategoryRepository";
+
+
+import { IInstructorCategoryService } from "../services/interface/IInstructorCategoryService";
+import { InstructorCategoryService } from "../services/instructorServices/InstructorCategoryService";
+
+import { IInstructorCategoryController } from "../controllers/instructorController/interfaces/IInstructorCategoryController";
+
+import { InstructorCategoryController } from "../controllers/instructorController/instructorCategoryController";
+
+
+const instructorCategoryRepository : IInstructorCategoryRepository = new InstructorCategoryRepository()
+
+const instructorCategoryService : IInstructorCategoryService = new InstructorCategoryService(instructorCategoryRepository)
+
+const instructorCategoryController : IInstructorCategoryController = new InstructorCategoryController(instructorCategoryService)
+
+
+//////////////////////INSTRUCTOR COURSE MANAGEMENT///////////////////////////////////////
+
+import { IInstructorCourseRepository } from "../repositories/interfaces/IInstructorCourseRepository";
+import { InstructorCourseRepository } from "../repositories/instructorRepository/instructorCourseRepository";
+
+import { IInstructorCourseService } from "../services/interface/IInstructorCourseService";
+import { InstructorCourseService } from "../services/instructorServices/InstructorCourseService";
+
+import { IInstructorCourseController } from "../controllers/instructorController/interfaces/IInstructorCourseController";
+import { InstructorCourseController} from "../controllers/instructorController/InstructorCourseController";
+
+
+const instructorCourseRepository : IInstructorCourseRepository = new InstructorCourseRepository()
+
+const instructorCourseService : IInstructorCourseService = new InstructorCourseService(instructorCourseRepository)
+
+const instructorCourseController : IInstructorCourseController = new InstructorCourseController(instructorCourseService)
 
 export {
     studentController,
@@ -134,5 +171,9 @@ export {
     studentProfileController,
     instructorProfileController,
 //adminCategoryController
-    adminCategoryController
+    adminCategoryController,
+//instructorCategoryController
+    instructorCategoryController,
+//instructorCourseController
+    instructorCourseController
 }

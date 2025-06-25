@@ -3,6 +3,7 @@ import DataTable, { type Column, type ActionButton } from '../../../components/A
 import { getAllInstructor, blockInstructor } from '../../../api/action/AdminActionApi';
 import { UserX, UserCheck, Users } from 'lucide-react';
 import { toast } from 'react-toastify';
+import ConfirmationModal from '../../../components/common/ConfirmationModal';
 
 interface Instructors {
   id: string;
@@ -21,6 +22,10 @@ const InstructorList: React.FC = () => {
   const [limit] = useState(2);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
+
+  // Modal state
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [selectedInstructor, setSelectedInstructor] = useState<Instructors | null>(null);
 
   const fetchUsers = useCallback(async () => {
     console.log("🔄 Fetching instructors with:", { page, limit, search });
@@ -60,14 +65,16 @@ const InstructorList: React.FC = () => {
     fetchUsers();
   }, [fetchUsers]);
 
-  const handleBlockToggle = useCallback(async (user: Instructors) => {
+  const handleConfirm = async () => {
+    if (!selectedInstructor) return;
+
     try {
-      const response = await blockInstructor(user.email);
+      const response = await blockInstructor(selectedInstructor.email);
       if (response.success) {
         toast.success(response.message);
         setUsers((prev) =>
           prev.map((u) =>
-            u.email === user.email
+            u.email === selectedInstructor.email
               ? {
                   ...u,
                   status: u.status === 'Blocked' ? 'Active' : 'Blocked',
@@ -81,7 +88,15 @@ const InstructorList: React.FC = () => {
       }
     } catch (error: any) {
       toast.error(error.message || 'Error occurred while blocking instructor');
+    } finally {
+      setConfirmModalOpen(false);
+      setSelectedInstructor(null);
     }
+  };
+
+  const handleBlockToggle = useCallback((user: Instructors) => {
+    setSelectedInstructor(user);
+    setConfirmModalOpen(true);
   }, []);
 
   const handlePageChange = (newPage: number) => {
@@ -172,6 +187,16 @@ const InstructorList: React.FC = () => {
           totalPages: totalPages,
           onPageChange: handlePageChange,
         }}
+      />
+
+      <ConfirmationModal
+        isOpen={confirmModalOpen}
+        title="CONFIRM ACTION"
+        message={`Do you want to ${selectedInstructor?.status === 'Blocked' ? 'unblock' : 'block'} ${selectedInstructor?.username}? This action will ${selectedInstructor?.status === 'Blocked' ? 'restore the instructor\'s access to their account and allow them to create courses' : 'prevent the instructor from accessing their account and disable their courses'}.`}
+        confirmText={selectedInstructor?.status === 'Blocked' ? 'Unblock Instructor' : 'Block Instructor'}
+        cancelText="Cancel"
+        onCancel={() => setConfirmModalOpen(false)}
+        onConfirm={handleConfirm}
       />
     </div>
   );

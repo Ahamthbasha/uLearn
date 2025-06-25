@@ -76,6 +76,6 @@ const instructorSchema: Schema<IInstructor> = new Schema({
     }
 },{timestamps:true})
 
-const InstructorModel = mongoose.model<IInstructor>("Instructors",instructorSchema)
+const InstructorModel = mongoose.model<IInstructor>("Instructor",instructorSchema)
 
 export default InstructorModel

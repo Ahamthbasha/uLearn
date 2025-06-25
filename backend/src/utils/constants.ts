@@ -143,7 +143,8 @@ export const AuthErrorMsg = {
     AUTHENTICATION_FAILED: "Authentication failed. Please try again later.",
     PERMISSION_DENIED: "You do not have permission to perform this action.",
     ACCESS_FORBIDDEN: "You do not have permission to perform this action.",
-    TOKEN_EXPIRED_NAME:'TokenExpiredError'
+    TOKEN_EXPIRED_NAME:'TokenExpiredError',
+    TOKEN_VERIFICATION_ERROR:"Token is not valid.It is verification error"
 };
 
 export const GeneralServerErrorMsg = {
@@ -259,3 +260,71 @@ export const CategorySuccessMsg = {
     CATEGORY_LISTING_FAILED: "Failed to list/unlist category!",
     INTERNAL_SERVER_ERROR: "Internal server error!",
   };
+
+  export const ChapterErrorMessages = {
+  MISSING_REQUIRED_FIELDS: "Missing required fields.",
+  MISSING_VIDEO_FILE: "Missing required video file.",
+  CHAPTER_NOT_FOUND: "Chapter not found.",
+  COURSE_ID_REQUIRED: "Course ID is required.",
+  CHAPTER_ID_REQUIRED: "Chapter ID is required.",
+  INTERNAL_SERVER_ERROR: "Internal server error.",
+};
+
+export const ChapterSuccessMessages = {
+  CHAPTER_ADDED: "Chapter added successfully.",
+  CHAPTER_UPDATED: "Chapter updated successfully.",
+  CHAPTERS_FETCHED: "Chapters fetched successfully.",
+  CHAPTER_FETCHED: "Chapter fetched successfully.",
+};
+
+export const CourseErrorMessages = {
+  MISSING_FILES: "Missing files.",
+  COURSE_NOT_FOUND: "Course not found.",
+  COURSE_ID_NOT_FOUND: "CourseId not found.",
+  CHAPTERS_NOT_FOUND: "Chapters not found.",
+  INSTRUCTOR_ID_REQUIRED: "Instructor ID is required.",
+  INVALID_PAGE_OR_LIMIT: "Invalid page or limit value.",
+  CHAPTER_ID_REQUIRED: "ChapterId is not provided in the query.",
+  ADD_QUIZ_TO_PUBLISH: "Add Quiz to Publish Course!",
+  ADD_CHAPTERS_TO_PUBLISH: "Add chapters to Publish Course!",
+  NO_COURSE_DATA_FOUND: "No courseData found.",
+  INTERNAL_ERROR: "Internal Error.",
+  SOMETHING_WENT_WRONG: "Something wrong Please try Later!",
+  ERROR_UPDATING_COURSE: "Error updating Course.",
+};
+
+export const CourseSuccessMessages = {
+  COURSE_CREATED: "Course created successfully.",
+  COURSE_UPDATED: "Course updated successfully.",
+  COURSE_ALREADY_PURCHASED: "Course already purchased!",
+  COURSE_PUBLISHED: "Course Published",
+  COURSE_UNPUBLISHED: "Course UnPublished",
+  COURSE_LISTED: "Course Listed",
+  COURSE_UNLISTED: "Course unListed",
+  COURSE_DELETED: "Course Deleted!",
+  COURSES_FETCHED: "Courses fetched successfully.",
+  COURSE_FETCHED: "Course fetched successfully.",
+  COURSE_CATEGORIES_FETCHED: "Fetched course categories!",
+  INSTRUCTOR_COURSES_FETCHED: "User courses fetched!",
+  COURSES_DATA_FETCHED: "Fetched courses data successfully",
+  BOUGHT_COURSES_FETCHED: "Buyed Courses Got Successfully",
+  THANK_YOU_FOR_ENROLLING: "Thank you for Enrolling!",
+  CHAPTER_COMPLETED: "Chapter Completed",
+  PLAY_DATA_RETRIEVED: "Retrieved play data",
+};
+export const QuizErrorMessages = {
+  NO_COURSE_FOUND: "No course found.",
+  NO_USER_FOUND: "No user found.",
+  QUIZ_ID_REQUIRED: "Quiz ID is required.",
+  COURSE_ID_REQUIRED: "Course ID is required.",
+  INVALID_QUIZ_DATA: "Invalid quiz data provided.",
+  INTERNAL_SERVER_ERROR: "Internal server error.",
+};
+
+export const QuizSuccessMessages = {
+  QUIZ_ADDED: "Quiz added successfully.",
+  QUIZ_UPDATED: "Quiz updated successfully.",
+  QUIZ_FETCHED: "Quiz fetched successfully.",
+  COURSE_COMPLETED: "Course completed successfully!",
+  RETRY_QUIZ: "Retry quiz!",
+};

@@ -6,7 +6,7 @@ import { logout } from "../api/auth/InstructorAuthentication";
 
 const navItems = [
   { name: "Dashboard", path: "/instructor/dashboard", icon: "📊" },
-  { name: "Create Course", path: "/instructor/create-course", icon: "📚" },
+  { name: "Create Course", path: "/instructor/createCourse", icon: "📚" },
   { name: "My Courses", path: "/instructor/courses", icon: "📖" },
   { name: "Slots", path: "/instructor/slots", icon: "📅" },
   { name: "Meetings", path: "/instructor/meetings", icon: "🎥" },

@@ -1,3 +1,4 @@
+// UserList.tsx
 import React, { useEffect, useState } from 'react';
 import { UserX, UserCheck, Users } from 'lucide-react';
 import DataTable, {
@@ -6,6 +7,7 @@ import DataTable, {
 } from '../../../components/AdminComponents/DataTable';
 import { getAllUser, blockUser } from '../../../api/action/AdminActionApi';
 import { toast } from 'react-toastify';
+import ConfirmationModal from '../../../components/common/ConfirmationModal';
 
 interface User {
   id: string;
@@ -21,17 +23,18 @@ const UserList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [limit] = useState(5); // 👈 Adjust the number of users per page
+  const [limit] = useState(5);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
 
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
   const fetchUsers = async () => {
-    console.log("🔄 Fetching users with:", { page, limit, search });
     try {
       setLoading(true);
       setError(null);
       const data = await getAllUser(page, limit, search);
-      console.log('✅ userList.tsx:=>', data);
 
       if (!data || !Array.isArray(data.users)) {
         throw new Error('Invalid user data received');
@@ -63,14 +66,25 @@ const UserList: React.FC = () => {
     fetchUsers();
   }, [page, limit, search]);
 
-  const handleBlockToggle = async (user: User) => {
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
+
+  const handleConfirm = async () => {
+    if (!selectedUser) return;
+
     try {
-      const response = await blockUser(user.email);
+      const response = await blockUser(selectedUser.email);
       if (response.success) {
         toast.success(response.message);
         setUsers((prev) =>
           prev.map((u) =>
-            u.email === user.email
+            u.email === selectedUser.email
               ? {
                   ...u,
                   status: u.status === 'Blocked' ? 'Active' : 'Blocked',
@@ -84,17 +98,29 @@ const UserList: React.FC = () => {
       }
     } catch (error: any) {
       toast.error(error.message || 'Error occurred while blocking user');
+    } finally {
+      setConfirmModalOpen(false);
+      setSelectedUser(null);
     }
   };
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setPage(1); // Reset to page 1 on new search
-  };
+  const actions: ActionButton<User>[] = [
+    {
+      key: 'block-toggle',
+      label: (user) =>
+        user.status === 'Blocked' ? 'Unblock User' : 'Block User',
+      icon: (user) =>
+        user.status === 'Blocked' ? <UserCheck size={16} /> : <UserX size={16} />,
+      onClick: (user) => {
+        setSelectedUser(user);
+        setConfirmModalOpen(true);
+      },
+      className: (user) =>
+        user.status === 'Blocked'
+          ? 'bg-red-500 hover:bg-red-600 text-white'
+          : 'bg-green-500 hover:bg-green-600 text-white'
+    }
+  ];
 
   const columns: Column<User>[] = [
     {
@@ -138,21 +164,6 @@ const UserList: React.FC = () => {
     }
   ];
 
-  const actions: ActionButton<User>[] = [
-    {
-      key: 'block-toggle',
-      label: (user) =>
-        user.status === 'Blocked' ? 'Unblock User' : 'Block User',
-      icon: (user) =>
-        user.status === 'Blocked' ? <UserCheck size={16} /> : <UserX size={16} />,
-      onClick: handleBlockToggle,
-      className: (user) =>
-        user.status === 'Blocked'
-          ? 'bg-red-500 hover:bg-red-600 text-white'
-          : 'bg-green-500 hover:bg-green-600 text-white'
-    }
-  ];
-
   const totalPages = Math.ceil(total / limit);
 
   return (
@@ -177,6 +188,16 @@ const UserList: React.FC = () => {
           totalPages: totalPages,
           onPageChange: handlePageChange
         }}
+      />
+
+      <ConfirmationModal
+        isOpen={confirmModalOpen}
+        title="CONFIRM ACTION"
+        message={`Do you want to ${selectedUser?.status === 'Blocked' ? 'unblock' : 'block'} ${selectedUser?.username}? This action will ${selectedUser?.status === 'Blocked' ? 'restore the user\'s access to their account' : 'prevent the user from accessing their account'}.`}
+        confirmText={selectedUser?.status === 'Blocked' ? 'Unblock User' : 'Block User'}
+        cancelText="Cancel"
+        onCancel={() => setConfirmModalOpen(false)}
+        onConfirm={handleConfirm}
       />
     </div>
   );

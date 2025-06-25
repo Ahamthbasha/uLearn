@@ -6,7 +6,7 @@ import {
 } from "../../../api/action/AdminActionApi";
 import { Button } from "../../../components/common/Button";
 import { Loader } from "lucide-react";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 interface VerificationRequest {
   _id: string;
@@ -22,7 +22,7 @@ const VerificationDetailsPage = () => {
   const { email } = useParams<{ email: string }>();
   const [request, setRequest] = useState<VerificationRequest | null>(null);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
+  const [updatingAction, setUpdatingAction] = useState<"approve" | "reject" | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
 
   const fetchRequest = async () => {
@@ -44,7 +44,7 @@ const VerificationDetailsPage = () => {
     }
 
     try {
-      setUpdating(true);
+      setUpdatingAction(status === "approved" ? "approve" : "reject");
       await updateVerificationStatus(email!, status, rejectionReason);
       toast.success(
         status === "approved"
@@ -56,7 +56,7 @@ const VerificationDetailsPage = () => {
       toast.error("Failed to update verification status.");
       console.error("Error updating status", err);
     } finally {
-      setUpdating(false);
+      setUpdatingAction(null);
     }
   };
 
@@ -141,18 +141,18 @@ const VerificationDetailsPage = () => {
         <div className="mt-6 space-y-4">
           <div className="flex gap-4">
             <Button
-              disabled={updating}
+              disabled={updatingAction !== null}
               onClick={() => handleStatusUpdate("approved")}
               className="bg-green-600 hover:bg-green-700"
             >
-              {updating ? "Processing..." : "Approve"}
+              {updatingAction === "approve" ? "Processing..." : "Approve"}
             </Button>
             <Button
-              disabled={updating}
+              disabled={updatingAction !== null}
               onClick={() => handleStatusUpdate("rejected")}
               className="bg-red-600 hover:bg-red-700"
             >
-              {updating ? "Processing..." : "Reject"}
+              {updatingAction === "reject" ? "Processing..." : "Reject"}
             </Button>
           </div>
 

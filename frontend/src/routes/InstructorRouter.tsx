@@ -15,7 +15,13 @@ import InstructorSidebarLayout from '../layouts/InstructorSidebarLayout'
 import InstructorDashboard from '../pages/instructor/InstructorDashboard'
 import InstructorProfilePage from '../pages/instructor/profile/InstructorProfilePage'
 import InstructorProfileEditPage from '../pages/instructor/profile/InstructorEditProfile'
+
+
+import CourseListPage from '../pages/instructor/course/CourseList'
+
 import PrivateRoute from '../Protecter/InstructorPrivateRoute'
+import CourseCreatePage from '../pages/instructor/course/CourseCreate'
+import CourseEditPage from '../pages/instructor/course/CourseEditPage'
 
 const InstructorRouter = () => {
   return (
@@ -42,6 +48,10 @@ const InstructorRouter = () => {
     <Route path="dashboard" element={<InstructorDashboard />} />
     <Route path="profile" element={<InstructorProfilePage />} />
     <Route path="editProfile" element={<InstructorProfileEditPage />} />
+
+    <Route path='courses' element={<CourseListPage/>}/>
+    <Route path='createCourse' element ={<CourseCreatePage/>}/>
+    <Route path='editCourse/:courseId' element={<CourseEditPage/>}/>
   </Route>
 </Route>
 

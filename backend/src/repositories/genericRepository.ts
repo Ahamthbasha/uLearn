@@ -1,13 +1,16 @@
-import { Model, Document, SortOrder } from "mongoose";
+import { Model, Document, SortOrder , PopulateOptions } from "mongoose";
+
+type PopulateArg = PopulateOptions | PopulateOptions[] | string[];
 
 export interface IGenericRepository<T extends Document> {
   create(payload: Partial<T>): Promise<T>;
   findOne(filter: object): Promise<T | null>;
   findById(id: string): Promise<T | null>;
-  findAll(filter?: object): Promise<T[] | null>;
+  findAll(filter?: object, populate?: PopulateArg): Promise<T[] | null>;
   update(id: string, data: Partial<T>): Promise<T | null>;
   updateOne(filter: object, data: Partial<T>): Promise<T | null>;
   delete(id: string): Promise<T | null>;
+  findByIdWithPopulate(id:string,populate?:PopulateArg):Promise<T | null>
 
   paginate(
     filter: object,
@@ -32,9 +35,14 @@ export class GenericRepository<T extends Document> implements IGenericRepository
     return await this.model.findOne(filter);
   }
 
-  async findAll(filter: object = {}): Promise<T[] | null> {
-    return await this.model.find(filter);
+  async findAll(filter: object = {}, populate?: PopulateArg): Promise<T[] | null> {
+  let query = this.model.find(filter);
+  if (populate) {
+    query = query.populate(populate); // ✅ Correct type now
   }
+  return await query;
+  }
+
 
   async findById(id: string): Promise<T | null> {
     return await this.model.findById(id);
@@ -76,4 +84,13 @@ export class GenericRepository<T extends Document> implements IGenericRepository
 
     return { data, total };
   }
+
+  async findByIdWithPopulate(id: string, populate?: PopulateArg): Promise<T | null> {
+  let query = this.model.findById(id);
+  if (populate) {
+    query = query.populate(populate);
+  }
+  return await query;
+}
+
 }

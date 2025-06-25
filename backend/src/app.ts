@@ -16,8 +16,6 @@ const corsOptions = {
     methods:"GET,POST,PUT,PATCH,DELETE,HEAD"
 }
 
-
-
 app.use(cookieParser())
 app.use(cors(corsOptions))
 app.use(express.json())
@@ -26,6 +24,18 @@ app.use(express.urlencoded({extended:true}))
 app.use("/api/student",studentRoutes)
 app.use("/api/instructor",instructorRoutes)
 app.use("/api/admin",adminRoutes)
+
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("💥 Error:", err);
+
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+
+  res.status(statusCode).json({
+    success: false,
+    message,
+  });
+});
 
 const port:number = Number(process.env.PORT)
 

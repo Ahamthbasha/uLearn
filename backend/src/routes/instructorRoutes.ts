@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { instructorController,instructorVerificationController,instructorProfileController } from "../config/dependencyInjector";
+import { instructorController,instructorVerificationController,instructorProfileController,instructorCategoryController,instructorCourseController } from "../config/dependencyInjector";
 import upload from "../utils/multer";
 
 import authenticateToken from "../middlewares/AuthenticatedRoutes";
@@ -43,6 +43,26 @@ router.get("/profile",authenticateToken,isInstructor,instructorProfileController
 router.put("/profile",authenticateToken,isInstructor,upload.single("profilePic"),instructorProfileController.updateProfile.bind(instructorProfileController));
 
 router.put("/profile/password",authenticateToken,isInstructor,instructorProfileController.updatePassword.bind(instructorProfileController));
+
+//categoryfetch
+
+router.get('/categories',authenticateToken,isInstructor,instructorCategoryController.getListedCategories.bind(instructorCategoryController))
+
+// Create Course
+router.post("/course",authenticateToken,isInstructor,upload.fields([{ name: "thumbnail", maxCount: 1 },{name: "demoVideos", maxCount: 1 }]),instructorCourseController.createCourse.bind(instructorCourseController));
+
+// Update Course
+router.put("/course/:courseId",authenticateToken,isInstructor,upload.fields([{ name: "thumbnail", maxCount: 1 },{ name: "demoVideos", maxCount: 1 }]),instructorCourseController.updateCourse.bind(instructorCourseController));
+
+// Delete Course
+router.delete("/course/:courseId",authenticateToken,isInstructor,instructorCourseController.deleteCourse.bind(instructorCourseController));
+
+// Get Course By ID
+router.get("/course/:courseId",authenticateToken,isInstructor,instructorCourseController.getCourseById.bind(instructorCourseController));
+
+//instructor created courses visit
+
+router.get("/courses",authenticateToken,isInstructor,instructorCourseController.getInstructorCourses.bind(instructorCourseController))
 
 const instructorRoutes = router
 
