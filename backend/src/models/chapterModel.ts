@@ -1,6 +1,7 @@
 import { Schema, Types, model, Document } from "mongoose";
 
 export interface IChapter extends Document {
+  _id:Types.ObjectId,
   chapterTitle: string;
   courseId: Types.ObjectId;
   chapterNumber?: number;
@@ -15,7 +16,7 @@ export interface CreateChapterDTO {
   description: string;
   videoUrl: string;
   chapterNumber?: number;
-  captionsUrl?: string | null;
+  captionsUrl?: string ;
 }
 
 const ChapterSchema = new Schema<IChapter>(

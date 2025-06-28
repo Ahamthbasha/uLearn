@@ -18,6 +18,27 @@ const InstructorRouterEndPoints = {
     instructorUpdateCourse : '/api/instructor/course',
     instructorDeleteCourse : '/api/instructor/course',
     instructorGetCourseById :  '/api/instructor/course',
+    //publish course
+
+    instructorPublishCourseById : '/api/instructor/course',
+
+    //Chapter Management
+    instructorGetChaptersByCourse: "/api/instructor/chapters",            
+    instructorCreateChapter: "/api/instructor/chapters",                     
+    instructorUpdateChapter: "/api/instructor/chapters",                    
+    instructorDeleteChapter: "/api/instructor/chapters",    
+    instructorGetSingleChapter: "/api/instructor/chapters", 
+
+  //instructor quiz routes
+
+  instructorCreateQuiz : "/api/instructor/quiz",
+  instructorDeleteQuiz : "/api/instructor/quiz",
+  instructorGetQuizById : "/api/instructor/quiz",
+  instructorGetQuizByCourseId : "/api/instructor/quiz/course",
+
+  instructorAddQuestion: "/api/instructor/quiz",
+  instructorUpdateQuestion: "/api/instructor/quiz",
+  instructorDeleteQuestion: "/api/instructor/quiz"
 }
 
 export default InstructorRouterEndPoints

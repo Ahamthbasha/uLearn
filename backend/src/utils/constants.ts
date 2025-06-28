@@ -261,21 +261,8 @@ export const CategorySuccessMsg = {
     INTERNAL_SERVER_ERROR: "Internal server error!",
   };
 
-  export const ChapterErrorMessages = {
-  MISSING_REQUIRED_FIELDS: "Missing required fields.",
-  MISSING_VIDEO_FILE: "Missing required video file.",
-  CHAPTER_NOT_FOUND: "Chapter not found.",
-  COURSE_ID_REQUIRED: "Course ID is required.",
-  CHAPTER_ID_REQUIRED: "Chapter ID is required.",
-  INTERNAL_SERVER_ERROR: "Internal server error.",
-};
 
-export const ChapterSuccessMessages = {
-  CHAPTER_ADDED: "Chapter added successfully.",
-  CHAPTER_UPDATED: "Chapter updated successfully.",
-  CHAPTERS_FETCHED: "Chapters fetched successfully.",
-  CHAPTER_FETCHED: "Chapter fetched successfully.",
-};
+
 
 export const CourseErrorMessages = {
   MISSING_FILES: "Missing files.",
@@ -319,12 +306,36 @@ export const QuizErrorMessages = {
   COURSE_ID_REQUIRED: "Course ID is required.",
   INVALID_QUIZ_DATA: "Invalid quiz data provided.",
   INTERNAL_SERVER_ERROR: "Internal server error.",
+  QUIZ_OR_QUESTION_NOT_FOUND : "Quiz or question not found",
+  QUIZ_ALREAD_CREATED :"Quiz already exists for this course. Please manage questions instead.",
+  QUIZ_NOT_FOUND : "Quiz is not found"
 };
 
 export const QuizSuccessMessages = {
-  QUIZ_ADDED: "Quiz added successfully.",
-  QUIZ_UPDATED: "Quiz updated successfully.",
+  QUIZ_CREATED : "Quiz section for this course is created",
+  QUIZ_DELETED : "Quiz section for this course is deleted",
+  QUESTION_ADDED: "Question added successfully.",
+  QUESTION_UPDATED: "Question updated successfully.",
   QUIZ_FETCHED: "Quiz fetched successfully.",
+  QUESTION_DELETED :"question deleted successfully",
   COURSE_COMPLETED: "Course completed successfully!",
   RETRY_QUIZ: "Retry quiz!",
 };
+
+
+export const ChapterErrorMessages= {
+  CHAPTER_ALREADY_EXIST : "Chapter already exists with this title in this course",
+  CHAPTER_REQUIRE_VIDEOFILE : "Video file is required" ,
+  CHAPTER_NOT_FOUND : "chapter not found",
+  CHAPTER_NUMBER_ALREADY_EXIST: "Chapter with this number already exists in this course",
+  
+}
+
+
+export const ChapterSuccessMessages ={
+  CHAPTER_CREATED : "chapter created successfully",
+  CHAPTER_RETRIEVED : "Course related chapters are retrieved",
+  CHAPTER_UPDATED : 'Chapter is updated successfully',
+  CHAPTER_DELETED : 'Chapter is deleted successfully'
+
+}

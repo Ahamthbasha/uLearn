@@ -64,7 +64,7 @@ const CourseSchema = new Schema<ICourse>(
     duration: { type: String, required: true },
     thumbnailUrl: { type: String, required: true },
     isPublished: { type: Boolean, default: false },
-    isListed: { type: Boolean, default: true },
+    isListed: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

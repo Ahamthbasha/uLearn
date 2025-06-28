@@ -1,7 +1,7 @@
 import InstructorRouterEndPoints from "../../types/endPoints/instructorEndPoint";
 
 import { API } from "../../service/axios";
-
+import {type IQuestionPayload, type ICreateQuizPayload } from "../../types/interfaces/IQuiz";
 //verification api call
 
 export const sendVerification = async (formData:FormData)=>{
@@ -172,3 +172,189 @@ export const fetchInstructorCourses = async () => {
         throw error
     }
 };
+
+
+//chapter related actions
+
+export const getChaptersByCourse = async (courseId:string)=>{
+    try {
+        const response = await API.get(`${InstructorRouterEndPoints.instructorGetChaptersByCourse}/${courseId}`,{
+            withCredentials:true
+        })
+        console.log("get chapter By course",response.data)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+
+export const getChapterById = async (courseId:string,chapterId:string)=>{
+    try {
+        const response = await API.get(`${InstructorRouterEndPoints.instructorGetSingleChapter}/${courseId}/${chapterId}`)
+
+        console.log('get chapter by id',response.data)
+        return response.data.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const createChapter = async (courseId: string, formData: FormData) => {
+    try {
+      const response = await API.post(`${InstructorRouterEndPoints.instructorCreateChapter}/${courseId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log('create Chapter',response.data)
+      return response.data.data;
+  } catch (error) {
+    throw error
+  }
+};
+
+export const updateChapter = async (courseId: string,chapterId: string,formData: FormData) => {
+    try {
+        const response = await API.put(`${InstructorRouterEndPoints.instructorUpdateChapter}/${courseId}/${chapterId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        console.log('update chapter',response.data)
+        return response.data.data;
+    } catch (error) {
+        throw error
+    }
+};
+
+export const deleteChapter = async (courseId: string, chapterId: string) => {
+    try {
+        const response = await API.delete(`${InstructorRouterEndPoints.instructorDeleteChapter}/${courseId}/${chapterId}`);
+        return response.data;
+    } catch (error) {
+        throw error
+    }
+};
+
+
+//quiz related actions
+
+export const createQuiz = async (quizData: ICreateQuizPayload) => {
+  try {
+    const response = await API.post(
+      InstructorRouterEndPoints.instructorCreateQuiz,
+      quizData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("Create Quiz:", response.data);
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const deleteQuiz = async (quizId: string) => {
+  try {
+    const response = await API.delete(`${InstructorRouterEndPoints.instructorDeleteQuiz}/${quizId}`);
+    console.log("Delete Quiz:", response.data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// ✅ Get Quiz by ID
+export const getQuizById = async (quizId: string) => {
+  try {
+    const response = await API.get(`${InstructorRouterEndPoints.instructorGetQuizById}/${quizId}`);
+    console.log("Get Quiz By ID:", response.data);
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// ✅ Get Quiz by Course ID
+export const getQuizByCourseId = async (courseId: string) => {
+  try {
+    const response = await API.get(`${InstructorRouterEndPoints.instructorGetQuizByCourseId}/${courseId}`);
+    console.log("Get Quiz By Course ID:", response.data);
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const addQuestionToQuiz = async (
+  courseId: string,
+  questionData: IQuestionPayload
+) => {
+  try {
+    const response = await API.post(
+      `${InstructorRouterEndPoints.instructorAddQuestion}/${courseId}/question`,
+      questionData,
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// 📝 Update Question in Quiz
+export const updateQuestionInQuiz = async (
+  quizId: string,
+  questionId: string,
+  questionData: IQuestionPayload
+) => {
+  try {
+    const response = await API.put(
+      `${InstructorRouterEndPoints.instructorUpdateQuestion}/${quizId}/question/${questionId}`,
+      questionData,
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// ❌ Delete Question from Quiz
+export const deleteQuestionFromQuiz = async (
+  quizId: string,
+  questionId: string
+): Promise<{ message: string }> => {
+  try {
+    const response = await API.delete(
+      `${InstructorRouterEndPoints.instructorDeleteQuestion}/${quizId}/question/${questionId}`,
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const publishCourse = async(courseId:string) => {
+  try {
+    const response = await API.patch(`${InstructorRouterEndPoints.instructorPublishCourseById}/${courseId}/publish`)
+
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}

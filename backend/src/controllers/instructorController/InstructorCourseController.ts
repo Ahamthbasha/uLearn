@@ -10,11 +10,18 @@ import { getPresignedUrl } from "../../utils/getPresignedUrl";
 export class InstructorCourseController implements IInstructorCourseController {
   constructor(private courseService: IInstructorCourseService) {}
 
-  async createCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
+ async createCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const courseData = req.body;
-      console.log(courseData)
       const instructorId = await getId(req);
+
+      if (!instructorId) {
+  res.status(StatusCode.UNAUTHORIZED).json({
+    success: false,
+    message: "Unauthorized: Instructor ID not found.",
+  });
+  return;
+}
 
       const files = req.files as {
         demoVideos?: Express.Multer.File[];
@@ -26,9 +33,20 @@ export class InstructorCourseController implements IInstructorCourseController {
         return;
       }
 
+      const courseName = courseData.courseName?.trim();
+      const isAlreadyCreated = await this.courseService.isCourseAlreadyCreatedByInstructor(courseName, instructorId);
+      if (isAlreadyCreated) {
+        res.status(StatusCode.BAD_REQUEST).json({
+          success: false,
+          message: "You have already created a course with this name.",
+        });
+        return;
+      }
+
       const thumbnailKey = await uploadToS3Bucket(files.thumbnail[0], "thumbnails");
       const demoVideoKey = await uploadToS3Bucket(files.demoVideos[0], "demoVideos");
 
+      courseData.courseName = courseName;
       courseData.instructorId = instructorId;
       courseData.thumbnailUrl = thumbnailKey;
       courseData.demoVideo = {
@@ -37,7 +55,7 @@ export class InstructorCourseController implements IInstructorCourseController {
       };
 
       const createdCourse = await this.courseService.createCourse(courseData);
-      console.log(createdCourse)
+
       res.status(StatusCode.CREATED).json({
         success: true,
         message: CourseSuccessMessages.COURSE_CREATED,
@@ -48,67 +66,87 @@ export class InstructorCourseController implements IInstructorCourseController {
     }
   }
 
-async updateCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
-  try {
-    const { courseId } = req.params;
-    const courseData = req.body;
+  async updateCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { courseId } = req.params;
+      const courseData = req.body;
+      const instructorId = await getId(req);
+      if (!instructorId) {
+  res.status(StatusCode.UNAUTHORIZED).json({
+    success: false,
+    message: "Unauthorized: Instructor ID not found.",
+  });
+  return;
+}
+      const courseName = courseData.courseName?.trim();
+      const isDuplicate = await this.courseService.isCourseAlreadyCreatedByInstructorExcluding(
+        courseName,
+        instructorId,
+        courseId
+      );
 
-    const files = req.files as {
-      demoVideos?: Express.Multer.File[];
-      thumbnail?: Express.Multer.File[];
-    };
+      if (isDuplicate) {
+        res.status(StatusCode.BAD_REQUEST).json({
+          success: false,
+          message: "You have already created another course with this name.",
+        });
+        return;
+      }
 
-    if (files?.thumbnail) {
-      const thumbnailKey = await uploadToS3Bucket(files.thumbnail[0], "thumbnails");
-      courseData.thumbnailUrl = thumbnailKey;
-    }
-
-    if (files?.demoVideos) {
-      const demoVideoKey = await uploadToS3Bucket(files.demoVideos[0], "demoVideos");
-      courseData.demoVideo = {
-        type: "video",
-        url: demoVideoKey,
+      const files = req.files as {
+        demoVideos?: Express.Multer.File[];
+        thumbnail?: Express.Multer.File[];
       };
-    }
 
-    const updatedCourse = await this.courseService.updateCourse(courseId, courseData);
+      if (files?.thumbnail) {
+        const thumbnailKey = await uploadToS3Bucket(files.thumbnail[0], "thumbnails");
+        courseData.thumbnailUrl = thumbnailKey;
+      }
 
-    if (!updatedCourse) {
-      res.status(StatusCode.NOT_FOUND).json({
-        success: false,
-        message: CourseErrorMessages.COURSE_NOT_FOUND,
-      });
-      return;
-    }
+      if (files?.demoVideos) {
+        const demoVideoKey = await uploadToS3Bucket(files.demoVideos[0], "demoVideos");
+        courseData.demoVideo = {
+          type: "video",
+          url: demoVideoKey,
+        };
+      }
 
-    // ✅ Generate signed URLs for thumbnail and demo video
-    const thumbnailSignedUrl = updatedCourse.thumbnailUrl
-      ? await getPresignedUrl(updatedCourse.thumbnailUrl)
-      : null;
+      courseData.courseName = courseName;
 
-    const demoVideoSignedUrl =
-      updatedCourse.demoVideo?.url
+      const updatedCourse = await this.courseService.updateCourse(courseId, courseData);
+
+      if (!updatedCourse) {
+        res.status(StatusCode.NOT_FOUND).json({
+          success: false,
+          message: CourseErrorMessages.COURSE_NOT_FOUND,
+        });
+        return;
+      }
+
+      const thumbnailSignedUrl = updatedCourse.thumbnailUrl
+        ? await getPresignedUrl(updatedCourse.thumbnailUrl)
+        : null;
+
+      const demoVideoSignedUrl = updatedCourse.demoVideo?.url
         ? await getPresignedUrl(updatedCourse.demoVideo.url)
         : null;
 
-    res.status(StatusCode.OK).json({
-      success: true,
-      message: CourseSuccessMessages.COURSE_UPDATED,
-      data: {
-        ...updatedCourse.toObject(),
-        thumbnailSignedUrl,
-        demoVideo: {
-          ...updatedCourse.demoVideo,
-          urlSigned: demoVideoSignedUrl,
+      res.status(StatusCode.OK).json({
+        success: true,
+        message: CourseSuccessMessages.COURSE_UPDATED,
+        data: {
+          ...updatedCourse.toObject(),
+          thumbnailSignedUrl,
+          demoVideo: {
+            ...updatedCourse.demoVideo,
+            urlSigned: demoVideoSignedUrl,
+          },
         },
-      },
-    });
-  } catch (error) {
-    next(error);
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-}
-
-
 
   async deleteCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -139,7 +177,6 @@ async getCourseById(req: Request, res: Response, next: NextFunction): Promise<vo
     }
 
     const courseObj = course.toObject();
-    console.log(courseObj)
     // ✅ Generate signed thumbnail URL
     const thumbnailSignedUrl = courseObj.thumbnailUrl
       ? await getPresignedUrl(courseObj.thumbnailUrl)
@@ -193,6 +230,41 @@ async getCourseById(req: Request, res: Response, next: NextFunction): Promise<vo
     next(err);
   }
 }
+
+async publishCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { courseId } = req.params;
+
+    const canPublish = await this.courseService.canPublishCourse(courseId);
+
+    if (!canPublish) {
+      res.status(StatusCode.BAD_REQUEST).json({
+        success: false,
+        message: "Course must have at least one chapter and one quiz question to be published",
+      });
+      return;
+    }
+
+    const updatedCourse = await this.courseService.publishCourse(courseId);
+
+    if (!updatedCourse) {
+      res.status(StatusCode.NOT_FOUND).json({
+        success: false,
+        message: CourseErrorMessages.COURSE_NOT_FOUND,
+      });
+      return;
+    }
+
+    res.status(StatusCode.OK).json({
+      success: true,
+      message: "Course published successfully",
+      data: updatedCourse,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 
 
 }

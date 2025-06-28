@@ -76,11 +76,12 @@ const CourseEditPage = () => {
 
       setSubmitting(true);
       try {
-        await instructorUpdateCourse(courseId!, formData);
-        toast.success("Course updated successfully");
+        const res = await instructorUpdateCourse(courseId!, formData);
+        console.log('response editpage',res)
+        toast.success(res.message);
         navigate("/instructor/courses");
-      } catch (error) {
-        toast.error("Failed to update course");
+      } catch (error:any) {
+        toast.error(error?.response?.data.message);
       } finally {
         setSubmitting(false);
       }

@@ -80,6 +80,8 @@ const instructorVerificationRepository: IInstructorVerificationRepository = new 
 const instructorVerificationService: IInstructorVerificationService = new InstructorVerificationService(instructorVerificationRepository);
 const instructorVerificationController: IInstructorVerificationController = new InstructorVerificationController(instructorVerificationService);
 
+//////////////////////////WEEK 2///////////////////////////////////
+
 ///////////////////////student profile controller/////////////////////////////////////////////////
 
 import { studentProfileRepository } from "../repositories/studentRepository/studentProfileRepository";
@@ -143,6 +145,45 @@ const instructorCategoryService : IInstructorCategoryService = new InstructorCat
 const instructorCategoryController : IInstructorCategoryController = new InstructorCategoryController(instructorCategoryService)
 
 
+///////////////////////INSTRUCTOR CHAPTER CONTROLLER/////////////////////////////////////
+
+import { IInstructorChapterRepository } from "../repositories/interfaces/IInstructorChapterRepository";
+import { InstructorChapterRepository } from "../repositories/instructorRepository/instructorChapterRepository";
+
+
+import { IInstructorChapterService } from "../services/interface/IInstructorChapterService";
+import { InstructorChapterService } from "../services/instructorServices/InstructorChapterService";
+
+import { IInstructorChapterController } from "../controllers/instructorController/interfaces/IInstructorChapterController";
+import { InstructorChapterController } from "../controllers/instructorController/instructorChapterController";
+
+
+const instructorChapterRepository : IInstructorChapterRepository = new InstructorChapterRepository()
+
+const instructorChapterService : IInstructorChapterService = new InstructorChapterService(instructorChapterRepository)
+
+const instructorChapterController : IInstructorChapterController = new InstructorChapterController(instructorChapterService)
+
+
+/////////////////////////INSTRUCTOR QUIZ CONTROLLER////////////////////////////////////////////////////////////////////////////////////////////
+
+import { IInstructorQuizRepository } from "../repositories/interfaces/IInstructorQuizRepository";
+import { InstructorQuizRepository } from "../repositories/instructorRepository/instructorQuizRepository";
+
+import { IInstructorQuizService } from "../services/interface/IInstructorQuizService";
+import { InstructorQuizService } from "../services/instructorServices/InstructorQuizService";
+
+import { IInstructorQuizController } from "../controllers/instructorController/interfaces/IInstructorQuizController";
+import { InstructorQuizController } from "../controllers/instructorController/instructorQuizController";
+
+const instructorQuizRepository : IInstructorQuizRepository = new InstructorQuizRepository()
+
+const instructorQuizService : IInstructorQuizService = new InstructorQuizService(instructorQuizRepository)
+
+const instructorQuizController : IInstructorQuizController = new InstructorQuizController(instructorQuizService)
+
+
+
 //////////////////////INSTRUCTOR COURSE MANAGEMENT///////////////////////////////////////
 
 import { IInstructorCourseRepository } from "../repositories/interfaces/IInstructorCourseRepository";
@@ -157,9 +198,29 @@ import { InstructorCourseController} from "../controllers/instructorController/I
 
 const instructorCourseRepository : IInstructorCourseRepository = new InstructorCourseRepository()
 
-const instructorCourseService : IInstructorCourseService = new InstructorCourseService(instructorCourseRepository)
+const instructorCourseService : IInstructorCourseService = new InstructorCourseService(instructorCourseRepository,instructorChapterRepository,instructorQuizRepository)
 
 const instructorCourseController : IInstructorCourseController = new InstructorCourseController(instructorCourseService)
+
+////////////////////////ADMIN COURSE CONTROLLER/////////////////////////////////////////////////////////////////////////////////////////////
+
+import { IAdminCourseRepository } from "../repositories/interfaces/IAdminCourseRepository";
+import { AdminCourseRepository } from "../repositories/adminRepository/adminCourseRepository";
+
+import { IAdminCourseService } from "../services/interface/IAdminCourseService";
+import { AdminCourseService } from "../services/adminServices/AdminCourseService";
+
+import { IAdminCourseController } from "../controllers/adminControllers/interface/IAdminCourseControllet";
+import { AdminCourseController } from "../controllers/adminControllers/adminCourseController";
+
+
+const adminCourseRepository:IAdminCourseRepository= new AdminCourseRepository()
+
+const adminCourseService : IAdminCourseService = new AdminCourseService(adminCourseRepository)
+
+const adminCourseController : IAdminCourseController = new AdminCourseController(adminCourseService)
+
+
 
 export {
     studentController,
@@ -174,6 +235,10 @@ export {
     adminCategoryController,
 //instructorCategoryController
     instructorCategoryController,
-//instructorCourseController
-    instructorCourseController
+//instructorCourse,chapterController
+    instructorCourseController,
+    instructorChapterController,
+    instructorQuizController,
+//adminCourse controller,
+    adminCourseController
 }

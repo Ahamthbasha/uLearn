@@ -99,11 +99,11 @@ const CourseCreatePage = () => {
       formData.append("demoVideos", values.demoVideo);
 
       try {
-        await instructorCreateCourse(formData);
-        toast.success("Course created successfully");
+        const res = await instructorCreateCourse(formData);
+        toast.success(res.data.message);
         navigate("/instructor/courses");
-      } catch (err) {
-        toast.error("Failed to create course");
+      } catch (err:any) {
+        toast.error(err?.response?.data?.message);
       } finally {
         setSubmitting(false);
       }

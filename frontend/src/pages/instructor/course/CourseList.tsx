@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Edit, Trash, Upload } from "lucide-react";
+import { Edit, Trash, Eye } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import InstructorDataTable, {
@@ -65,19 +65,6 @@ const CourseListPage = () => {
     }
   };
 
-  const handlePublish = async (course: Course) => {
-    try {
-      toast.info(`Publishing "${course.courseName}"...`);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success("Course published (mock)");
-      setCourses((prev) =>
-        prev.map((c) => (c._id === course._id ? { ...c, isPublished: true } : c))
-      );
-    } catch (err: any) {
-      toast.error("Failed to publish course");
-    }
-  };
-
   const columns: InstructorColumn<Course>[] = [
     {
       key: "thumbnailSignedUrl",
@@ -140,12 +127,11 @@ const CourseListPage = () => {
       className: "bg-red-500 hover:bg-red-600 text-white",
     },
     {
-      key: "publish",
-      label: "Publish",
-      icon: <Upload size={16} />,
-      onClick: handlePublish,
+      key: "view",
+      label: "View",
+      icon: <Eye size={16} />,
+      onClick: (record) => navigate(`/instructor/course/manage/${record._id}`),
       className: "bg-blue-500 hover:bg-blue-600 text-white",
-      condition: (record) => !record.isPublished,
     },
   ];
 
@@ -164,7 +150,6 @@ const CourseListPage = () => {
         emptyStateDescription="Create a course to get started."
       />
 
-      {/* 🔐 Confirmation Modal */}
       <ConfirmationModal
         isOpen={isModalOpen}
         title="Delete Course"

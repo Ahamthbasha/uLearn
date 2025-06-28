@@ -36,5 +36,21 @@ export class InstructorCourseRepository
   ) as ICourse[];
 }
 
+async findCourseByNameForInstructor(courseName: string, instructorId: string): Promise<ICourse | null> {
+  return await this.findOne({ courseName, instructorId });
+}
+
+async findCourseByNameForInstructorExcludingId(courseName: string, instructorId: string, excludeId: string): Promise<ICourse | null> {
+  return await this.findOne({
+    courseName,
+    instructorId,
+    _id: { $ne: excludeId },
+  });
+}
+
+async publishCourse(courseId: string): Promise<ICourse | null> {
+  return await this.update(courseId, { isPublished: true });
+}
+
 
 }

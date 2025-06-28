@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adminController,adminVerificationController,adminCategoryController } from "../config/dependencyInjector";
+import { adminController,adminVerificationController,adminCategoryController, adminCourseController } from "../config/dependencyInjector";
 import authenticateToken from "../middlewares/AuthenticatedRoutes";
 
 import { isAdmin } from "../middlewares/roleAuth";
@@ -35,6 +35,12 @@ router.put('/categoryListOrUnlist/:id',authenticateToken,isAdmin,adminCategoryCo
 router.post('/category',authenticateToken,isAdmin,adminCategoryController.addCategory.bind(adminCategoryController))
 
 router.put('/category',authenticateToken,isAdmin,adminCategoryController.editCategory.bind(adminCategoryController))
+
+//Course management
+
+router.get("/courses",authenticateToken,isAdmin,adminCourseController.getAllCourses.bind(adminCourseController))
+
+router.patch('/courses/:courseId/listing',authenticateToken,isAdmin,adminCourseController.updateListingStatus.bind(adminCourseController))
 
 const adminRoutes = router
 

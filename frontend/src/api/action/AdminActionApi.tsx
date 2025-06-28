@@ -204,3 +204,27 @@ export const toggleCategoryStatus = async (id: string): Promise<any> => {
     throw error;
   }
 };
+
+export const getAllCourses = async (search = "", page = 1, limit = 10) => {
+  try {
+    const response = await API.get(`${AdminRoutersEndPoints.adminGetCourses}`, {
+      params: { search, page, limit },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const listUnListCourse = async(courseId:string)=>{
+  try {
+    const response = await API.patch(`${AdminRoutersEndPoints.adminToggleList}/${courseId}/listing`)
+
+    console.log(response.data)
+
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}

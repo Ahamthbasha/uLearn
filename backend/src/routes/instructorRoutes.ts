@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { instructorController,instructorVerificationController,instructorProfileController,instructorCategoryController,instructorCourseController } from "../config/dependencyInjector";
+import { instructorController,instructorVerificationController,instructorProfileController,instructorCategoryController,instructorCourseController, instructorChapterController, instructorQuizController } from "../config/dependencyInjector";
 import upload from "../utils/multer";
 
 import authenticateToken from "../middlewares/AuthenticatedRoutes";
@@ -63,6 +63,55 @@ router.get("/course/:courseId",authenticateToken,isInstructor,instructorCourseCo
 //instructor created courses visit
 
 router.get("/courses",authenticateToken,isInstructor,instructorCourseController.getInstructorCourses.bind(instructorCourseController))
+
+//publish course
+
+router.patch("/course/:courseId/publish",authenticateToken,isInstructor,instructorCourseController.publishCourse.bind(instructorCourseController))
+
+//chapter routes
+
+router.get('/chapters/:courseId',authenticateToken,isInstructor,instructorChapterController.getChaptersByCourse.bind(instructorChapterController))
+
+router.post('/chapters/:courseId',authenticateToken,isInstructor,upload.fields([{name:'video',maxCount:1},{name:'captions',maxCount:1}]),instructorChapterController.createChapter.bind(instructorChapterController))
+
+router.put('/chapters/:courseId/:chapterId',upload.fields([{name:"video",maxCount:1},{name:"captions",maxCount:1}]),instructorChapterController.updateChapter.bind(instructorChapterController))
+
+router.delete('/chapters/:courseId/:chapterId',authenticateToken,isInstructor,instructorChapterController.deleteChapter.bind(instructorChapterController))
+
+router.get('/chapters/:courseId/:chapterId',authenticateToken,isInstructor,instructorChapterController.getChapterById.bind(instructorChapterController))
+
+//quiz routes
+
+router.post('/quiz',authenticateToken,isInstructor,instructorQuizController.createQuiz.bind(instructorQuizController))
+
+router.delete('/quiz/:quizId',instructorQuizController.deleteQuiz.bind(instructorQuizController))
+
+router.get('/quiz/:quizId',authenticateToken,isInstructor,instructorQuizController.getQuizById.bind(instructorQuizController))
+
+router.get('/quiz/course/:courseId',authenticateToken,isInstructor,instructorQuizController.getQuizByCourseId.bind(instructorQuizController))
+
+//questions-level routes inside a quiz
+
+router.post(
+  '/quiz/:courseId/question',
+  authenticateToken,
+  isInstructor,
+  instructorQuizController.addQuestion.bind(instructorQuizController)
+);
+
+router.put(
+  '/quiz/:quizId/question/:questionId',
+  authenticateToken,
+  isInstructor,
+  instructorQuizController.updateQuestion.bind(instructorQuizController)
+);
+
+router.delete(
+  '/quiz/:quizId/question/:questionId',
+  authenticateToken,
+  isInstructor,
+  instructorQuizController.deleteQuestion.bind(instructorQuizController)
+);
 
 const instructorRoutes = router
 

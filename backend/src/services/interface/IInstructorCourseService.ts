@@ -8,4 +8,11 @@ export interface IInstructorCourseService {
 
   getCoursesByInstructor(instructorId: string): Promise<ICourse[]>;
 
+  isCourseAlreadyCreatedByInstructor(courseName: string, instructorId: string): Promise<boolean>;
+  isCourseAlreadyCreatedByInstructorExcluding(courseName: string, instructorId: string, courseId: string): Promise<boolean>;
+
+
+publishCourse(courseId: string): Promise<ICourse | null>;
+canPublishCourse(courseId: string): Promise<boolean>;
+
 }

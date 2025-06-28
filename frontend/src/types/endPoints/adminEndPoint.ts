@@ -15,6 +15,10 @@ const AdminRoutersEndPoints = {
     adminListOrUnListCategory : '/api/admin/categoryListOrUnList',
     adminCreateCategory : '/api/admin/category',
     adminEditCategory : '/api/admin/category',
+
+//course
+    adminGetCourses : '/api/admin/courses',
+    adminToggleList : '/api/admin/courses'
 }
 
 export default AdminRoutersEndPoints

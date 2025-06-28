@@ -22,6 +22,13 @@ import CourseListPage from '../pages/instructor/course/CourseList'
 import PrivateRoute from '../Protecter/InstructorPrivateRoute'
 import CourseCreatePage from '../pages/instructor/course/CourseCreate'
 import CourseEditPage from '../pages/instructor/course/CourseEditPage'
+import CourseManagementPage from '../pages/instructor/course/CourseManagementPage'
+import ChapterManagementPage from '../pages/instructor/course/ChapterManagementPage'
+import AddChapterPage from '../pages/instructor/course/AddChapterPage'
+import EditChapterPage from '../pages/instructor/course/EditChapterPage'
+import QuizManagementPage from '../pages/instructor/quiz/QuizManagementpage'
+import AddQuizPage from '../pages/instructor/quiz/AddQuizPage'
+import EditQuizPage from '../pages/instructor/quiz/EditQuizPage'
 
 const InstructorRouter = () => {
   return (
@@ -52,6 +59,18 @@ const InstructorRouter = () => {
     <Route path='courses' element={<CourseListPage/>}/>
     <Route path='createCourse' element ={<CourseCreatePage/>}/>
     <Route path='editCourse/:courseId' element={<CourseEditPage/>}/>
+    <Route path='course/manage/:courseId' element={<CourseManagementPage/>}/>
+
+    {/* chapterManage */}
+    <Route path='course/:courseId/chapters' element={<ChapterManagementPage/>} />
+    <Route path='course/:courseId/chapters/add' element={<AddChapterPage/>}/>
+    <Route path='course/:courseId/chapters/:chapterId/edit' element={<EditChapterPage/>}/>
+
+    {/* quizManage */}
+    <Route path='course/:courseId/quiz' element= {<QuizManagementPage/>}/>
+    <Route path='course/:courseId/quiz/add' element={<AddQuizPage/>}/>
+    <Route path="course/:courseId/quiz/edit/:quizId" element={<EditQuizPage />} />
+
   </Route>
 </Route>
 

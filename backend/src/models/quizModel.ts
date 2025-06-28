@@ -1,6 +1,6 @@
-import { Schema, model, Document } from "mongoose";
+import  { Schema, model, Document, Types } from "mongoose";
 
-interface IQuestions extends Document {
+export interface IQuestions extends Document {
   questionText: string;
   options: string[];
   correctAnswer: string;
@@ -13,17 +13,13 @@ const QuestionSchema = new Schema<IQuestions>({
 });
 
 export interface IQuiz extends Document {
-  courseId: Schema.Types.ObjectId;
-  title: string;
-  description: string;
-  questions: IQuestions[];
+  courseId: Types.ObjectId; // ✅ Use `Types.ObjectId`
+  questions: Types.DocumentArray<IQuestions>;
 }
 
 const QuizSchema = new Schema<IQuiz>(
   {
     courseId: { type: Schema.Types.ObjectId, ref: "Course", required: true },
-    title: { type: String, required: true },
-    description: { type: String },
     questions: [QuestionSchema],
   },
   { timestamps: true }
