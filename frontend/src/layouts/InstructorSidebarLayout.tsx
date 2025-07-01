@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { clearInstructorDetails } from "../redux/slices/instructorSlice";
 import { logout } from "../api/auth/InstructorAuthentication";
@@ -16,9 +17,10 @@ const navItems = [
 ];
 
 const InstructorSidebarLayout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const instructor = JSON.parse(localStorage.getItem("instructor") || "{}");
 
-  console.log('instructor sidebar layout',instructor)
+  console.log('instructor sidebar layout', instructor);
   const username = (instructor?.name || "Instructor").toUpperCase();
 
   const dispatch = useDispatch();
@@ -36,78 +38,129 @@ const InstructorSidebarLayout = () => {
     }
   };
 
-  return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Sidebar */}
-      <aside className="w-72 bg-white shadow-xl flex flex-col relative overflow-hidden">
-        {/* Decorative background gradient */}
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-amber-500 to-orange-500 opacity-5"></div>
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
-        {/* Logo Header */}
-        <div className="relative flex items-center justify-center h-20 border-b border-gray-100 cursor-pointer">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-lg">U</span>
+  return (
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+      {/* Sidebar */}
+      <aside className={`${isSidebarOpen ? 'w-80' : 'w-20'} bg-white shadow-2xl flex flex-col relative overflow-hidden transition-all duration-300 border-r border-gray-100`}>
+        {/* Background elements */}
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-amber-400/10 to-orange-500/10 rounded-full blur-xl"></div>
+          <div className="absolute bottom-20 left-0 w-24 h-24 bg-gradient-to-tr from-blue-400/10 to-purple-500/10 rounded-full blur-lg"></div>
+        </div>
+
+        {/* Header with Toggle */}
+        <div className="relative z-10 flex items-center justify-between h-24 px-6 border-b border-gray-100/50 bg-gradient-to-r from-white/80 to-gray-50/50 backdrop-blur-sm">
+          {/* Toggle Button */}
+          <button
+            onClick={toggleSidebar}
+            className="group relative p-3 hover:bg-amber-50 rounded-xl transition-colors duration-200 border border-transparent hover:border-amber-200"
+            aria-label="Toggle Sidebar"
+          >
+            <div className="w-6 h-6 flex flex-col justify-center items-center space-y-1">
+              <div className={`w-5 h-0.5 bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300 ${isSidebarOpen ? 'rotate-45 translate-y-2' : ''}`}></div>
+              <div className={`w-4 h-0.5 bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300 ${isSidebarOpen ? 'opacity-0 scale-0' : ''}`}></div>
+              <div className={`w-5 h-0.5 bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300 ${isSidebarOpen ? '-rotate-45 -translate-y-2' : ''}`}></div>
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent tracking-wide">
-              ULearn
-            </span>
+          </button>
+
+          {/* Logo */}
+          <div className={`flex items-center transition-all duration-300 ${isSidebarOpen ? 'space-x-4' : 'justify-center'}`}>
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-xl">U</span>
+              </div>
+            </div>
+            {isSidebarOpen && (
+              <div>
+                <span className="text-3xl font-black bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 bg-clip-text text-transparent tracking-tight">
+                  ULearn
+                </span>
+                <div className="text-xs text-gray-500 font-medium tracking-widest">INSTRUCTOR PORTAL</div>
+              </div>
+            )}
           </div>
         </div>
 
         {/* User Profile Section */}
-        <div className="p-6 border-b border-gray-100">
-  <div className="flex items-center space-x-3">
-    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
-      {instructor?.profilePicture ? (
-        <img
-          src={instructor.profilePicture}
-          alt="Profile"
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        <span className="text-xl">👨‍🏫</span>
-      )}
-    </div>
-    <div>
-      <p className="font-semibold text-gray-800">{username}</p>
-      <p className="text-xs text-gray-500">Instructor</p>
-    </div>
-  </div>
-</div>
-
+        <div className={`relative z-10 p-6 border-b border-gray-100/50 ${isSidebarOpen ? '' : 'px-3'}`}>
+          <div className={`flex items-center ${isSidebarOpen ? 'space-x-4' : 'justify-center'}`}>
+            <div className="relative">
+              <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shadow-lg border-2 border-white">
+                {instructor?.profilePicture ? (
+                  <img
+                    src={instructor.profilePicture}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-2xl">👨‍🏫</span>
+                )}
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white shadow-sm"></div>
+            </div>
+            {isSidebarOpen && (
+              <div>
+                <p className="font-bold text-gray-800 text-lg">{username}</p>
+                <p className="text-sm text-gray-500 font-medium">Senior Instructor</p>
+                <div className="flex items-center mt-1 space-x-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-xs text-green-600 font-medium">Online</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Navigation */}
-        <div className="p-6 flex-1">
-          <h2 className="text-xs text-gray-400 uppercase mb-6 tracking-widest font-semibold">
-            Navigation
-          </h2>
-          <nav className="flex flex-col space-y-2">
+        <div className={`relative z-10 flex-1 py-6 ${isSidebarOpen ? 'px-6' : 'px-3'}`}>
+          {isSidebarOpen && (
+            <div className="mb-8">
+              <h2 className="text-xs text-gray-400 uppercase mb-2 tracking-widest font-bold">
+                Navigation
+              </h2>
+              <div className="w-12 h-0.5 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"></div>
+            </div>
+          )}
+          <nav className="flex flex-col space-y-3">
             {navItems.map((item) => (
               <NavLink
                 key={item.name}
                 to={item.path}
                 className={({ isActive }) =>
-                  `group flex items-center space-x-4 px-4 py-3 rounded-xl transition-all duration-200 ease-in-out ${
+                  `group relative flex items-center ${isSidebarOpen ? 'space-x-4 px-5 py-4' : 'justify-center px-3 py-4'} rounded-2xl transition-colors duration-200 ${
                     isActive
-                      ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg transform scale-105"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-amber-600 hover:transform hover:scale-105"
+                      ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xl shadow-amber-500/25"
+                      : "text-gray-600 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 hover:text-amber-700 hover:shadow-lg"
                   }`
                 }
+                title={!isSidebarOpen ? item.name : undefined}
               >
                 {({ isActive }) => (
                   <>
-                    <span className="text-xl group-hover:animate-pulse">
-                      {item.icon}
-                    </span>
-                    <span className="font-medium">{item.name}</span>
-                    <div
-                      className={`ml-auto w-2 h-2 rounded-full transition-all duration-200 ${
-                        isActive
-                          ? "bg-white"
-                          : "bg-transparent group-hover:bg-amber-400"
-                      }`}
-                    />
+                    <div className="relative flex items-center justify-center w-8 h-8">
+                      <span className="text-2xl">{item.icon}</span>
+                    </div>
+                    {isSidebarOpen && (
+                      <>
+                        <span className="font-semibold text-base tracking-wide">{item.name}</span>
+                        <div className="ml-auto flex items-center space-x-2">
+                          <div
+                            className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                              isActive
+                                ? "bg-white shadow-lg"
+                                : "bg-transparent group-hover:bg-amber-400"
+                            }`}
+                          />
+                          {isActive && (
+                            <div className="w-1 h-6 bg-white/30 rounded-full"></div>
+                          )}
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
               </NavLink>
@@ -116,27 +169,40 @@ const InstructorSidebarLayout = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="p-6 border-t border-gray-100 space-y-4">
-          {/* Motivational Quote */}
-          <div className="bg-gradient-to-r from-amber-50 to-orange-100 rounded-xl p-4">
-            <p className="italic text-gray-600 text-sm">
-              "Teaching is the profession that teaches all the other professions."
-            </p>
-            <p className="text-right mt-2 text-xs text-gray-500">– Unknown</p>
-          </div>
+        <div className={`relative z-10 p-6 border-t border-gray-100/50 space-y-4 bg-gradient-to-r from-gray-50/50 to-white/50 backdrop-blur-sm ${isSidebarOpen ? '' : 'px-3'}`}>
+          {/* Motivational Quote - only show when expanded */}
+          {isSidebarOpen && (
+            <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-2xl p-5 border border-amber-100 shadow-lg">
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                  <span className="text-white text-sm">💡</span>
+                </div>
+                <div>
+                  <p className="italic text-gray-700 text-sm font-medium leading-relaxed">
+                    "Teaching is the profession that teaches all the other professions."
+                  </p>
+                  <p className="text-right mt-3 text-xs text-amber-600 font-semibold">– Unknown</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="w-full text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 py-2 px-4 rounded-lg transition duration-200"
+            className={`group w-full font-semibold text-red-600 bg-gradient-to-r from-red-50 to-pink-50 hover:from-red-100 hover:to-pink-100 border border-red-200 hover:border-red-300 ${isSidebarOpen ? 'py-3 px-5' : 'py-3 px-3'} rounded-2xl transition-colors duration-200 hover:shadow-lg relative overflow-hidden`}
+            title={!isSidebarOpen ? "Logout" : undefined}
           >
-            Logout
+            <div className="relative flex items-center justify-center space-x-2">
+              <span className="text-lg">🚪</span>
+              {isSidebarOpen && <span>Logout</span>}
+            </div>
           </button>
         </div>
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 p-8 overflow-auto">
+      <main className="flex-1 p-8 overflow-auto bg-gradient-to-br from-white to-gray-50/50">
         <div className="max-w-7xl mx-auto">
           <Outlet />
         </div>

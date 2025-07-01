@@ -6,7 +6,7 @@ export interface IGenericRepository<T extends Document> {
   create(payload: Partial<T>): Promise<T>;
   findOne(filter: object): Promise<T | null>;
   findById(id: string): Promise<T | null>;
-  findAll(filter?: object, populate?: PopulateArg): Promise<T[] | null>;
+  findAll(filter?: object, populate?: PopulateArg,sort?:Record<string,SortOrder>): Promise<T[] | null>;
   update(id: string, data: Partial<T>): Promise<T | null>;
   updateOne(filter: object, data: Partial<T>): Promise<T | null>;
   delete(id: string): Promise<T | null>;
@@ -16,7 +16,8 @@ export interface IGenericRepository<T extends Document> {
     filter: object,
     page: number,
     limit: number,
-    sort?: Record<string, SortOrder>
+    sort?: Record<string, SortOrder>,
+    populate?:PopulateArg
   ): Promise<{ data: T[]; total: number }>;
 }
 
@@ -35,13 +36,23 @@ export class GenericRepository<T extends Document> implements IGenericRepository
     return await this.model.findOne(filter);
   }
 
-  async findAll(filter: object = {}, populate?: PopulateArg): Promise<T[] | null> {
+  async findAll(
+  filter: object = {},
+  populate?: PopulateArg,
+  sort: Record<string, SortOrder> = {}
+): Promise<T[] | null> {
   let query = this.model.find(filter);
+
   if (populate) {
-    query = query.populate(populate); // ✅ Correct type now
+    query = query.populate(populate);
   }
+
+  if (sort && Object.keys(sort).length > 0) {
+    query = query.sort(sort);
+  }
+
   return await query;
-  }
+}
 
 
   async findById(id: string): Promise<T | null> {
@@ -70,20 +81,25 @@ export class GenericRepository<T extends Document> implements IGenericRepository
   }
 
   async paginate(
-    filter: object,
-    page: number,
-    limit: number,
-    sort: Record<string, SortOrder> = { createdAt: -1} as Record<string,SortOrder>
-  ): Promise<{ data: T[]; total: number }> {
-    const total = await this.model.countDocuments(filter);
-    const data = await this.model
-      .find(filter)
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .sort(sort);
+  filter: object,
+  page: number,
+  limit: number,
+  sort: Record<string, SortOrder> = { createdAt: -1 },
+  populate?: PopulateArg
+): Promise<{ data: T[]; total: number }> {
+  const total = await this.model.countDocuments(filter);
 
-    return { data, total };
+  let query = this.model.find(filter).sort(sort);
+  if (populate) {
+    query = query.populate(populate); // ✅ Add this
   }
+
+  const data = await query
+    .skip((page - 1) * limit)
+    .limit(limit);
+
+  return { data, total };
+}
 
   async findByIdWithPopulate(id: string, populate?: PopulateArg): Promise<T | null> {
   let query = this.model.findById(id);

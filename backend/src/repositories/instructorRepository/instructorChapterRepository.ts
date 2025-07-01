@@ -45,5 +45,12 @@ export class InstructorChapterRepository
   });
 }
 
+async paginateChapters(
+  filter: object,
+  page: number,
+  limit: number
+): Promise<{ data: IChapter[]; total: number }> {
+  return this.paginate(filter, page, limit, { chapterNumber: 1 });
+}
 
 }

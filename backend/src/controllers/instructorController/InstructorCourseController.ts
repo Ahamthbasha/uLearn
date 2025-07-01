@@ -210,26 +210,42 @@ async getCourseById(req: Request, res: Response, next: NextFunction): Promise<vo
       return;
     }
 
-    const courses = await this.courseService.getCoursesByInstructor(instructorId);
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const search = (req.query.search as string) || "";
+
+    const { data, total } = await this.courseService.getInstructorCoursesPaginated(
+      instructorId,
+      page,
+      limit,
+      search
+    );
 
     const coursesWithSignedUrl = await Promise.all(
-      courses.map(async (course) => {
+      data.map(async (course) => {
         const signedUrl = await getPresignedUrl(course.thumbnailUrl);
         const courseObj = course.toObject();
-
+        console.log(courseObj)
         return {
           ...courseObj,
           thumbnailSignedUrl: signedUrl,
-          categoryName: courseObj.category?.categoryName , // ✅ Extract populated name
+          categoryName: courseObj.category?.categoryName,
         };
       })
     );
 
-    res.status(200).json({ success: true, data: coursesWithSignedUrl });
+    res.status(200).json({
+      success: true,
+      data: coursesWithSignedUrl,
+      total,
+      page,
+      limit,
+    });
   } catch (err) {
     next(err);
   }
 }
+
 
 async publishCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {

@@ -92,26 +92,13 @@ router.get('/quiz/course/:courseId',authenticateToken,isInstructor,instructorQui
 
 //questions-level routes inside a quiz
 
-router.post(
-  '/quiz/:courseId/question',
-  authenticateToken,
-  isInstructor,
-  instructorQuizController.addQuestion.bind(instructorQuizController)
-);
+router.post('/quiz/:courseId/question',authenticateToken,isInstructor,instructorQuizController.addQuestion.bind(instructorQuizController));
 
-router.put(
-  '/quiz/:quizId/question/:questionId',
-  authenticateToken,
-  isInstructor,
-  instructorQuizController.updateQuestion.bind(instructorQuizController)
-);
+router.put('/quiz/:quizId/question/:questionId',authenticateToken,isInstructor,instructorQuizController.updateQuestion.bind(instructorQuizController));
 
-router.delete(
-  '/quiz/:quizId/question/:questionId',
-  authenticateToken,
-  isInstructor,
-  instructorQuizController.deleteQuestion.bind(instructorQuizController)
-);
+router.delete('/quiz/:quizId/question/:questionId',authenticateToken,isInstructor,instructorQuizController.deleteQuestion.bind(instructorQuizController));
+
+router.get("/quiz/course/:courseId/paginated",authenticateToken,isInstructor,instructorQuizController.getPaginatedQuestionsByCourseId.bind(instructorQuizController))
 
 const instructorRoutes = router
 

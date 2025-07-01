@@ -104,8 +104,6 @@ export class InstructorQuizController implements IInstructorQuizController {
   }
 }
 
-
-
   async addQuestion(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const { courseId } = req.params;
@@ -158,7 +156,6 @@ async updateQuestion(req: Request, res: Response, next: NextFunction): Promise<v
   }
 }
 
-
 async deleteQuestion(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const { quizId, questionId } = req.params;
@@ -176,6 +173,37 @@ async deleteQuestion(req: Request, res: Response, next: NextFunction): Promise<v
       success: true,
       message: QuizSuccessMessages.QUESTION_DELETED,
       data: deleted,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async getPaginatedQuestionsByCourseId(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { courseId } = req.params;
+    const { page = "1", limit = "10", search = "" } = req.query;
+
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+
+    const { questions, total } = await this.quizService.getPaginatedQuestionsByCourseId(
+      courseId,
+      String(search),
+      pageNum,
+      limitNum
+    );
+
+    res.status(StatusCode.OK).json({
+      success: true,
+      message: QuizSuccessMessages.QUIZ_FETCHED,
+      data: {
+        courseId,
+        questions,
+        total,
+        page: pageNum,
+        limit: limitNum,
+      },
     });
   } catch (err) {
     next(err);

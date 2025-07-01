@@ -9,4 +9,9 @@ export interface IInstructorQuizController {
   addQuestion(req: Request, res: Response, next: NextFunction): Promise<void>;
   updateQuestion(req: Request, res: Response, next: NextFunction): Promise<void>;
   deleteQuestion(req: Request, res: Response, next: NextFunction): Promise<void>;
+
+  getPaginatedQuestionsByCourseId(req: Request, res: Response, next: NextFunction): Promise<void>;
+
+
+
 }

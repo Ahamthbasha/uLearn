@@ -43,3 +43,56 @@ export const updatePassword = async(data:any):Promise<any>=>{
         throw error
     }
 }
+
+export const allCourses = async () => {
+  try {
+    const response = await API.get(UserRouterEndpoints.userCourseList);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const courseDetail = async(courseId:string)=>{
+    try {
+        const response = await API.get(`${UserRouterEndpoints.userCourseDetail}/${courseId}`)
+
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+// StudentAction.ts
+export const CoursesFiltered = async (
+  page = 1,
+  limit = 8,
+  search = "",
+  sort = "name-asc",
+  categoryId?: string
+) => {
+  try {
+    const response = await API.get(UserRouterEndpoints.userCourseFilter, {
+      params: {
+        page,
+        limit,
+        search,
+        sort,
+        category:categoryId,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const getAllCategories = async () => {
+  try {
+    const response = await API.get(UserRouterEndpoints.userGetAllCategories);
+    return response.data.data; // Adjust depending on your response shape
+  } catch (error) {
+    throw error;
+  }
+};

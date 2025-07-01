@@ -29,12 +29,27 @@ export class InstructorCourseRepository
     }); // ✅ using GenericRepository method
   }
 
-  async getCoursesByInstructor(instructorId: string): Promise<ICourse[]> {
-  return await this.findAll(
-    { instructorId },
-    { path: 'category', select: 'categoryName' }
-  ) as ICourse[];
+async getCoursesByInstructorWithPagination(
+  instructorId: string,
+  page: number,
+  limit: number,
+  search: string = ""
+): Promise<{ data: ICourse[]; total: number }> {
+  const filter: any = { instructorId };
+
+  if (search) {
+    filter.courseName = { $regex: new RegExp(search, "i") }; // case-insensitive search
+  }
+
+  return await this.paginate(
+    filter,
+    page,
+    limit,
+    { createdAt: -1 },
+    {path:'category',select:'categoryName'}
+  );
 }
+
 
 async findCourseByNameForInstructor(courseName: string, instructorId: string): Promise<ICourse | null> {
   return await this.findOne({ courseName, instructorId });

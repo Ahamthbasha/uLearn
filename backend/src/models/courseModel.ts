@@ -10,9 +10,10 @@ interface IFullVideo {
 }
 
 export interface ICourse extends Document {
+    _id: Types.ObjectId & { toString(): string };
   courseName: string;
   instructorId: Types.ObjectId;
-  category: Types.ObjectId; // ✅ Only use this for Category reference
+  category: Types.ObjectId; 
   quizId: Types.ObjectId;
   description: string;
   demoVideo: IDemoVideo;
@@ -64,7 +65,7 @@ const CourseSchema = new Schema<ICourse>(
     duration: { type: String, required: true },
     thumbnailUrl: { type: String, required: true },
     isPublished: { type: Boolean, default: false },
-    isListed: { type: Boolean, default: false },
+    isListed: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

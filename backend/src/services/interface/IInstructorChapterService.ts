@@ -13,5 +13,13 @@ export interface IInstructorChapterService {
   chapterNumber: number
 ): Promise<IChapter | null>;
 
+paginateChapters(filter: object, page: number, limit: number): Promise<{ data: IChapter[]; total: number }>;
+
+
+paginateChapters(
+  filter: object,
+  page: number,
+  limit: number
+): Promise<{ data: IChapter[]; total: number }>;
 
 }

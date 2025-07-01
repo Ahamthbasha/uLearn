@@ -33,5 +33,9 @@ export class InstructorChapterService implements IInstructorChapterService {
   return this.chapterRepo.findByTitleOrNumberAndCourseId(courseId, chapterTitle, chapterNumber);
 }
 
+async paginateChapters(filter: object, page: number, limit: number) {
+  return this.chapterRepo.paginateChapters(filter, page, limit);
+}
+
 
 }

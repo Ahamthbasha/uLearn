@@ -2,6 +2,9 @@ import InstructorRouterEndPoints from "../../types/endPoints/instructorEndPoint"
 
 import { API } from "../../service/axios";
 import {type IQuestionPayload, type ICreateQuizPayload } from "../../types/interfaces/IQuiz";
+
+import {type FetchCoursesParams } from "../../types/interfaces/IFetchCoursesParam";
+
 //verification api call
 
 export const sendVerification = async (formData:FormData)=>{
@@ -162,32 +165,42 @@ export const instructorGetCourseById = async (courseId: string): Promise<any> =>
     }
 };
 
-export const fetchInstructorCourses = async () => {
-    try {
-        const response = await API.get(InstructorRouterEndPoints.instructorGetCreatedCourses,{
-            withCredentials:true
-        }); // Use correct endpoint
-        return response.data.data;
-    } catch (error) {
-        throw error
-    }
+export const fetchInstructorCourses = async (params: FetchCoursesParams = {}) => {
+  try {
+    const response = await API.get(
+      InstructorRouterEndPoints.instructorGetCreatedCourses,
+      {
+        params, // ✅ pass page, limit, search as query params
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
-
 
 //chapter related actions
 
-export const getChaptersByCourse = async (courseId:string)=>{
-    try {
-        const response = await API.get(`${InstructorRouterEndPoints.instructorGetChaptersByCourse}/${courseId}`,{
-            withCredentials:true
-        })
-        console.log("get chapter By course",response.data)
-        return response.data
-    } catch (error) {
-        throw error
-    }
-}
-
+export const getChaptersByCourse = async (
+  courseId: string,
+  page = 1,
+  limit = 10,
+  search = ""
+) => {
+  try {
+    const response = await API.get(
+      `${InstructorRouterEndPoints.instructorGetChaptersByCourse}/${courseId}`,
+      {
+        params: { page, limit, search },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const getChapterById = async (courseId:string,chapterId:string)=>{
     try {
@@ -259,7 +272,6 @@ export const createQuiz = async (quizData: ICreateQuizPayload) => {
   }
 };
 
-
 export const deleteQuiz = async (quizId: string) => {
   try {
     const response = await API.delete(`${InstructorRouterEndPoints.instructorDeleteQuiz}/${quizId}`);
@@ -270,7 +282,6 @@ export const deleteQuiz = async (quizId: string) => {
   }
 };
 
-// ✅ Get Quiz by ID
 export const getQuizById = async (quizId: string) => {
   try {
     const response = await API.get(`${InstructorRouterEndPoints.instructorGetQuizById}/${quizId}`);
@@ -281,7 +292,6 @@ export const getQuizById = async (quizId: string) => {
   }
 };
 
-// ✅ Get Quiz by Course ID
 export const getQuizByCourseId = async (courseId: string) => {
   try {
     const response = await API.get(`${InstructorRouterEndPoints.instructorGetQuizByCourseId}/${courseId}`);
@@ -292,6 +302,25 @@ export const getQuizByCourseId = async (courseId: string) => {
   }
 };
 
+export const getPaginatedQuestionsByCourseId = async (
+  courseId: string,
+  page: number = 1,
+  limit: number = 10,
+  search: string = ""
+) => {
+  try {
+    const response = await API.get(
+      `${InstructorRouterEndPoints.instructorGetQuizByCourseId}/${courseId}/paginated`,
+      {
+        params: { page, limit, search },
+        withCredentials: true,
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const addQuestionToQuiz = async (
   courseId: string,
@@ -312,7 +341,6 @@ export const addQuestionToQuiz = async (
   }
 };
 
-// 📝 Update Question in Quiz
 export const updateQuestionInQuiz = async (
   quizId: string,
   questionId: string,
@@ -333,7 +361,6 @@ export const updateQuestionInQuiz = async (
   }
 };
 
-// ❌ Delete Question from Quiz
 export const deleteQuestionFromQuiz = async (
   quizId: string,
   questionId: string

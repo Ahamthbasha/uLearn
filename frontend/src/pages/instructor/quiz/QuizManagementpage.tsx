@@ -8,7 +8,7 @@ import { Button } from "../../../components/common/Button";
 import EntityTable from "../../../components/common/EntityTable";
 
 import {
-  getQuizByCourseId,
+  getPaginatedQuestionsByCourseId,
   deleteQuiz,
   deleteQuestionFromQuiz,
 } from "../../../api/action/InstructorActionApi";
@@ -19,31 +19,37 @@ const QuizManagementPage = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const navigate = useNavigate();
 
-  const [questions, setQuestions] = useState<(IQuestion & { quizId: string })[]>([]);
+  const [questions, setQuestions] = useState<(IQuestion & { quizId?: string })[]>([]);
   const [quizId, setQuizId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(1); // You can make this adjustable
+  const [total, setTotal] = useState(0);
+  const [search, setSearch] = useState("");
 
   const fetchQuestions = async () => {
     if (!courseId) return;
 
     try {
       setLoading(true);
-      const response = await getQuizByCourseId(courseId);
+      const response = await getPaginatedQuestionsByCourseId(courseId, page, limit, search);
+      console.log("Paginated Quiz Response:", response);
 
-      if (response?.questions?.length > 0) {
-        setQuestions(response.questions);
-        setQuizId(response.questions[0]?.quizId);
-      } else {
-        setQuestions([]);
-        setQuizId(null);
-      }
+      const derivedQuizId = response.quizId || (response.questions[0]?._id ?? null);
+
+      const questionsWithQuizId = response.questions.map((q: IQuestion) => ({
+        ...q,
+        quizId: derivedQuizId,
+      }));
+
+      setQuestions(questionsWithQuizId);
+      setQuizId(derivedQuizId);
+      setTotal(response.total || 0);
     } catch (error: any) {
-      if (error?.response?.status === 404) {
-        setQuestions([]);
-        setQuizId(null);
-      } else {
-        toast.error("Failed to load quiz");
-      }
+      setQuestions([]);
+      setQuizId(null);
+      setTotal(0);
+      toast.error("Failed to load quiz");
     } finally {
       setLoading(false);
     }
@@ -72,7 +78,7 @@ const QuizManagementPage = () => {
 
   useEffect(() => {
     fetchQuestions();
-  }, [courseId]);
+  }, [courseId, page, search]);
 
   return (
     <div className="px-4 py-6">
@@ -114,9 +120,20 @@ const QuizManagementPage = () => {
           </div>
         }
       >
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+          placeholder="Search questions..."
+          className="w-full sm:w-80 px-3 py-2 border border-gray-300 rounded mb-4"
+        />
+
         {loading ? (
           <p className="text-sm text-gray-600">Loading questions...</p>
-        ) : quizId && questions.length > 0 ? (
+        ) : questions.length > 0 ? (
           <EntityTable
             title="All Quiz Questions"
             data={questions}
@@ -131,6 +148,12 @@ const QuizManagementPage = () => {
               if (q._id && q.quizId) handleDeleteQuestion(q._id, q.quizId);
             }}
             emptyText="No questions found"
+            pagination={{
+              currentPage: page,
+              totalItems: total,
+              pageSize: limit,
+              onPageChange: (p) => setPage(p),
+            }}
           />
         ) : (
           <p className="text-sm text-gray-600">No quiz or questions found yet.</p>

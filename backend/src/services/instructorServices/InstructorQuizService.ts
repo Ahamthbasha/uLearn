@@ -33,4 +33,14 @@ export class InstructorQuizService implements IInstructorQuizService {
   async deleteQuestionFromQuiz(quizId: string, questionId: string): Promise<IQuiz | null> {
     return await this.quizRepo.deleteQuestionFromQuiz(quizId, questionId);
   }
+
+  async getPaginatedQuestionsByCourseId(
+  courseId: string,
+  search: string,
+  page: number,
+  limit: number
+): Promise<{ questions: IQuiz["questions"][0][], total: number }> {
+  return await this.quizRepo.getPaginatedQuestionsByCourseId(courseId, search, page, limit);
+}
+
 }

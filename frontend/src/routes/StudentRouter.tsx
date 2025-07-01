@@ -14,6 +14,8 @@ import StudentProfilePage from '../pages/student/profile/StudentProfilePage'
 import StudentProfileEditPage from '../pages/student/profile/StudentEditProfile'
 import StudentDashboard from '../pages/student/StudentDashboard'
 import PrivateRoute from '../Protecter/UserPrivateRoute'
+import CourseDetailPage from '../pages/student/course/CourseDetailPage'
+import CourseListPage from '../pages/student/course/CourseListPage'
 
 
 const StudentRouter = () => {
@@ -25,6 +27,8 @@ const StudentRouter = () => {
         <Route path="/user/signUp" element={<UserSessionRoute><SignUp/></UserSessionRoute>}/>
         <Route path='/user/login' element={<UserSessionRoute><LoginPage/></UserSessionRoute>}/>
         <Route path="/user/verifyOtp" element={<UserSessionRoute><OTPVerification/></UserSessionRoute>}/>
+        <Route path='/user/course/:courseId' element={<CourseDetailPage/>}/>
+        <Route path='/user/courses' element={<CourseListPage/>}/>
 
 {/* reset password in case of forgot password */}
         <Route path='/user/verifyEmail' element={<ForgotPassword/>} />
@@ -39,7 +43,8 @@ const StudentRouter = () => {
         <Route path='/user/profile' element={<StudentProfilePage/>}/>
         <Route path='/user/editProfile' element={<StudentProfileEditPage/>}/>
         </Route>
-        </Route>
+        </Route> 
+
         
     </Routes>
   )

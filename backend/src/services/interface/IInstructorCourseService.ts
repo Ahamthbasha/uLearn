@@ -6,7 +6,13 @@ export interface IInstructorCourseService {
   deleteCourse(courseId: string): Promise<ICourse | null>;
   getCourseById(courseId: string): Promise<ICourse | null>;
 
-  getCoursesByInstructor(instructorId: string): Promise<ICourse[]>;
+ getInstructorCoursesPaginated(
+  instructorId: string,
+  page: number,
+  limit: number,
+  search?: string
+): Promise<{ data: ICourse[]; total: number }>;
+
 
   isCourseAlreadyCreatedByInstructor(courseName: string, instructorId: string): Promise<boolean>;
   isCourseAlreadyCreatedByInstructorExcluding(courseName: string, instructorId: string, courseId: string): Promise<boolean>;

@@ -27,13 +27,20 @@ const CourseListPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
 
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const limit = 1; // You can change this as needed
+
   const navigate = useNavigate();
 
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const response = await fetchInstructorCourses();
-      setCourses(response || []);
+      const response = await fetchInstructorCourses({ page, limit, search });
+      console.log(response)
+      setCourses(response?.data || []);
+      setTotal(response?.total || 0);
     } catch (err: any) {
       toast.error("Failed to fetch courses");
       setError(err.message || "Failed to fetch data");
@@ -44,7 +51,7 @@ const CourseListPage = () => {
 
   useEffect(() => {
     fetchCourses();
-  }, []);
+  }, [page, search]);
 
   const confirmDelete = (course: Course) => {
     setCourseToDelete(course);
@@ -148,6 +155,15 @@ const CourseListPage = () => {
         onRetry={fetchCourses}
         emptyStateTitle="No courses created yet"
         emptyStateDescription="Create a course to get started."
+        showSearch
+        searchValue={search}
+        onSearchChange={(val) => {
+          setSearch(val);
+          setPage(1); // reset page when searching
+        }}
+        currentPage={page}
+        totalPages={Math.ceil(total / limit)}
+        onPageChange={setPage}
       />
 
       <ConfirmationModal

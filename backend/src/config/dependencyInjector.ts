@@ -220,6 +220,56 @@ const adminCourseService : IAdminCourseService = new AdminCourseService(adminCou
 
 const adminCourseController : IAdminCourseController = new AdminCourseController(adminCourseService)
 
+///////////////////////////STUDENT COURSE CONTROLLER//////////////////////////////////////////////////////////////////////////////////////////
+
+import { IChapterReadOnlyRepository } from "../repositories/interfaces/IChapterReadOnlyRepository";
+import { ChapterReadOnlyRepository } from "../repositories/studentRepository/chapterReadOnlyRepository"; 
+
+import { IQuizReadOnlyRepository } from "../repositories/interfaces/IQuizReadOnlyRepository";
+import { QuizReadOnlyRepository } from "../repositories/studentRepository/quizReadOnlyRepository";
+
+import { IStudentCourseRepository } from "../repositories/interfaces/IStudentCourseRepository";
+import { StudentCourseRepository } from "../repositories/studentRepository/studentCourseRepository";
+
+import { IStudentCourseService } from "../services/interface/IStudentCourseService";
+import { StudentCourseService } from "../services/studentServices/StudentCourseService";
+
+import { IStudentCourseController } from "../controllers/studentControllers/interfaces/IStudentCourseController";
+import { StudentCourseController } from "../controllers/studentControllers/studentCourseController";
+
+const chapterReadOnlyRepository : IChapterReadOnlyRepository = new ChapterReadOnlyRepository()
+const quizReadOnlyRepository : IQuizReadOnlyRepository = new QuizReadOnlyRepository()
+
+
+const studentCourseRepository : IStudentCourseRepository = new StudentCourseRepository(chapterReadOnlyRepository,quizReadOnlyRepository)
+
+const studentCourseService : IStudentCourseService = new StudentCourseService(studentCourseRepository)
+
+const studentCourseController : IStudentCourseController = new StudentCourseController(studentCourseService)
+
+
+///////////////////////CATEGORY READ ONLY CONTROLLER FOR STUDENT/////////////////////////////////////
+
+import { ICategoryReadOnlyRepository } from "../repositories/interfaces/ICategoryReadOnlyRepository";
+import { CategoryReadOnlyRepository } from "../repositories/studentRepository/CategoryReadOnlyRepository";
+import { ICategoryReadOnlyService } from "../services/interface/ICategoryReadOnlyService";
+import { CategoryReadOnlyService } from "../services/studentServices/CategoryReadOnlyService";
+import { ICategoryReadOnlyController } from "../controllers/studentControllers/interfaces/ICategoryReadOnlyController";
+import { CategoryReadOnlyController } from "../controllers/studentControllers/CategoryReadOnlyController";
+
+const categoryReadOnlyRepository : ICategoryReadOnlyRepository = new CategoryReadOnlyRepository()
+
+const categoryReadOnlyService : ICategoryReadOnlyService = new CategoryReadOnlyService(categoryReadOnlyRepository)
+
+const categoryReadOnlyController : ICategoryReadOnlyController = new CategoryReadOnlyController(categoryReadOnlyService)
+
+
+
+
+
+
+
+
 
 
 export {
@@ -227,7 +277,8 @@ export {
     instructorController,
     adminController,
 //verification
-    adminVerificationController,instructorVerificationController,
+    adminVerificationController,
+    instructorVerificationController,
 //profile management
     studentProfileController,
     instructorProfileController,
@@ -240,5 +291,9 @@ export {
     instructorChapterController,
     instructorQuizController,
 //adminCourse controller,
-    adminCourseController
+    adminCourseController,
+//studentCourse controller
+    studentCourseController,
+//studentCategory controller
+    categoryReadOnlyController
 }

@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { studentController,studentProfileController } from "../config/dependencyInjector";
+import { 
+    studentController,
+    studentProfileController,
+    studentCourseController,
+    categoryReadOnlyController
+ } from "../config/dependencyInjector";
 import upload from "../utils/multer";
 import authenticateToken from "../middlewares/AuthenticatedRoutes";
 import { isStudent } from "../middlewares/roleAuth";
@@ -39,5 +44,16 @@ router.put('/profile',authenticateToken,isStudent,upload.single("profilePic"),st
 
 router.put('/profile/password',authenticateToken,isStudent,studentProfileController.updatePassword.bind(studentProfileController))
 
+////////////////////////student side course listing///////////////////////////////////////
+
+router.get('/courses',studentCourseController.getAllCourses.bind(studentCourseController))
+
+router.get('/courses/filter',studentCourseController.getFilteredCourses.bind(studentCourseController))
+
+router.get('/courses/:courseId',studentCourseController.getCourseDetails.bind(studentCourseController))
+
+//readCategory
+
+router.get('/categories',categoryReadOnlyController.getAllCategories.bind(categoryReadOnlyController))
 
 export default router;

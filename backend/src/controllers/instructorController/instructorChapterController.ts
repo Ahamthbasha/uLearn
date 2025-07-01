@@ -74,21 +74,50 @@ if (existing) {
 }
 
 
-  async getChaptersByCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const { courseId } = req.params;
-      const chapters = await this.chapterService.getChaptersByCourse(courseId);
+  // async getChaptersByCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
+  //   try {
+  //     const { courseId } = req.params;
+  //     const chapters = await this.chapterService.getChaptersByCourse(courseId);
 
-      console.log(chapters)
-      res.status(StatusCode.OK).json({ 
-        success: true,
-         data: chapters,
-        message: ChapterSuccessMessages.CHAPTER_RETRIEVED
-        });
-    } catch (error) {
-      next(error);
-    }
+  //     console.log(chapters)
+  //     res.status(StatusCode.OK).json({ 
+  //       success: true,
+  //        data: chapters,
+  //       message: ChapterSuccessMessages.CHAPTER_RETRIEVED
+  //       });
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
+
+  async getChaptersByCourse(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { courseId } = req.params;
+    const { page = 1, limit = 10, search = "" } = req.query;
+
+    const filter: any = {
+      courseId,
+      ...(search && {
+        $or: [
+          { chapterTitle: { $regex: search, $options: "i" } },
+          { chapterNumber: isNaN(Number(search)) ? -1 : Number(search) }
+        ],
+      }),
+    };
+
+    const { data, total } = await this.chapterService.paginateChapters(filter, Number(page), Number(limit));
+
+    res.status(StatusCode.OK).json({
+      success: true,
+      data,
+      total,
+      message: ChapterSuccessMessages.CHAPTER_RETRIEVED,
+    });
+  } catch (error) {
+    next(error);
   }
+}
+
 
   async updateChapter(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {

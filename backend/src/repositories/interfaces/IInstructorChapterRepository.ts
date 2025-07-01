@@ -8,4 +8,11 @@ export interface IInstructorChapterRepository {
   deleteChapter(chapterId: string): Promise<IChapter | null>;
 
   findByTitleOrNumberAndCourseId(courseId: string,chapterTitle: string,chapterNumber: number): Promise<IChapter | null>;
+
+  paginateChapters(
+  filter: object,
+  page: number,
+  limit: number
+): Promise<{ data: IChapter[]; total: number }>;
+
 }

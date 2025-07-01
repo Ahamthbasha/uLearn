@@ -29,9 +29,15 @@ export class InstructorCourseService implements IInstructorCourseService {
     return await this.courseRepository.getCourseById(courseId);
   }
 
-  async getCoursesByInstructor(instructorId: string): Promise<ICourse[]> {
-  return this.courseRepository.getCoursesByInstructor(instructorId);
+ async getInstructorCoursesPaginated(
+  instructorId: string,
+  page: number,
+  limit: number,
+  search: string = ""
+): Promise<{ data: ICourse[]; total: number }> {
+  return await this.courseRepository.getCoursesByInstructorWithPagination(instructorId, page, limit, search);
 }
+
 
 async isCourseAlreadyCreatedByInstructor(courseName: string, instructorId: string): Promise<boolean> {
   const existing = await this.courseRepository.findCourseByNameForInstructor(courseName, instructorId);

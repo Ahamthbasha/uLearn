@@ -13,13 +13,16 @@ import {
   ShieldCheck,
   ShoppingCart,
   LogOut,
-  Menu
+  Menu,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { adminLogout } from '../api/auth/AdminAuthentication';
 
 const AdminLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   
@@ -82,25 +85,51 @@ const AdminLayout = () => {
 
       {/* Mobile Menu Button */}
       <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         className="fixed top-4 left-4 z-50 lg:hidden bg-white p-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
       >
         <Menu size={20} className="text-blue-700" />
       </button>
 
+      {/* Desktop Toggle Button */}
+      <button
+        onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+        className={`hidden lg:flex fixed top-4 z-50 bg-white p-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 items-center justify-center ${
+          sidebarCollapsed ? 'left-20' : 'left-64'
+        }`}
+      >
+        {sidebarCollapsed ? (
+          <ChevronRight size={20} className="text-blue-700" />
+        ) : (
+          <ChevronLeft size={20} className="text-blue-700" />
+        )}
+      </button>
+
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-40 h-full w-72 bg-gradient-to-b from-blue-900 via-blue-800 to-indigo-900 shadow-2xl transform ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } transition-transform duration-300 lg:translate-x-0 lg:static flex flex-col`}
+        className={`fixed top-0 left-0 z-40 h-full bg-gradient-to-b from-blue-900 via-blue-800 to-indigo-900 shadow-2xl transition-all duration-300 flex flex-col
+          ${
+            // Mobile behavior
+            mobileMenuOpen ? 'translate-x-0 w-72' : '-translate-x-full w-72'
+          } 
+          lg:translate-x-0 lg:static
+          ${
+            // Desktop behavior
+            sidebarCollapsed ? 'lg:w-20' : 'lg:w-72'
+          }
+        `}
       >
         {/* Logo Section */}
-        <div className="p-6 border-b border-blue-700/30 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+        <div className={`p-6 border-b border-blue-700/30 flex-shrink-0 transition-all duration-300 ${
+          sidebarCollapsed ? 'lg:px-4' : ''
+        }`}>
+          <div className={`flex items-center ${sidebarCollapsed ? 'lg:justify-center' : 'gap-3'}`}>
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
               <span className="text-2xl font-bold text-white">U</span>
             </div>
-            <div>
+            <div className={`transition-all duration-300 ${
+              sidebarCollapsed ? 'lg:hidden lg:opacity-0' : 'lg:block lg:opacity-100'
+            }`}>
               <h1 className="text-2xl font-bold text-white">
                 ULearn
               </h1>
@@ -116,19 +145,33 @@ const AdminLayout = () => {
               <Link
                 key={item.name}
                 to={`/admin/${item.path}`}
-                onClick={() => setSidebarOpen(false)}
-                className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:shadow-lg ${
+                onClick={() => setMobileMenuOpen(false)}
+                className={`group flex items-center rounded-xl transition-all duration-200 hover:bg-white/10 hover:shadow-lg relative ${
+                  sidebarCollapsed ? 'lg:justify-center lg:px-3 lg:py-4' : 'gap-3 px-4 py-3'
+                } ${
                   isActive(item.path) 
                     ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm border border-white/20' 
                     : 'text-blue-100 hover:text-white'
                 }`}
+                title={sidebarCollapsed ? item.name : ''}
               >
-                <span className={`transition-colors duration-200 ${
+                <span className={`transition-colors duration-200 flex-shrink-0 ${
                   isActive(item.path) ? 'text-orange-300' : 'text-blue-300 group-hover:text-orange-300'
                 }`}>
                   {item.icon}
                 </span>
-                <span className="font-medium">{item.name}</span>
+                <span className={`font-medium transition-all duration-300 ${
+                  sidebarCollapsed ? 'lg:hidden lg:opacity-0 lg:w-0' : 'lg:block lg:opacity-100'
+                }`}>
+                  {item.name}
+                </span>
+                
+                {/* Tooltip for collapsed state */}
+                {sidebarCollapsed && (
+                  <div className="hidden lg:block absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                    {item.name}
+                  </div>
+                )}
               </Link>
             ))}
           </nav>
@@ -138,24 +181,40 @@ const AdminLayout = () => {
         <div className="p-4 border-t border-blue-700/30 flex-shrink-0">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+            className={`w-full flex items-center rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl relative ${
+              sidebarCollapsed ? 'lg:justify-center lg:px-3 lg:py-4' : 'gap-3 px-4 py-3'
+            }`}
+            title={sidebarCollapsed ? 'Logout' : ''}
           >
-            <LogOut size={20} />
-            <span className="font-medium">Logout</span>
+            <LogOut size={20} className="flex-shrink-0" />
+            <span className={`font-medium transition-all duration-300 ${
+              sidebarCollapsed ? 'lg:hidden lg:opacity-0 lg:w-0' : 'lg:block lg:opacity-100'
+            }`}>
+              Logout
+            </span>
+            
+            {/* Tooltip for collapsed state */}
+            {sidebarCollapsed && (
+              <div className="hidden lg:block absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                Logout
+              </div>
+            )}
           </button>
         </div>
       </aside>
 
       {/* Overlay for mobile */}
-      {sidebarOpen && (
+      {mobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
+          onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
       {/* Main Content */}
-      <main className="flex-1 min-h-screen overflow-y-auto custom-scrollbar">
+      <main className={`flex-1 min-h-screen overflow-y-auto custom-scrollbar transition-all duration-300 ${
+        sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72'
+      }`}>
         <Outlet />
       </main>
     </div>
