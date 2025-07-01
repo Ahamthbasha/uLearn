@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { courseDetail } from "../../../api/action/StudentAction";
+import {
+  getCart,
+  addToCart,
+  removeFromCart,
+} from '../../../api/action/StudentAction';
 import { toast } from "react-toastify";
 
 interface CourseDetail {
@@ -31,6 +36,7 @@ const CourseDetailPage = () => {
   const [course, setCourse] = useState<CourseDetail | null>(null);
   const [chapterCount, setChapterCount] = useState(0);
   const [quizQuestionCount, setQuizQuestionCount] = useState(0);
+  const [isInCart, setIsInCart] = useState(false);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -41,6 +47,12 @@ const CourseDetailPage = () => {
         setCourse(course);
         setChapterCount(chapterCount);
         setQuizQuestionCount(quizQuestionCount);
+
+        const cartRes = await getCart();
+        const inCart = cartRes?.data?.courses?.some(
+          (c: any) => c._id === courseId
+        );
+        setIsInCart(inCart);
       } catch (error) {
         toast.error("Failed to load course details");
         console.error(error);
@@ -52,9 +64,36 @@ const CourseDetailPage = () => {
     if (courseId) fetchCourse();
   }, [courseId]);
 
+  const handleCartToggle = async () => {
+    try {
+      if (!courseId) return;
+
+      if (isInCart) {
+        await removeFromCart(courseId);
+        toast.success("Course removed from cart");
+        setIsInCart(false);
+      } else {
+        await addToCart(courseId);
+        toast.success("Course added to cart");
+        setIsInCart(true);
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 409) {
+        toast.info("Course is already in cart");
+        setIsInCart(true);
+      } else {
+        toast.error("Cart operation failed");
+      }
+      console.error(error);
+    }
+  };
+
   if (loading) return <div className="text-center py-10">Loading...</div>;
 
-  if (!course) return <div className="text-center py-10 text-red-500">Course not found</div>;
+  if (!course)
+    return (
+      <div className="text-center py-10 text-red-500">Course not found</div>
+    );
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12 font-sans">
@@ -72,24 +111,45 @@ const CourseDetailPage = () => {
         {/* Course Info */}
         <div className="flex flex-col justify-between space-y-4">
           <div>
-            <h2 className="text-4xl font-bold text-gray-900">{course.courseName}</h2>
+            <h2 className="text-4xl font-bold text-gray-900">
+              {course.courseName}
+            </h2>
             <p className="text-gray-700 text-sm mt-2">{course.description}</p>
 
             <div className="grid grid-cols-2 gap-y-2 text-gray-800 text-sm mt-4">
-              <p><strong>Instructor:</strong> {course.instructorId.username}</p>
-              <p><strong>Category:</strong> {course.category.categoryName}</p>
-              <p><strong>Duration:</strong> {course.duration}</p>
-              <p><strong>Level:</strong> {course.level}</p>
-              <p><strong>Price:</strong> ₹{course.price}</p>
-              <p><strong>Chapters:</strong> {chapterCount}</p>
-              <p><strong>Quiz Questions:</strong> {quizQuestionCount}</p>
+              <p>
+                <strong>Instructor:</strong> {course.instructorId.username}
+              </p>
+              <p>
+                <strong>Category:</strong> {course.category.categoryName}
+              </p>
+              <p>
+                <strong>Duration:</strong> {course.duration}
+              </p>
+              <p>
+                <strong>Level:</strong> {course.level}
+              </p>
+              <p>
+                <strong>Price:</strong> ₹{course.price}
+              </p>
+              <p>
+                <strong>Chapters:</strong> {chapterCount}
+              </p>
+              <p>
+                <strong>Quiz Questions:</strong> {quizQuestionCount}
+              </p>
             </div>
           </div>
 
           <button
-            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 text-white font-semibold py-2 px-6 rounded-md shadow mt-6 w-fit"
+            onClick={handleCartToggle}
+            className={`${
+              isInCart
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-blue-600 hover:bg-blue-700"
+            } text-white font-semibold py-2 px-6 rounded-md shadow mt-6 w-fit`}
           >
-            Add To Cart
+            {isInCart ? "Remove From Cart" : "Add To Cart"}
           </button>
         </div>
       </div>
@@ -97,7 +157,9 @@ const CourseDetailPage = () => {
       {/* Demo Video */}
       {course.demoVideo?.url && (
         <div className="mt-14">
-          <h3 className="text-2xl font-semibold mb-4 text-gray-900">Watch Demo Video</h3>
+          <h3 className="text-2xl font-semibold mb-4 text-gray-900">
+            Watch Demo Video
+          </h3>
           <video
             controls
             className="w-full rounded-xl shadow-md max-h-[500px] object-cover"

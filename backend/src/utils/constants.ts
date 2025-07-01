@@ -134,7 +134,7 @@ export const OtpResponses={
 }
 
 export const AuthErrorMsg = {
-    NO_ACCESS_TOKEN: "Unauthorized access. Please provide a valid token.",
+    NO_ACCESS_TOKEN: "Unauthorized access. Please provide a valid token OR LOGIN",
     NO_REFRESH_TOKEN: "Unauthorized access. Session verification required.",
     INVALID_ACCESS_TOKEN: "Unauthorized access. Please authenticate again.",
     INVALID_REFRESH_TOKEN: "Session verification failed. Please log in again.",
@@ -338,4 +338,19 @@ export const ChapterSuccessMessages ={
   CHAPTER_UPDATED : 'Chapter is updated successfully',
   CHAPTER_DELETED : 'Chapter is deleted successfully'
 
+}
+
+export const CartErrorMessage = {
+  COURSE_ALREADYEXIST_IN_CART : "course already exist in cart",
+  FAILED_TO_ADD_COURSE_IN_CART : "Failed to add course to cart",
+  FAILED_TO_REMOVE_COURSE_FROM_CART:"Failed to remove course from cart",
+  FAILED_TO_CLEAR_CARTDATE:'Failed to remove cart data'
+}
+
+export const CartSuccessMessage = {
+  CART_DATA_FETCHED : "Cart fetched successfully",
+  CART_EMPTY : "Cart is empty",
+  COURSE_ADDED_IN_CART:"Course added to cart",
+  COURSE_REMOVED_FROM_CART:"Course removed from cart",
+  CART_DATA_CLEARED : "Cart cleared"
 }

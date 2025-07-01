@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 import { IStudentCartService } from "../../services/interface/IStudentCartService";
 import { IStudentCartController } from "./interfaces/IStudentCartController";
 import { StatusCode } from "../../utils/enums";
-import { StudentErrorMessages } from "../../utils/constants";
+import { CartErrorMessage, CartSuccessMessage, StudentErrorMessages } from "../../utils/constants";
 import { getPresignedUrl } from "../../utils/getPresignedUrl";
 import { AuthenticatedRequest } from "../../middlewares/AuthenticatedRoutes";
 
@@ -28,13 +28,13 @@ export class StudentCartController implements IStudentCartController {
 
         res.status(StatusCode.OK).json({
           success: true,
-          message: "Cart fetched successfully",
+          message: CartSuccessMessage.CART_DATA_FETCHED,
           data: cart,
         });
       } else {
         res.status(StatusCode.OK).json({
           success: true,
-          message: "Cart is empty",
+          message: CartSuccessMessage.CART_EMPTY,
           data: null,
         });
       }
@@ -60,7 +60,7 @@ export class StudentCartController implements IStudentCartController {
       if (alreadyInCart) {
       res.status(StatusCode.CONFLICT).json({
           success: false,
-          message: "Course is already in cart",
+          message: CartErrorMessage.COURSE_ALREADYEXIST_IN_CART,
         });
         return
       }
@@ -68,14 +68,14 @@ export class StudentCartController implements IStudentCartController {
       const updatedCart = await this.cartService.addToCart(userId, courseId);
       res.status(StatusCode.OK).json({
         success: true,
-        message: "Course added to cart",
+        message: CartSuccessMessage.COURSE_ADDED_IN_CART,
         data: updatedCart,
       });
     } catch (error) {
       console.error("addToCart error:", error);
       res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Failed to add course to cart",
+        message: CartErrorMessage.FAILED_TO_ADD_COURSE_IN_CART,
       });
     }
   }
@@ -88,14 +88,14 @@ export class StudentCartController implements IStudentCartController {
       const updatedCart = await this.cartService.removeFromCart(userId, courseId);
       res.status(StatusCode.OK).json({
         success: true,
-        message: "Course removed from cart",
+        message: CartSuccessMessage.COURSE_REMOVED_FROM_CART,
         data: updatedCart,
       });
     } catch (error) {
       console.error("removeFromCart error:", error);
       res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Failed to remove course from cart",
+        message: CartErrorMessage.FAILED_TO_REMOVE_COURSE_FROM_CART,
       });
     }
   }
@@ -106,14 +106,14 @@ export class StudentCartController implements IStudentCartController {
       const clearedCart = await this.cartService.clearCart(userId);
       res.status(StatusCode.OK).json({
         success: true,
-        message: "Cart cleared",
+        message: CartSuccessMessage.CART_DATA_CLEARED,
         data: clearedCart,
       });
     } catch (error) {
       console.error("clearCart error:", error);
       res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Failed to clear cart",
+        message: CartErrorMessage.FAILED_TO_CLEAR_CARTDATE,
       });
     }
   }

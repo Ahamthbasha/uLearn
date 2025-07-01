@@ -43,6 +43,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   const handleAddToCart = async () => {
     try {
       const res = await addToCart(id);
+      console.log(res)
       toast.success(res.message || "Course added to cart");
       setIsInCart(true);
     } catch (error: any) {
