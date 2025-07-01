@@ -10,8 +10,14 @@ const UserRouterEndpoints = {
     userCourseFilter:'/api/student/courses/filter',
 
     //userCategories
-
     userGetAllCategories:'/api/student/categories',
+
+    //userCart
+    userGetCart: '/api/student/cart',
+    userAddToCart: '/api/student/addToCart',
+    userRemoveCourseFromCart: '/api/student/remove',
+    userClearCart: '/api/student/clearCart',
+
 }
 
 export default UserRouterEndpoints

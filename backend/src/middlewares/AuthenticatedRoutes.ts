@@ -9,9 +9,9 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
     user?: {
-        user: string;
+        id: string;
         email: string;
         role: string;
         iat: number;
@@ -24,10 +24,14 @@ const authenticateToken = async (
     res: Response,
     next: NextFunction
 ): Promise<any> => {
+
+    console.log('authenticateToken middleware triggered')
     const accessToken = req.cookies['accessToken'];
     const refreshToken = req.cookies['refreshToken'];
 
+    
     if (!accessToken) {
+        console.log("❌ No accessToken found in cookies");
         return res
             .status(StatusCode.UNAUTHORIZED)
             .json({ failToken: true, message: AuthErrorMsg.NO_ACCESS_TOKEN });
@@ -39,6 +43,8 @@ const authenticateToken = async (
             accessToken,
             JWT_SECRET
         ) as AuthenticatedRequest['user'];
+
+        console.log('accessPayload',accessPayload)
 
         req.user = accessPayload;
         return next();
@@ -57,6 +63,9 @@ const authenticateToken = async (
                     JWT_SECRET
                 ) as AuthenticatedRequest['user'];
 
+                console.log("🧾 Refresh Payload:", JSON.stringify(refreshPayload, null, 2));
+
+
                 if (!refreshPayload) {
                     return res
                         .status(StatusCode.UNAUTHORIZED)
@@ -73,9 +82,12 @@ const authenticateToken = async (
                 // Generate a new Access Token
                 const jwtService = new JwtService();
                 const newAccessToken = await jwtService.accessToken({
+                    id:refreshPayload.id,
                     email: refreshPayload.email,
                     role: refreshPayload.role,
                 });
+
+                console.log('new Access Token',newAccessToken)
 
                 res.cookie('accessToken', newAccessToken, {
                     httpOnly: true,
@@ -84,6 +96,7 @@ const authenticateToken = async (
 
                 req.cookies['accessToken'] = newAccessToken;
                 req.user = refreshPayload;
+
                 return next();
             } catch (refreshErr: any) {
                 if (refreshErr.name === AuthErrorMsg.TOKEN_EXPIRED_NAME) {

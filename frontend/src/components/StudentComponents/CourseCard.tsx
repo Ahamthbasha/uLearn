@@ -1,6 +1,8 @@
-
-import {type FC } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { addToCart, getCart, removeFromCart } from "../../api/action/StudentAction";
+import { Heart, ShoppingCart, XCircle } from "lucide-react";
 
 interface CourseCardProps {
   id: string;
@@ -13,7 +15,7 @@ interface CourseCardProps {
   categoryName?: string;
 }
 
-const CourseCard: FC<CourseCardProps> = ({
+const CourseCard: React.FC<CourseCardProps> = ({
   id,
   title,
   description,
@@ -23,10 +25,43 @@ const CourseCard: FC<CourseCardProps> = ({
   thumbnailUrl,
 }) => {
   const navigate = useNavigate();
+  const [isInCart, setIsInCart] = useState(false);
+
+  useEffect(() => {
+    const fetchCartStatus = async () => {
+      try {
+        const res = await getCart();
+        const exists = res?.data?.courses?.some((c: any) => c._id === id);
+        setIsInCart(exists);
+      } catch (err) {
+        console.error("Failed to fetch cart:", err);
+      }
+    };
+    fetchCartStatus();
+  }, [id]);
+
+  const handleAddToCart = async () => {
+    try {
+      const res = await addToCart(id);
+      toast.success(res.message || "Course added to cart");
+      setIsInCart(true);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to add to cart");
+    }
+  };
+
+  const handleRemoveFromCart = async () => {
+    try {
+      const res = await removeFromCart(id);
+      toast.success(res.message || "Course removed from cart");
+      setIsInCart(false);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to remove from cart");
+    }
+  };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden border flex flex-col">
-      {/* Image */}
+    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border flex flex-col">
       <div className="relative group h-48 overflow-hidden">
         <img
           src={thumbnailUrl}
@@ -34,9 +69,7 @@ const CourseCard: FC<CourseCardProps> = ({
           className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-300"
         />
       </div>
-
-      {/* Content */}
-      <div className="p-4 flex flex-col justify-between flex-grow">
+      <div className="p-4 flex flex-col flex-grow">
         <h3 className="text-lg font-semibold mb-1 line-clamp-1">{title}</h3>
         <p className="text-sm text-gray-600 line-clamp-2 mb-3">{description}</p>
 
@@ -46,61 +79,43 @@ const CourseCard: FC<CourseCardProps> = ({
           <span>💰 ₹{price}</span>
         </div>
 
-        <button
-          onClick={() => navigate(`/user/course/${id}`)}
-          className="mt-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-md transition"
-        >
-          View Details
-        </button>
+        <div className="flex items-center justify-between gap-2 mt-auto">
+          {isInCart ? (
+            <button
+              onClick={handleRemoveFromCart}
+              className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1.5 rounded-md flex items-center gap-1 transition"
+            >
+              <XCircle size={16} />
+              Remove
+            </button>
+          ) : (
+            <button
+              onClick={handleAddToCart}
+              className="bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1.5 rounded-md flex items-center gap-1 transition"
+            >
+              <ShoppingCart size={16} />
+              Add to Cart
+            </button>
+          )}
+
+          <button
+            className="text-red-500 hover:text-red-600 transition"
+            title="Add to Wishlist"
+            onClick={() => toast.info("Added to wishlist (not implemented)")}
+          >
+            <Heart size={20} />
+          </button>
+
+          <button
+            onClick={() => navigate(`/user/course/${id}`)}
+            className="ml-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1.5 px-4 rounded-md transition"
+          >
+            View Details
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
 export default CourseCard;
-
-
-// interface Props {
-//   id: string;
-//   title: string;
-//   description: string;
-//   price: number;
-//   duration: string;
-//   level: string;
-//   thumbnailUrl: string;
-//   categoryName?: string;
-// }
-
-// const CourseCard = ({
-//   id,
-//   title,
-//   description,
-//   price,
-//   duration,
-//   level,
-//   thumbnailUrl,
-//   categoryName,
-// }: Props) => {
-//   return (
-//     <div className="border rounded-lg p-4 shadow-sm hover:shadow-md transition relative group">
-//       <div className="relative mb-4">
-//         <img src={thumbnailUrl} alt={title} className="w-full h-48 object-cover rounded-md" />
-//         <span className="absolute top-2 left-2 bg-pink-500 text-white text-xs font-bold px-2 py-1 rounded">
-//           Hot
-//         </span>
-//       </div>
-
-//       <p className="text-sm text-gray-500">{categoryName}</p>
-//       <h3 className="font-semibold text-lg">{title}</h3>
-
-//       <div className="text-sm text-gray-600 truncate">{description}</div>
-
-//       <div className="flex items-center gap-2 mt-2">
-//         <span className="text-green-700 font-semibold text-md">₹{price}</span>
-        
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CourseCard;

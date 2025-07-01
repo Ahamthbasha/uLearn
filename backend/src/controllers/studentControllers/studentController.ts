@@ -127,7 +127,7 @@ export class StudentController implements IStudentController {
 async login(req: Request, res: Response): Promise<any> {
   try {
     const { email, password } = req.body;
-
+    console.log(req.body)
     const student = await this.studentService.findByEmail(email);
 
     if (!student) {

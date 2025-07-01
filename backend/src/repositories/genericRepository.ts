@@ -10,7 +10,10 @@ export interface IGenericRepository<T extends Document> {
   update(id: string, data: Partial<T>): Promise<T | null>;
   updateOne(filter: object, data: Partial<T>): Promise<T | null>;
   delete(id: string): Promise<T | null>;
+  
   findByIdWithPopulate(id:string,populate?:PopulateArg):Promise<T | null>
+  
+  updateOneWithPopulate(filter: object,data: Partial<T>|Record<string,any>,populate?: PopulateArg): Promise<T | null>
 
   paginate(
     filter: object,
@@ -109,4 +112,23 @@ export class GenericRepository<T extends Document> implements IGenericRepository
   return await query;
 }
 
+
+async updateOneWithPopulate(
+  filter: object,
+  data: Partial<T>|Record<string,any>,
+  populate?: PopulateArg
+): Promise<T | null> {
+  let query = this.model.findOneAndUpdate(filter, data, {
+    new: true,
+    upsert: false,
+  });
+
+  if (populate) {
+    query = query.populate(populate);
+  }
+
+  return await query;
 }
+
+}
+

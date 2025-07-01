@@ -87,7 +87,6 @@ export const CoursesFiltered = async (
   }
 };
 
-
 export const getAllCategories = async () => {
   try {
     const response = await API.get(UserRouterEndpoints.userGetAllCategories);
@@ -96,3 +95,43 @@ export const getAllCategories = async () => {
     throw error;
   }
 };
+
+//cart actions
+
+export const getCart = async()=>{
+  try {
+    const response = await API.get(UserRouterEndpoints.userGetCart)
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const addToCart = async (courseId: string) => {
+  try {
+    const response = await API.post(UserRouterEndpoints.userAddToCart, {
+      courseId,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const removeFromCart = async(courseId:string)=>{
+  try {
+    const response = await API.delete(`${UserRouterEndpoints.userRemoveCourseFromCart}/${courseId}`)
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const clearCart = async()=>{
+  try {
+    const response = await API.delete(UserRouterEndpoints.userClearCart)
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}

@@ -264,6 +264,22 @@ const categoryReadOnlyService : ICategoryReadOnlyService = new CategoryReadOnlyS
 const categoryReadOnlyController : ICategoryReadOnlyController = new CategoryReadOnlyController(categoryReadOnlyService)
 
 
+////////////////////////////CART MANAGEMENT////////////////
+
+import { IStudentCartRepository } from "../repositories/interfaces/IStudentCartRepository";
+import { StudentCartRepository } from "../repositories/studentRepository/studentCartRepository";
+
+import { IStudentCartService } from "../services/interface/IStudentCartService";
+import { StudentCartService } from "../services/studentServices/StudentCartService";
+
+import { IStudentCartController } from "../controllers/studentControllers/interfaces/IStudentCartController";
+import { StudentCartController } from "../controllers/studentControllers/studentCartController";
+
+const studentCartRepository : IStudentCartRepository = new StudentCartRepository()
+
+const studentCartService : IStudentCartService = new StudentCartService(studentCartRepository)
+
+const studentCartController : IStudentCartController = new StudentCartController(studentCartService)
 
 
 
@@ -295,5 +311,7 @@ export {
 //studentCourse controller
     studentCourseController,
 //studentCategory controller
-    categoryReadOnlyController
+    categoryReadOnlyController,
+//student cart controller 
+     studentCartController,
 }

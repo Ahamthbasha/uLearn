@@ -17,6 +17,8 @@ export class JwtService {
       expiresIn: JwtErrorMsg.JWT_EXPIRATION,
     });
 
+    console.log('payload',payload)
+
     return verifyToken;
   }
 
@@ -27,9 +29,12 @@ export class JwtService {
     if (!secret) {
       throw new Error(EnvErrorMsg.JWT_NOT_FOUND);
     }
+    console.log('accessToken',payload)
     return jwt.sign(payload, secret, {
       expiresIn: JwtErrorMsg.JWT_EXPIRATION,
     });
+
+
   }
   
 //to get accessToken

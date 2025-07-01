@@ -16,6 +16,7 @@ import StudentDashboard from '../pages/student/StudentDashboard'
 import PrivateRoute from '../Protecter/UserPrivateRoute'
 import CourseDetailPage from '../pages/student/course/CourseDetailPage'
 import CourseListPage from '../pages/student/course/CourseListPage'
+import CartPage from '../pages/student/cart/CartPage'
 
 
 const StudentRouter = () => {
@@ -42,6 +43,8 @@ const StudentRouter = () => {
         <Route path='/user/dashboard' element={<StudentDashboard/>}/>
         <Route path='/user/profile' element={<StudentProfilePage/>}/>
         <Route path='/user/editProfile' element={<StudentProfileEditPage/>}/>
+
+        <Route path='/user/cart' element={<CartPage/>}/>
         </Route>
         </Route> 
 
