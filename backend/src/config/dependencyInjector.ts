@@ -281,11 +281,21 @@ const studentCartService : IStudentCartService = new StudentCartService(studentC
 
 const studentCartController : IStudentCartController = new StudentCartController(studentCartService)
 
+///////////////////////STUDENT WISHLIST MANAGEMENT//////////////////////////////////////////////////////////////////////////////////////////////
 
+import { IStudentWishlistRepository } from "../repositories/interfaces/IStudentWishlistRepository";
+import { StudentWishlistRepository } from "../repositories/studentRepository/studentWishlistRepository";
 
+import { IStudentWishlistService } from "../services/interface/IStudentWishlistService";
+import { StudentWishlistService} from "../services/studentServices/StudentWishlistService";
 
+import { IStudentWishlistController } from "../controllers/studentControllers/interfaces/IStudentWishlistController";
+import { StudentWishlistController } from "../controllers/studentControllers/studentWishlistController";
 
-
+const studentWishlistRepository : IStudentWishlistRepository = new StudentWishlistRepository()
+const studentWishlistService : IStudentWishlistService = 
+new StudentWishlistService(studentWishlistRepository)
+const studentWishlistController : IStudentWishlistController = new StudentWishlistController(studentWishlistService)
 
 
 export {
@@ -314,4 +324,6 @@ export {
     categoryReadOnlyController,
 //student cart controller 
      studentCartController,
+//student wishlist controller
+     studentWishlistController,
 }

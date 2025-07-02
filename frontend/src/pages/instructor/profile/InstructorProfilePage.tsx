@@ -33,7 +33,6 @@ const InstructorProfilePage = () => {
             profilePicture: response.data.profilePicUrl || null,
           }));
           setProfile(response.data);
-          toast.success(response.message)
         }
       } catch (error) {
         console.error("Failed to load instructor profile", error);

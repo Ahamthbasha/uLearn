@@ -17,6 +17,7 @@ import PrivateRoute from '../Protecter/UserPrivateRoute'
 import CourseDetailPage from '../pages/student/course/CourseDetailPage'
 import CourseListPage from '../pages/student/course/CourseListPage'
 import CartPage from '../pages/student/cart/CartPage'
+import WishlistPage from '../pages/student/wishlist/WishlistPage'
 
 
 const StudentRouter = () => {
@@ -45,6 +46,7 @@ const StudentRouter = () => {
         <Route path='/user/editProfile' element={<StudentProfileEditPage/>}/>
 
         <Route path='/user/cart' element={<CartPage/>}/>
+        <Route path='/user/wishlist' element={<WishlistPage/>}/>
         </Route>
         </Route> 
 

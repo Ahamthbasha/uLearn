@@ -18,6 +18,12 @@ const UserRouterEndpoints = {
     userRemoveCourseFromCart: '/api/student/remove',
     userClearCart: '/api/student/clearCart',
 
+    //userWishlist
+    userGetWishlist : '/api/student/wishlist',
+    userAddTowishlist : '/api/student/addToWishlist',
+    userRemoveWishlist : '/api/student/removeWishlistCourse',
+    userCheckCourseExistInWishlist : '/api/student/check'
+
 }
 
 export default UserRouterEndpoints

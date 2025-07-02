@@ -181,7 +181,7 @@ async login(req: Request, res: Response): Promise<any> {
     try {
         res.clearCookie("accessToken")
         res.clearCookie("refreshToken")
-
+        console.log('user is logged out')
         res.status(StatusCode.OK).send({success:true,message:StudentSuccessMessages.LOGOUT_SUCCESS})
     } catch (error) {
         throw error

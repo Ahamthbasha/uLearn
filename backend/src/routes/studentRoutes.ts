@@ -4,7 +4,8 @@ import {
     studentProfileController,
     studentCourseController,
     categoryReadOnlyController,
-    studentCartController
+    studentCartController,
+    studentWishlistController
  } from "../config/dependencyInjector";
 import upload from "../utils/multer";
 import authenticateToken from "../middlewares/AuthenticatedRoutes";
@@ -66,5 +67,14 @@ router.delete('/remove/:courseId',authenticateToken,isStudent,studentCartControl
 
 router.delete("/clearCart",authenticateToken,isStudent,studentCartController.clearCart.bind(studentCartController))
 
+////////WISHLIST MANAGEMENT////////
+
+router.post('/addToWishlist',authenticateToken,isStudent,studentWishlistController.addToWishlist.bind(studentWishlistController))
+
+router.delete('/removeWishlistCourse/:courseId',authenticateToken,isStudent,studentWishlistController.removeFromWishlist.bind(studentWishlistController))
+
+router.get('/wishlist',authenticateToken,isStudent,studentWishlistController.getWishlistCourses.bind(studentWishlistController))
+
+router.get('/check/:courseId',authenticateToken,isStudent,studentWishlistController.isCourseInWishlist.bind(studentWishlistController))
 
 export default router;

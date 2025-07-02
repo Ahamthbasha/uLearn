@@ -9,6 +9,7 @@ import {
 } from "../../../api/action/AdminActionApi";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
+import ConfirmationModal from "../../../components/common/ConfirmationModal";
 
 interface AdminCourse {
   _id: string;
@@ -23,8 +24,11 @@ const AdminCourseManagementPage = () => {
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [limit] = useState(1); // default page size
+  const [limit] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const [selectedCourse, setSelectedCourse] = useState<AdminCourse | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchCourses = async () => {
     setLoading(true);
@@ -41,15 +45,24 @@ const AdminCourseManagementPage = () => {
     }
   };
 
-  const toggleListing = async (course: AdminCourse) => {
+  const requestToggleListing = (course: AdminCourse) => {
+    setSelectedCourse(course);
+    setIsModalOpen(true);
+  };
+
+  const confirmToggleListing = async () => {
+    if (!selectedCourse) return;
     try {
-      const updated = await listUnListCourse(course._id);
+      const updated = await listUnListCourse(selectedCourse._id);
       toast.success(
         `Course ${updated.data.isListed ? "listed" : "unlisted"} successfully`
       );
-      fetchCourses(); // refresh the list
+      fetchCourses();
     } catch (err) {
       toast.error("Failed to toggle listing");
+    } finally {
+      setIsModalOpen(false);
+      setSelectedCourse(null);
     }
   };
 
@@ -88,7 +101,7 @@ const AdminCourseManagementPage = () => {
       label: (record) => (record.isListed ? "Unlist" : "List"),
       icon: (record) =>
         record.isListed ? <EyeOff size={18} /> : <Eye size={18} />,
-      onClick: (record) => toggleListing(record),
+      onClick: (record) => requestToggleListing(record),
       className: (record) =>
         record.isListed
           ? "bg-red-500 hover:bg-red-600 text-white"
@@ -110,26 +123,43 @@ const AdminCourseManagementPage = () => {
   }, [search, page]);
 
   return (
-    <DataTable
-      data={courses}
-      columns={columns}
-      actions={actions}
-      loading={loading}
-      error={error}
-      title="Course Management"
-      description="Manage listed and unlisted courses from instructors."
-      onRetry={fetchCourses}
-      emptyStateTitle="No Courses Available"
-      emptyStateDescription="There are no courses to display at this moment."
-      searchValue={search}
-      onSearchChange={handleSearchChange}
-      searchPlaceholder="Search by course name"
-      pagination={{
-        currentPage: page,
-        totalPages,
-        onPageChange: handlePageChange,
-      }}
-    />
+    <>
+      <DataTable
+        data={courses}
+        columns={columns}
+        actions={actions}
+        loading={loading}
+        error={error}
+        title="Course Management"
+        description="Manage listed and unlisted courses from instructors."
+        onRetry={fetchCourses}
+        emptyStateTitle="No Courses Available"
+        emptyStateDescription="There are no courses to display at this moment."
+        searchValue={search}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder="Search by course name"
+        pagination={{
+          currentPage: page,
+          totalPages,
+          onPageChange: handlePageChange,
+        }}
+      />
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        title="Please Confirm"
+        message={`Are you sure you want to ${
+          selectedCourse?.isListed ? "unlist" : "list"
+        } the course "${selectedCourse?.courseName}"?`}
+        confirmText={selectedCourse?.isListed ? "Unlist" : "List"}
+        cancelText="Cancel"
+        onConfirm={confirmToggleListing}
+        onCancel={() => {
+          setIsModalOpen(false);
+          setSelectedCourse(null);
+        }}
+      />
+    </>
   );
 };
 

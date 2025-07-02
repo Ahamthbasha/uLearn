@@ -135,3 +135,45 @@ export const clearCart = async()=>{
     throw error
   }
 }
+
+//wishlist actions
+
+export const getWishlist = async()=>{
+  try {
+    const response = await API.get(UserRouterEndpoints.userGetWishlist)
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const addToWishlist = async(courseId:string)=>{
+  try {
+    const response = await API.post(UserRouterEndpoints.userAddTowishlist,{
+      courseId
+    },
+  {withCredentials:true}
+  )
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const removeFromWishlist = async(courseId:string)=>{
+  try {
+    const response = await API.delete(`${UserRouterEndpoints.userRemoveWishlist}/${courseId}`)
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const courseAlreadyExistInWishlist = async(courseId:string)=>{
+  try {
+    const response = await API.get(`${UserRouterEndpoints.userCheckCourseExistInWishlist}/${courseId}`)
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}

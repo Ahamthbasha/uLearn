@@ -24,7 +24,6 @@ const StudentProfilePage = () => {
       if (response.success) {
         dispatch(setUser(response.data));
         setProfile(response.data);
-        toast.success(response.message);
       } else {
         toast.error(response.message || "Failed to fetch profile ❌");
       }

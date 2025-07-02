@@ -354,3 +354,17 @@ export const CartSuccessMessage = {
   COURSE_REMOVED_FROM_CART:"Course removed from cart",
   CART_DATA_CLEARED : "Cart cleared"
 }
+
+
+export const WishlistSuccessMessage = {
+  COURSE_ADDED: "Course added to wishlist successfully",
+  COURSE_REMOVED: "Course removed from wishlist successfully",
+  COURSE_LIST_FETCHED: "Wishlist fetched successfully",
+};
+
+export const WishlistErrorMessage = {
+  COURSE_ALREADY_IN_WISHLIST: "Course already exists in wishlist",
+  FAILED_TO_REMOVE_COURSE: "Failed to remove course from wishlist",
+  FAILED_TO_FETCH_LIST: "Failed to fetch wishlist courses",
+  FAILED_TO_CHECK_EXISTENCE: "Failed to check if course is in wishlist",
+};
