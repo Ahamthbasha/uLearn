@@ -33,7 +33,7 @@ export class InstructorCourseController implements IInstructorCourseController {
         return;
       }
 
-      const courseName = courseData.courseName?.trim();
+      const courseName = courseData.courseName?.trim().toLowerCase();
       const isAlreadyCreated = await this.courseService.isCourseAlreadyCreatedByInstructor(courseName, instructorId);
       if (isAlreadyCreated) {
         res.status(StatusCode.BAD_REQUEST).json({
@@ -78,7 +78,7 @@ export class InstructorCourseController implements IInstructorCourseController {
   });
   return;
 }
-      const courseName = courseData.courseName?.trim();
+      const courseName = courseData.courseName?.trim().toLowerCase();
       const isDuplicate = await this.courseService.isCourseAlreadyCreatedByInstructorExcluding(
         courseName,
         instructorId,

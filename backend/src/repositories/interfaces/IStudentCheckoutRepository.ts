@@ -16,4 +16,9 @@ export interface IStudentCheckoutRepository {
   savePayment(data: Partial<IPayment>): Promise<IPayment>;
 
   createEnrollments(userId: Types.ObjectId, courseIds: Types.ObjectId[]): Promise<IEnrollment[]>;
+
+  getCourseNamesByIds(courseIds:Types.ObjectId[]):Promise<string[]>
+
+  getEnrolledCourseIds(userId: Types.ObjectId): Promise<Types.ObjectId[]>;
+
 }

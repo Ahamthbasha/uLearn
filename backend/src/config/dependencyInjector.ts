@@ -307,9 +307,16 @@ import { StudentCheckoutService } from "../services/studentServices/StudentCheck
 
 import { IStudentCheckoutController } from "../controllers/studentControllers/interfaces/IStudentCheckoutController";
 import { StudentCheckoutController} from "../controllers/studentControllers/studentCheckoutController";
+import { OrderRepository } from "../repositories/OrderRepository";
+import { PaymentRepository } from "../repositories/PaymentRepository";
+import { EnrollmentRepository } from "../repositories/EnrollmentRepository";
+import { CourseRepository } from "../repositories/CourseRepository";
 
-
-const studentCheckoutRepository : IStudentCheckoutRepository = new StudentCheckoutRepository()
+const studentCheckoutRepository : IStudentCheckoutRepository = new StudentCheckoutRepository(new OrderRepository(),
+new PaymentRepository(),
+new EnrollmentRepository(),
+new CourseRepository()
+)
 
 const studentCheckoutService : IStudentCheckoutService = new StudentCheckoutService(studentCheckoutRepository,studentCartRepository)
 
@@ -344,10 +351,7 @@ const instructorDashboardController : IInstructorAllDashboardController = new In
 import { IInstructorCourseSpecificDashboardRepository } from "../repositories/interfaces/IInstructorSpecificCourseDashboardRepository";
 import { InstructorSpecificCourseDashboardRepository } from "../repositories/instructorRepository/instructorSpecificCourseDashboardRepository";
 
-import { PaymentRepository } from "../repositories/PaymentRepository";
-import { EnrollmentRepository } from "../repositories/EnrollmentRepository";
-import { CourseRepository } from "../repositories/CourseRepository";
-import { OrderRepository } from "../repositories/OrderRepository";
+
 
 import { IInstructorSpecificCourseDashboardService } from "../services/interface/IInstructorSpecificCourseService";
 import { InstructorSpecificCourseDashboardService } from "../services/instructorServices/InstructorSpecificCourseService";

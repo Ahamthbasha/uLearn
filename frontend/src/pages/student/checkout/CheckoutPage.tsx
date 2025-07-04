@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { getCart, initiateCheckout, checkoutCompleted } from "../../../api/action/StudentAction";
+import {
+  getCart,
+  initiateCheckout,
+  checkoutCompleted,
+  removeFromCart,
+} from "../../../api/action/StudentAction";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -48,13 +53,11 @@ const CheckoutPage = () => {
 
       const courseIds = courses.map((c) => c._id);
 
-      // Call backend to initiate Razorpay order
       const response = await initiateCheckout(courseIds, totalAmount);
       const order = response?.order;
 
       if (!order || !order.gatewayOrderId) {
         toast.error("Failed to initiate order with Razorpay.");
-        console.error("🚨 Malformed order response:", response);
         return;
       }
 
@@ -77,7 +80,6 @@ const CheckoutPage = () => {
             toast.success("Payment successful! You've been enrolled.");
             navigate("/user/enrolled");
           } catch (err) {
-            console.error("Payment verification error", err);
             toast.error("Payment verification failed.");
           }
         },
@@ -88,9 +90,27 @@ const CheckoutPage = () => {
 
       const rzp = new window.Razorpay(options);
       rzp.open();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Payment initiation error:", error);
+
+      const errorMessage = error?.response?.data?.message;
+
+      if (errorMessage?.includes("already enrolled")) {
+        toast.error(errorMessage); // Show full error (e.g., "Remove XYZ from cart, already enrolled.")
+        return;
+      }
+
       toast.error("Payment initiation failed.");
+    }
+  };
+
+  const handleRemove = async (courseId: string, courseName: string) => {
+    try {
+      await removeFromCart(courseId);
+      setCourses((prev) => prev.filter((c) => c._id !== courseId));
+      toast.info(`${courseName} removed from cart.`);
+    } catch {
+      toast.error("Failed to remove course.");
     }
   };
 
@@ -111,6 +131,7 @@ const CheckoutPage = () => {
                   <th className="py-3 px-4 text-left">Thumbnail</th>
                   <th className="py-3 px-4 text-left">Course</th>
                   <th className="py-3 px-4 text-right">Price (₹)</th>
+                  <th className="py-3 px-4 text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -125,6 +146,14 @@ const CheckoutPage = () => {
                     </td>
                     <td className="py-3 px-4">{course.courseName}</td>
                     <td className="py-3 px-4 text-right">₹{course.price}</td>
+                    <td className="py-3 px-4 text-center">
+                      <button
+                        onClick={() => handleRemove(course._id, course.courseName)}
+                        className="text-red-500 hover:underline text-sm"
+                      >
+                        Remove
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -134,6 +163,7 @@ const CheckoutPage = () => {
                     Total
                   </td>
                   <td className="py-3 px-4 text-right">₹{totalAmount}</td>
+                  <td />
                 </tr>
               </tfoot>
             </table>

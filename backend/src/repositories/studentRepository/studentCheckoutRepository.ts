@@ -1,16 +1,21 @@
 import { IStudentCheckoutRepository } from "../interfaces/IStudentCheckoutRepository";
-import { OrderRepository } from "../OrderRepository";
-import { PaymentRepository } from "../PaymentRepository";
-import { EnrollmentRepository } from "../EnrollmentRepository";
+import { IOrderRepository } from "../interfaces/IOrderRepository";
+import { IPaymentRepository } from "../interfaces/IPaymentRepository";
+import { IEnrollmentRepository } from "../interfaces/IEnrollmentRepository";
+import { ICourseRepository } from "../interfaces/ICourseRepository";
+
 import { Types } from "mongoose";
 import { IOrder } from "../../models/orderModel";
 import { IPayment } from "../../models/paymentModel";
 import { IEnrollment } from "../../models/enrollmentModel";
 
 export class StudentCheckoutRepository implements IStudentCheckoutRepository {
-  private orderRepo = new OrderRepository();
-  private paymentRepo = new PaymentRepository();
-  private enrollmentRepo = new EnrollmentRepository();
+  constructor(
+    private readonly orderRepo: IOrderRepository,
+    private readonly paymentRepo: IPaymentRepository,
+    private readonly enrollmentRepo: IEnrollmentRepository,
+    private readonly courseRepo: ICourseRepository // for course name check
+  ) {}
 
   async createOrder(
     userId: Types.ObjectId,
@@ -25,7 +30,7 @@ export class StudentCheckoutRepository implements IStudentCheckoutRepository {
       status: "PENDING",
       gateway: "razorpay",
       gatewayOrderId: razorpayOrderId,
-    } as Partial<IOrder>) ;
+    } as Partial<IOrder>);
   }
 
   async updateOrderStatus(orderId: Types.ObjectId, status: "SUCCESS" | "FAILED"): Promise<IOrder | null> {
@@ -46,4 +51,17 @@ export class StudentCheckoutRepository implements IStudentCheckoutRepository {
     }));
     return this.enrollmentRepo.create(enrollments as Partial<IEnrollment>[]);
   }
+
+  async getCourseNamesByIds(courseIds: Types.ObjectId[]): Promise<string[]> {
+    const courses = await this.courseRepo.findAll(
+      { _id: { $in: courseIds } }
+    );
+    return (courses || []).map((c) => c.courseName);
+  }
+
+  async getEnrolledCourseIds(userId: Types.ObjectId): Promise<Types.ObjectId[]> {
+  const enrollments = await this.enrollmentRepo.findAll({ userId }) || [];
+  return enrollments.map(e => e.courseId);
+}
+
 }

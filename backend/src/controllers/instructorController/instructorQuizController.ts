@@ -145,6 +145,7 @@ async updateQuestion(req: Request, res: Response, next: NextFunction): Promise<v
       data: updated,
     });
   } catch (err: any) {
+    console.log(err)
     if (err.message?.includes("already exists")) {
       res.status(StatusCode.CONFLICT).json({
         success: false,
@@ -187,7 +188,7 @@ async getPaginatedQuestionsByCourseId(req: Request, res: Response, next: NextFun
     const pageNum = Number(page);
     const limitNum = Number(limit);
 
-    const { questions, total } = await this.quizService.getPaginatedQuestionsByCourseId(
+    const { questions, total,quizId } = await this.quizService.getPaginatedQuestionsByCourseId(
       courseId,
       String(search),
       pageNum,
@@ -198,6 +199,7 @@ async getPaginatedQuestionsByCourseId(req: Request, res: Response, next: NextFun
       success: true,
       message: QuizSuccessMessages.QUIZ_FETCHED,
       data: {
+        quizId,
         courseId,
         questions,
         total,

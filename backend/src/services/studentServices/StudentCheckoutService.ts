@@ -13,12 +13,53 @@ export class StudentCheckoutService implements IStudentCheckoutService {
     private readonly cartRepo: IStudentCartRepository
   ) {}
 
+// async initiateCheckout(
+//   userId: Types.ObjectId,
+//   courseIds: Types.ObjectId[],
+//   totalAmount: number
+// ): Promise<IOrder> {
+//   try {
+//     const razorpayOrder = await razorpay.orders.create({
+//       amount: totalAmount * 100,
+//       currency: "INR",
+//       receipt: `receipt_order_${Date.now()}`,
+//     });
+
+//     const order = await this.checkoutRepo.createOrder(
+//       userId,
+//       courseIds,
+//       totalAmount,
+//       razorpayOrder.id
+//     );
+
+//     return order;
+//   } catch (err) {
+//     console.error("❌ Razorpay order creation failed:", err);
+//     throw err;
+//   }
+// }
+
 async initiateCheckout(
   userId: Types.ObjectId,
   courseIds: Types.ObjectId[],
   totalAmount: number
 ): Promise<IOrder> {
   try {
+    // 1. Get enrolled course IDs
+    const enrolledCourseIds = await this.checkoutRepo.getEnrolledCourseIds(userId);
+
+    // 2. Check for overlap
+    const alreadyEnrolled = courseIds.filter(cid =>
+      enrolledCourseIds.some(eid => eid.equals(cid))
+    );
+
+    // 3. If overlap, get names and throw error
+    if (alreadyEnrolled.length > 0) {
+      const names = await this.checkoutRepo.getCourseNamesByIds(alreadyEnrolled);
+      throw new Error(`Remove ${names.join(", ")} from cart, already enrolled.`);
+    }
+
+    // 4. Proceed to Razorpay creation
     const razorpayOrder = await razorpay.orders.create({
       amount: totalAmount * 100,
       currency: "INR",
@@ -34,10 +75,11 @@ async initiateCheckout(
 
     return order;
   } catch (err) {
-    console.error("❌ Razorpay order creation failed:", err);
+    console.error("❌ Checkout Error:", err);
     throw err;
   }
 }
+
 
   async verifyAndCompleteCheckout(
     orderId: Types.ObjectId,

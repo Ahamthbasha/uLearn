@@ -83,14 +83,15 @@ async updateQuestionInQuiz(
   return await quiz.save();
 }
 
+
 async getPaginatedQuestionsByCourseId(
   courseId: string,
   search: string,
   page: number,
   limit: number
-): Promise<{ questions: IQuiz["questions"][0][], total: number }> {
+): Promise<{ questions: IQuiz["questions"][0][], total: number, quizId: string | null }> {
   const quiz = await this.findOne({ courseId: new mongoose.Types.ObjectId(courseId) });
-  if (!quiz) return { questions: [], total: 0 };
+  if (!quiz) return { questions: [], total: 0, quizId: null };
 
   const filtered = quiz.questions.filter(q =>
     q.questionText.toLowerCase().includes(search.toLowerCase())
@@ -100,7 +101,11 @@ async getPaginatedQuestionsByCourseId(
   const start = (page - 1) * limit;
   const paginated = filtered.slice(start, start + limit);
 
-  return { questions: paginated, total };
+  return {
+    questions: paginated,
+    total,
+    quizId: (quiz._id as mongoose.Types.ObjectId).toString()
+  };
 }
 
 

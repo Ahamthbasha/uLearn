@@ -34,13 +34,14 @@ export class InstructorQuizService implements IInstructorQuizService {
     return await this.quizRepo.deleteQuestionFromQuiz(quizId, questionId);
   }
 
-  async getPaginatedQuestionsByCourseId(
+async getPaginatedQuestionsByCourseId(
   courseId: string,
   search: string,
   page: number,
   limit: number
-): Promise<{ questions: IQuiz["questions"][0][], total: number }> {
+): Promise<{ questions: IQuiz["questions"][0][], total: number, quizId: string | null }> {
   return await this.quizRepo.getPaginatedQuestionsByCourseId(courseId, search, page, limit);
 }
+
 
 }

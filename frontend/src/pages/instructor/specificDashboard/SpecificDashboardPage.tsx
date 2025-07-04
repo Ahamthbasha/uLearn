@@ -3,12 +3,13 @@ import { useParams } from "react-router-dom";
 import { specificCourseDashboard } from "../../../api/action/InstructorActionApi";
 import {
   ResponsiveContainer,
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip
+  Tooltip,
+  Legend,
 } from "recharts";
 import { DollarSign, Users, Tag } from "lucide-react";
 import { toast } from "react-toastify";
@@ -120,20 +121,19 @@ const SpecificDashboardPage = () => {
         <div className="bg-white p-6 rounded-xl shadow-sm border">
           <h2 className="text-lg font-semibold mb-4 text-gray-800">Monthly Revenue Performance</h2>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={formattedData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" stroke="#666" />
-              <YAxis stroke="#666" />
-              <Tooltip formatter={(val) => [`₹${val}`, "Revenue"]} />
-              <Line
-                type="monotone"
-                dataKey="revenue"
-                stroke="#3B82F6"
-                strokeWidth={3}
-                dot={{ r: 4 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+  <BarChart
+    data={formattedData}
+    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+  >
+    <CartesianGrid strokeDasharray="3 3" />
+    <XAxis dataKey="name" />
+    <YAxis tickFormatter={(value) => `₹${value}`} />
+    <Tooltip formatter={(value: number) => [`₹${value.toLocaleString()}`, "Revenue"]} />
+    <Legend />
+    <Bar dataKey="revenue" fill="#10B981" radius={[4, 4, 0, 0]} />
+  </BarChart>
+</ResponsiveContainer>
+
         </div>
       </div>
     </div>

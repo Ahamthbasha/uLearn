@@ -16,6 +16,6 @@ export interface IInstructorQuizRepository {
   search: string,
   page: number,
   limit: number
-): Promise<{ questions: IQuiz["questions"][0][], total: number }>;
+): Promise<{ questions: IQuiz["questions"][0][], total: number,quizId:string|null}>;
 
 }
