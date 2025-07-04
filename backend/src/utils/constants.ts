@@ -355,7 +355,6 @@ export const CartSuccessMessage = {
   CART_DATA_CLEARED : "Cart cleared"
 }
 
-
 export const WishlistSuccessMessage = {
   COURSE_ADDED: "Course added to wishlist successfully",
   COURSE_REMOVED: "Course removed from wishlist successfully",
@@ -368,3 +367,24 @@ export const WishlistErrorMessage = {
   FAILED_TO_FETCH_LIST: "Failed to fetch wishlist courses",
   FAILED_TO_CHECK_EXISTENCE: "Failed to check if course is in wishlist",
 };
+
+export const CheckoutErrorMessages = {
+  USER_NOT_AUTHENTICATED: "User not authenticated.",
+  CHECKOUT_FAILED: "Checkout initiation failed.",
+  PAYMENT_FAILED: "Checkout completion failed.",
+};
+
+export const CheckoutSuccessMessage = {
+  ORDER_CREATED : "Order created successfully",
+  PAYMENT_SUCCESS_COURSE_ENROLLED: "Payment successful and courses enrolled"
+}
+
+export const EnrolledErrorMessage = {
+  FAILED_TO_FETCH_ENROLLED_COURSES:"Failed to fetch enrolled courses",
+  FAILED_TO_FETCH_PARTICULAR_COURSE:"Failed to fetch enrollment details",
+  FAILED_TO_MARK_CHAPTER_COMPLETED:"Failed to mark chapter as completed"
+}
+
+export const EnrolledSuccessMessage = {
+  CHAPTER_COMPLETED:"Chapter marked as completed"
+}

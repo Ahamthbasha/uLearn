@@ -10,10 +10,10 @@ interface IFullVideo {
 }
 
 export interface ICourse extends Document {
-    _id: Types.ObjectId & { toString(): string };
+  _id: Types.ObjectId & { toString(): string };
   courseName: string;
   instructorId: Types.ObjectId;
-  category: Types.ObjectId; 
+  category: Types.ObjectId;
   quizId: Types.ObjectId;
   description: string;
   demoVideo: IDemoVideo;
@@ -42,7 +42,7 @@ const CourseSchema = new Schema<ICourse>(
       required: true,
       ref: "Instructor",
     },
-    category: { // ✅ Used for population
+    category: {
       type: Schema.Types.ObjectId,
       ref: "Category",
       required: true,
@@ -67,7 +67,27 @@ const CourseSchema = new Schema<ICourse>(
     isPublished: { type: Boolean, default: false },
     isListed: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
+
+// ✅ Virtual for chapters
+CourseSchema.virtual("chapters", {
+  ref: "Chapter",
+  localField: "_id",
+  foreignField: "courseId",
+  justOne: false,
+});
+
+// ✅ Virtual for quizzes
+CourseSchema.virtual("quizzes", {
+  ref: "Quiz",
+  localField: "_id",
+  foreignField: "courseId",
+  justOne: false,
+});
 
 export const CourseModel = model<ICourse>("Course", CourseSchema);

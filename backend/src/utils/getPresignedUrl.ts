@@ -14,7 +14,7 @@ export const getPresignedUrl = async (key: string): Promise<string> => {
   const params = {
     Bucket: BUCKET_NAME!,  //Non - null assertion operator
     Key: key,
-    Expires: 60 * 5, // 5 minutes
+    Expires: 60 * 60, // 5 minutes
   };
 
   return s3.getSignedUrlPromise('getObject', params);

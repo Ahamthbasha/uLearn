@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  getCart,
-  removeFromCart,
-  clearCart,
-} from "../../../api/action/StudentAction";
+import { getCart, removeFromCart } from "../../../api/action/StudentAction";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -42,16 +38,6 @@ const CartPage = () => {
       setCourses((prev) => prev.filter((c) => c._id !== courseId));
     } catch (error: any) {
       toast.error("Failed to remove course from cart");
-    }
-  };
-
-  const handleClearCart = async () => {
-    try {
-      await clearCart();
-      toast.success("Cart cleared");
-      setCourses([]);
-    } catch (error: any) {
-      toast.error("Failed to clear cart");
     }
   };
 
@@ -114,17 +100,17 @@ const CartPage = () => {
 
           <div className="flex justify-between mt-6">
             <button
-              onClick={handleClearCart}
-              className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md text-sm"
-            >
-              Clear Cart
-            </button>
-
-            <button
               onClick={() => navigate("/user/courses")}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-sm"
             >
               Browse More
+            </button>
+
+            <button
+              onClick={() => navigate("/user/checkout")}
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md text-sm"
+            >
+              Proceed to Checkout
             </button>
           </div>
         </>

@@ -29,6 +29,7 @@ import EditChapterPage from '../pages/instructor/chapter/EditChapterPage'
 import QuizManagementPage from '../pages/instructor/quiz/QuizManagementpage'
 import AddQuizPage from '../pages/instructor/quiz/AddQuizPage'
 import EditQuizPage from '../pages/instructor/quiz/EditQuizPage'
+import SpecificDashboardPage from '../pages/instructor/specificDashboard/SpecificDashboardPage'
 
 const InstructorRouter = () => {
   return (
@@ -60,6 +61,7 @@ const InstructorRouter = () => {
     <Route path='createCourse' element ={<CourseCreatePage/>}/>
     <Route path='editCourse/:courseId' element={<CourseEditPage/>}/>
     <Route path='course/manage/:courseId' element={<CourseManagementPage/>}/>
+    <Route path='courseDashboard/:courseId' element={<SpecificDashboardPage/>}/>
 
     {/* chapterManage */}
     <Route path='course/:courseId/chapters' element={<ChapterManagementPage/>} />

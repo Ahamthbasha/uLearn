@@ -6,7 +6,7 @@ import { logout } from "../api/auth/UserAuthentication";
 
 const navItems = [
   { name: "Dashboard", path: "/user/dashboard", icon: "📊" },
-  { name: "Courses", path: "/user/courses", icon: "📚" },
+  { name: "Courses", path: "/user/enrolled", icon: "📚" },
   { name: "Meetings", path: "/user/meetings", icon: "🎥" },
   { name: "Wishlist", path: "/user/wishlist", icon: "❤️" },
   { name: "Cart", path: "/user/cart", icon: "🛒" },

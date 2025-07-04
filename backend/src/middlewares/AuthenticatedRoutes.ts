@@ -24,8 +24,6 @@ const authenticateToken = async (
     res: Response,
     next: NextFunction
 ): Promise<any> => {
-
-    console.log('authenticateToken middleware triggered')
     const accessToken = req.cookies['accessToken'];
     const refreshToken = req.cookies['refreshToken'];
 
@@ -44,8 +42,6 @@ const authenticateToken = async (
             JWT_SECRET
         ) as AuthenticatedRequest['user'];
 
-        console.log('accessPayload',accessPayload)
-
         req.user = accessPayload;
         return next();
     } catch (err: any) {
@@ -62,9 +58,6 @@ const authenticateToken = async (
                     refreshToken,
                     JWT_SECRET
                 ) as AuthenticatedRequest['user'];
-
-                console.log("🧾 Refresh Payload:", JSON.stringify(refreshPayload, null, 2));
-
 
                 if (!refreshPayload) {
                     return res

@@ -132,6 +132,13 @@ const CourseManagementPage = () => {
   </button>
 )}
 
+<button
+    onClick={() => navigate(`/instructor/courseDashboard/${courseId}`)}
+    className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-md text-sm font-medium shadow"
+  >
+    📊 View Course Dashboard
+  </button>
+
       </div>
     </div>
   );

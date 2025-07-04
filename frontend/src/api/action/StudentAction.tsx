@@ -1,6 +1,6 @@
 import { API } from "../../service/axios";
 import UserRouterEndpoints from "../../types/endPoints/userEndPoint";
-
+import type QuizPayload from "../../types/interfaces/IQuizPayload";
 export const getProfile = async() =>{
     try {
         const response = await API.get(UserRouterEndpoints.userProfilePage,{
@@ -172,6 +172,108 @@ export const removeFromWishlist = async(courseId:string)=>{
 export const courseAlreadyExistInWishlist = async(courseId:string)=>{
   try {
     const response = await API.get(`${UserRouterEndpoints.userCheckCourseExistInWishlist}/${courseId}`)
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+//checkout actions
+
+export const initiateCheckout = async(courseIds:string[],totalAmount:number)=>{
+  try {
+    const response = await API.post(UserRouterEndpoints.userInitiateCheckout,{
+      courseIds,
+      totalAmount
+    })
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const checkoutCompleted = async ({
+  orderId,
+  paymentId,
+  method,
+  amount,
+}: {
+  orderId: string;
+  paymentId: string;
+  method: string;
+  amount: number;
+}) => {
+  try {
+    const response = await API.post(UserRouterEndpoints.userCompleteCheckout, {
+      orderId,
+      paymentId,
+      method,
+      amount,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//boughted courses actions
+
+export const getEnrolledCourses = async()=>{
+  try {
+    const response = await API.get(UserRouterEndpoints.userGetEnrolledCourses)
+
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const getSpecificCourse = async(courseId:string)=>{
+  try{
+    const response = await API.get(`${UserRouterEndpoints.userGetSpecificEnrolledCourses}/${courseId}`)
+
+    return response.data
+  }
+  catch(error){
+    throw error
+  }
+}
+
+export const markChapterAsCompleted = async(courseId:string,chapterId:string)=>{
+  try{
+      const response = await API.patch('/api/student/enrolled/completeChapter', {
+      courseId,
+      chapterId,
+    });
+    return response.data;
+  }catch(error){
+    throw error
+  }
+}
+
+export const submitQuiz = async(payload:QuizPayload) => {
+  try {
+    const response = await API.post(UserRouterEndpoints.userSubmitQuiz,payload)
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const checkChapterCompletedOrNot = async(courseId:string)=>{
+  try {
+    const response = await API.get(`${UserRouterEndpoints.userCheckAllChapterCompleted}/${courseId}/allChaptersComplete`)
+
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const getCertificate = async(courseId:string)=>{
+  try {
+    const response = await API.get(`${UserRouterEndpoints.userGetCertificate}/${courseId}`)
+
     return response.data
   } catch (error) {
     throw error

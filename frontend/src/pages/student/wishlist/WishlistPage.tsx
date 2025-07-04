@@ -16,7 +16,7 @@ interface Course {
 
 interface WishlistItem {
   _id: string;
-  courseId: Course;
+  courseId: Course | null;
 }
 
 const WishlistPage = () => {
@@ -31,7 +31,8 @@ const WishlistPage = () => {
   const fetchWishlist = async () => {
     try {
       const response = await getWishlist();
-      setWishlist(response.data);
+      const validItems = response.data.filter((item: WishlistItem) => item.courseId !== null);
+      setWishlist(validItems);
     } catch (error) {
       toast.error("Failed to fetch wishlist");
     }
@@ -93,7 +94,7 @@ const WishlistPage = () => {
             </thead>
             <tbody>
               {wishlist.map((item) => {
-                const course = item.courseId;
+                const course = item.courseId!;
                 const isInCart = cartCourseIds.includes(course._id);
 
                 return (

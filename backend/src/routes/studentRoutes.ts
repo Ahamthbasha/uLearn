@@ -5,7 +5,9 @@ import {
     studentCourseController,
     categoryReadOnlyController,
     studentCartController,
-    studentWishlistController
+    studentWishlistController,
+    studentCheckoutController,
+    studentEnrollmentController
  } from "../config/dependencyInjector";
 import upload from "../utils/multer";
 import authenticateToken from "../middlewares/AuthenticatedRoutes";
@@ -76,5 +78,25 @@ router.delete('/removeWishlistCourse/:courseId',authenticateToken,isStudent,stud
 router.get('/wishlist',authenticateToken,isStudent,studentWishlistController.getWishlistCourses.bind(studentWishlistController))
 
 router.get('/check/:courseId',authenticateToken,isStudent,studentWishlistController.isCourseInWishlist.bind(studentWishlistController))
+
+///////////////////CHECKOUT MANAGEMENT////////////////////////////////////////
+
+router.post('/checkout',authenticateToken,isStudent,studentCheckoutController.initiateCheckout.bind(studentCheckoutController))
+
+router.post('/complete',authenticateToken,isStudent,studentCheckoutController.completeCheckout.bind(studentCheckoutController))
+
+//////////BOUGHT COURSE MANAGEMENT/////////////////
+
+router.get('/enrolled',authenticateToken,isStudent,studentEnrollmentController.getAllEnrolledCourses.bind(studentEnrollmentController))
+
+router.get('/enrolled/:courseId',authenticateToken,isStudent,studentEnrollmentController.getEnrollmentCourseDetails.bind(studentEnrollmentController))
+
+router.patch('/enrolled/completeChapter',authenticateToken,isStudent,studentEnrollmentController.completeChapter.bind(studentEnrollmentController))
+
+router.post('/submitQuiz',authenticateToken,isStudent,studentEnrollmentController.submitQuizResult.bind(studentEnrollmentController))
+
+router.get('/enrollment/:courseId/allChaptersComplete',authenticateToken,isStudent,studentEnrollmentController.checkAllChaptersCompleted.bind(studentEnrollmentController))
+
+router.get('/certificate/:courseId',authenticateToken,isStudent,studentEnrollmentController.getCertificateUrl.bind(studentEnrollmentController))
 
 export default router;

@@ -22,8 +22,19 @@ const UserRouterEndpoints = {
     userGetWishlist : '/api/student/wishlist',
     userAddTowishlist : '/api/student/addToWishlist',
     userRemoveWishlist : '/api/student/removeWishlistCourse',
-    userCheckCourseExistInWishlist : '/api/student/check'
+    userCheckCourseExistInWishlist : '/api/student/check',
 
+    //checkout
+    userInitiateCheckout : '/api/student/checkout',
+    userCompleteCheckout : '/api/student/complete',
+
+    //enroll
+    userGetEnrolledCourses : '/api/student/enrolled',
+    userGetSpecificEnrolledCourses :'/api/student/enrolled',
+    userMarkChapterCompleted : '/api/student/enrolled/completeChapter',
+    userSubmitQuiz : '/api/student/submitQuiz',
+    userCheckAllChapterCompleted : '/api/student/enrollment',
+    userGetCertificate:'/api/student/certificate',
 }
 
 export default UserRouterEndpoints

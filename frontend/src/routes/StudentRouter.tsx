@@ -18,7 +18,10 @@ import CourseDetailPage from '../pages/student/course/CourseDetailPage'
 import CourseListPage from '../pages/student/course/CourseListPage'
 import CartPage from '../pages/student/cart/CartPage'
 import WishlistPage from '../pages/student/wishlist/WishlistPage'
-
+import CheckoutPage from '../pages/student/checkout/CheckoutPage'
+import EnrolledCoursesPage from '../pages/student/enrollCourses/EnrolledCoursesPage'
+import EnrolledCourseDetailPage from '../pages/student/enrollCourses/EnrolledCourseDetailPage.'
+import QuizAttemptPage from '../pages/student/enrollCourses/QuizAttempPage'
 
 const StudentRouter = () => {
   return (
@@ -32,25 +35,28 @@ const StudentRouter = () => {
         <Route path='/user/course/:courseId' element={<CourseDetailPage/>}/>
         <Route path='/user/courses' element={<CourseListPage/>}/>
 
-{/* reset password in case of forgot password */}
+        {/* reset password in case of forgot password */}
         <Route path='/user/verifyEmail' element={<ForgotPassword/>} />
         <Route path='/user/forgotPasswordOtp' element={<ResetVerificationOTP/>}/>
         <Route path='/user/resetPassword' element={<ResetPassword/>}/>
         </Route>
 
-{/* profile management */}
+        {/* profile management */}
         <Route element={<PrivateRoute/>}>
-        <Route element={<StudentSidebarLayout/>}>
-        <Route path='/user/dashboard' element={<StudentDashboard/>}/>
-        <Route path='/user/profile' element={<StudentProfilePage/>}/>
-        <Route path='/user/editProfile' element={<StudentProfileEditPage/>}/>
-
-        <Route path='/user/cart' element={<CartPage/>}/>
-        <Route path='/user/wishlist' element={<WishlistPage/>}/>
+          <Route path ='/user' element={<StudentSidebarLayout/>} >
+            <Route path='dashboard' element={<StudentDashboard/>}/>
+            <Route path='profile' element={<StudentProfilePage/>}/>
+            <Route path='editProfile' element={<StudentProfileEditPage/>}/>
+            <Route path='cart' element={<CartPage/>}/>
+            <Route path='wishlist' element={<WishlistPage/>}/>
+            <Route path='checkout' element={<CheckoutPage/>}/>
+            <Route path='enrolled' element={<EnrolledCoursesPage/>}/>
+          </Route>
+          
+          {/* Enrolled course detail - outside sidebar layout for better UX */}
+          <Route path='/user/enrolled/:courseId' element={<EnrolledCourseDetailPage/>}/>
+          <Route path='/quiz/:courseId/:quizId' element={<QuizAttemptPage />}/>
         </Route>
-        </Route> 
-
-        
     </Routes>
   )
 }

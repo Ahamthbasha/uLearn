@@ -385,3 +385,25 @@ export const publishCourse = async(courseId:string) => {
     throw error
   }
 }
+
+//dashboard
+
+export const getDashboard = async()=>{
+  try {
+    const response = await API.get(InstructorRouterEndPoints.instructorGetDashboard)
+
+    return response.data.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const specificCourseDashboard = async(courseId:string)=>{
+  try {
+    const response = await API.get(`${InstructorRouterEndPoints.instructorSpecificCourse}/${courseId}`)
+
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}

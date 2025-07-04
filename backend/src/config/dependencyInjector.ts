@@ -297,6 +297,97 @@ const studentWishlistService : IStudentWishlistService =
 new StudentWishlistService(studentWishlistRepository)
 const studentWishlistController : IStudentWishlistController = new StudentWishlistController(studentWishlistService)
 
+/////////STUDENT CHECKOUT MANAGEMENT///////////////////
+
+import { IStudentCheckoutRepository } from "../repositories/interfaces/IStudentCheckoutRepository";
+import { StudentCheckoutRepository } from "../repositories/studentRepository/studentCheckoutRepository";
+
+import { IStudentCheckoutService } from "../services/interface/IStudentCheckoutService";
+import { StudentCheckoutService } from "../services/studentServices/StudentCheckoutService";
+
+import { IStudentCheckoutController } from "../controllers/studentControllers/interfaces/IStudentCheckoutController";
+import { StudentCheckoutController} from "../controllers/studentControllers/studentCheckoutController";
+
+
+const studentCheckoutRepository : IStudentCheckoutRepository = new StudentCheckoutRepository()
+
+const studentCheckoutService : IStudentCheckoutService = new StudentCheckoutService(studentCheckoutRepository,studentCartRepository)
+
+const studentCheckoutController : IStudentCheckoutController = new StudentCheckoutController(studentCheckoutService)
+
+////////////////////////DASHBOARD MANAGEMENT///////////////////////////////////
+
+import { IInstructorAllCourseDashboardRepository } from "../repositories/interfaces/IInstructorAllCourseDashboardRepository";
+import { InstructorAllCourseDashboardRepository } from "../repositories/instructorRepository/instructorAllCourseDashboardRepository";
+
+import { IInstructorAllCourseDashboardService } from "../services/interface/IInstructorAllDashboardService";
+import { InstructorAllCourseDashboardService } from "../services/instructorServices/InstructorAllDashboardService";
+
+
+import { IInstructorAllDashboardController } from "../controllers/instructorController/interfaces/IInstructorAllDashboardController";
+import { InstructorAllCourseDashboardController } from "../controllers/instructorController/instructorAllDashboardController";
+
+import { GenericRepository, IGenericRepository } from "../repositories/genericRepository";
+import { OrderModel,IOrder } from "../models/orderModel";
+
+const orderRepo:IGenericRepository<IOrder> = new GenericRepository<IOrder>(OrderModel)
+
+const instructorDashboardRepo : IInstructorAllCourseDashboardRepository = new InstructorAllCourseDashboardRepository(orderRepo);
+
+const instructorDashboardService : IInstructorAllCourseDashboardService = new InstructorAllCourseDashboardService(instructorDashboardRepo);
+
+const instructorDashboardController : IInstructorAllDashboardController = new InstructorAllCourseDashboardController(instructorDashboardService);
+
+
+/////////////////////////INSTRUCTOR SPECIFIC COURSE DASHBOARD/////////////////////////////////////////////////////////////////////////////////////////////
+
+import { IInstructorCourseSpecificDashboardRepository } from "../repositories/interfaces/IInstructorSpecificCourseDashboardRepository";
+import { InstructorSpecificCourseDashboardRepository } from "../repositories/instructorRepository/instructorSpecificCourseDashboardRepository";
+
+import { PaymentRepository } from "../repositories/PaymentRepository";
+import { EnrollmentRepository } from "../repositories/EnrollmentRepository";
+import { CourseRepository } from "../repositories/CourseRepository";
+import { OrderRepository } from "../repositories/OrderRepository";
+
+import { IInstructorSpecificCourseDashboardService } from "../services/interface/IInstructorSpecificCourseService";
+import { InstructorSpecificCourseDashboardService } from "../services/instructorServices/InstructorSpecificCourseService";
+
+
+import { IInstructorCourseSpecificDashboardController } from "../controllers/instructorController/interfaces/IInstructorSpecificCourseController";
+import { InstructorSpecificCourseDashboardController } from "../controllers/instructorController/instructorSpecificCourseController";
+
+
+const specificCourseDahboardRepository:IInstructorCourseSpecificDashboardRepository = new InstructorSpecificCourseDashboardRepository(
+    new PaymentRepository(),
+    new EnrollmentRepository(),
+    new CourseRepository(),
+    new OrderRepository()
+)
+
+const specificCourseDashboardService:IInstructorSpecificCourseDashboardService = new InstructorSpecificCourseDashboardService(specificCourseDahboardRepository)
+
+const specificCourseDashboardController:IInstructorCourseSpecificDashboardController = new InstructorSpecificCourseDashboardController(specificCourseDashboardService)
+
+///////////////////////////////////////////////////////////
+
+import { IStudentEnrollmentRepository } from "../repositories/interfaces/IStudentEnrollmentRepository";
+import { StudentEnrollmentRepository } from "../repositories/studentRepository/studentEnrollementRepository";
+
+import { IStudentEnrollmentService } from "../services/interface/IStudentEnrollmentService";
+import { StudentEnrollmentService } from "../services/studentServices/StudentEnrollmentService";
+
+import { IStudentEnrollmentController } from "../controllers/studentControllers/interfaces/IStudentEnrollmentController";
+import { StudentEnrollmentController } from "../controllers/studentControllers/studentEnrollmentController";
+
+
+
+const studentEnrollmentRepository : IStudentEnrollmentRepository = new StudentEnrollmentRepository(studentRepository)
+
+const studentEnrollmentService : IStudentEnrollmentService = new StudentEnrollmentService(studentEnrollmentRepository)
+
+const studentEnrollmentController : IStudentEnrollmentController = new StudentEnrollmentController(studentEnrollmentService)
+
+
 
 export {
     studentController,
@@ -326,4 +417,10 @@ export {
      studentCartController,
 //student wishlist controller
      studentWishlistController,
+//student checkout controller
+     studentCheckoutController,
+     instructorDashboardController,
+     specificCourseDashboardController,
+//student enrolled controller 
+     studentEnrollmentController,
 }

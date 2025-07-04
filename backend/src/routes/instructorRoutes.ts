@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { instructorController,instructorVerificationController,instructorProfileController,instructorCategoryController,instructorCourseController, instructorChapterController, instructorQuizController } from "../config/dependencyInjector";
+import { instructorController,instructorVerificationController,instructorProfileController,instructorCategoryController,instructorCourseController, instructorChapterController, instructorQuizController, instructorDashboardController, specificCourseDashboardController } from "../config/dependencyInjector";
 import upload from "../utils/multer";
 
 import authenticateToken from "../middlewares/AuthenticatedRoutes";
@@ -99,6 +99,18 @@ router.put('/quiz/:quizId/question/:questionId',authenticateToken,isInstructor,i
 router.delete('/quiz/:quizId/question/:questionId',authenticateToken,isInstructor,instructorQuizController.deleteQuestion.bind(instructorQuizController));
 
 router.get("/quiz/course/:courseId/paginated",authenticateToken,isInstructor,instructorQuizController.getPaginatedQuestionsByCourseId.bind(instructorQuizController))
+
+
+/////////////////////////instructor dashboard///////////////////////////////////
+
+router.get('/dashboard',authenticateToken,isInstructor,instructorDashboardController.getDashboard.bind(instructorDashboardController))
+
+
+////////////instructor specific course dashboard///////////////////////////
+
+router.get('/dashboard/specificCourse/:courseId',authenticateToken,isInstructor,specificCourseDashboardController.getCourseDashboard.bind(specificCourseDashboardController))
+
+
 
 const instructorRoutes = router
 
